@@ -29,24 +29,24 @@ to the user.
 
 ## 📝 Answers button
 
-- **When it shows:** the job has answers **and** its status is *To apply*. Once the user applies, skips
-  or closes the job, the button goes away.
+- **When it shows:** whenever the job has answers, whatever its status.
+- **Also in the job-link dialog:** opening a job's link (Apply / Open) shows every answer, expanded, under
+  the "Mark job as" buttons, each with its own 📋 Copy, so the user never has to close the dialog.
 - **Cards:** in the footer button row, in the slot the old 📎 PDF-ready button used, before
   ✨ Optimize (if enabled) and Apply. Class `ansb a-opt`, label "📝 Answers".
-- **Table:** in the Actions column, before the Apply/Open link. Class `ansb ans-t`, label "📝 Answers":
-  inline-flex, 36px high, 0 14px padding, 10px radius, 13px / 650 weight, no wrapping. The Actions
-  column is 200px wide.
-- **Styling:** warm accent pill: border `#e9c9ae`, background `#fdf0e6`, text `#9a3f1f`; hover
-  background `#fbe2d0`.
+- **Table:** in the Actions column, before the Apply/Open link. Class `ansb ans-t`, label "📝 Answers",
+  30px high to match the row's other controls. The Actions column is 200px wide.
+- **Styling:** soft accent button: `--accent-line` border, `--accent-soft` background, `--accent-ink` text.
 
 ## Answers dialog
 
 - An overlay (`#ansModal.ans-ov`), created on first use, centred vertically and horizontally, sitting
-  above everything (z-index 1000). Dimmed backdrop `rgba(41,28,18,.45)`.
+  above everything (z-index 1000). Dimmed backdrop `rgba(36,24,14,.45)`.
 - The box (`.ans-box`, up to 720px wide, 85vh tall, scrolls inside) shows the company and role at the
-  top, a one-line tip ("Anything in [brackets] needs your input. Read each one before pasting."), then
-  one card per question: question in small bold text, answer below with line breaks kept.
-- **📋 Copy** button in each card's top-right corner copies just that answer, using the same
+  top (company in the display serif), a one-line tip ("Anything in [brackets] needs your input. Read each
+  one before pasting."), then one block per question split by hairlines: question in small muted bold
+  text, answer below at 14px with line breaks kept.
+- **📋 Copy** button in each block's top-right corner copies just that answer, using the same
   clipboard fallback as outreach messages.
 - **Close:** the ✕ button, or a click on the backdrop.
 
@@ -65,30 +65,123 @@ to the user.
   moved inside: per person an avatar, name (opens their profile link), tag (Talent / Founder / Hiring
   manager / Team / Added by you), title (wrapping), and actions (📋 message, ✉️ note, 📧 email if known,
   messaged tick, ✕ for people you added), then ＋ Add person.
-- Each person is a bordered card (10px radius, `#fbf7f1` background).
+- Each person is a bordered card (`--r` radius, `--surface-2` background).
 - Close with ✕, a click on the backdrop, or **Esc**. The list goes back into its row when closed, so
   ticks and edits made in the dialog are kept.
 - Card view is unchanged: people still expand inside the card (`details.ppl`).
+
+## Status history and rejection stages
+
+- **History.** Every status change is stored in the browser with the job's status, as
+  `hist: [{s: "Applied", d: "2026-11-03"}, …]` (last 30 changes). A status saved before history existed
+  becomes the first step the next time the status changes. Resetting to *To apply* clears the history.
+- **Rejected after …** A rejection's stage is the furthest of Applied → Screening → Interviewing → Offer
+  in its history. Cards show "Rejected after screening · 15 Nov 2026"; the table shows "after screening"
+  under the status pill. Old rejections with no history show as *stage not recorded*.
+- **Review rejections** dialog (from the dashboard): every rejected job with a three-way switch
+  (Applied / Screened / Interviewed) that sets `rejStage`, a manual correction that wins over history.
+  Unrecorded ones are listed first.
+- **Dashboard outcomes row** (full width, shown once anything is applied): *How far your applications
+  got* (applied, got a screening, got an interview, got an offer, each with count and % of applied) and
+  *Where rejections happened* (after applying / screening / interviewing, plus not recorded, as % of
+  rejections), with *Fill in N missing* / *Review* opening the dialog.
+- **Interview rounds.** The status menu lists *Interviewing · R1* … *R5* (stored as status
+  `Interviewing` plus `round`; each round change goes into `hist` with `r`). The funnel adds *Got to
+  round 2+*, and rejections after interviewing split by round (*After interview R2*) once more than one
+  round appears.
+- **Not interested** is a status of its own (grey, counted with closed/skipped).
+- Backups include `hist`, `rejStage` and `round`.
+
+## Backups and moving to another computer
+
+- **Where data lives.** On disk in `me/` (profile, CV, jobs with answers/contacts/dates, notes) plus the
+  tailored-CV folder, tracker page and Excel file; in the browser: statuses + history, rounds, rejection
+  stages, people added, messaged ticks, tailored CVs made in the page, CV edits.
+- **Back up dialog.** *Download backup file* saves `<prefix>-tracker-backup-<date>.json` with all the
+  browser data **and** the page's own data (profile, CV, every job with answers, people and dates).
+  *Restore from file* merges one back. The old copy/paste text (statuses only) is still there.
+- **Merging rule** (page and script): a status is replaced only by a newer change (`updated`), so a
+  restore never undoes something done since. People and messaged ticks are added, never removed.
+- **On disk.** `python scripts/backup.py statuses` copies the newest backup file from Downloads into
+  `me/statuses.json`; `build.py` embeds it as `SAVED_STORE`, and the page merges it on load, so a new
+  browser or computer shows your statuses without any manual restore.
+- **Moving.** `python scripts/backup.py save` zips me/, tailored CVs, the tracker page, the Excel file and
+  the browser backup into `~/Documents/Next Move backups/` (or `profile.backup_folder`).
+  `python scripts/backup.py restore <zip>` unpacks it; it never overwrites (an existing `me/` gets a
+  `me.restored-<date>/` folder alongside instead).
+
+## Dark mode
+
+- The header's **Theme** button cycles *Auto → Light → Dark*. Auto follows the system setting. The choice
+  is saved in the browser (`nextmove_theme`); a tiny script in `<head>` sets `html.dark` before the page
+  paints, so there's no flash.
+- Dark tokens live in one `html.dark { … }` block. Text on solid ink/accent uses `--on-ink`; inputs and
+  hover fills use `--field`; logo/avatar tints use `--lf/--ls/--lb`. Role-track chips are mixed lighter
+  with a translucent fill in dark. The CV preview stays white (it's a document).
 
 ## Removed (off by default)
 
 - **📎 PDF ready**: the 📝 Answers button replaced it. Turn it back on with `features.pdf_button: true`.
 - **"How this tracker works"** box: turn it back on with `features.how_it_works: true`.
 
-## Warm theme colours
+## Look and layout (design v5, 19 Nov 2026)
+
+The stylesheet is one layer of tokens on `:root` followed by components; there are no stacked
+overrides. Change a token before adding a one-off colour.
+
+- **Type.** UI text is Inter; the page title, section headings, dashboard numbers and dialog titles
+  use Fraunces (a warm serif) at a low optical size so numbers stay solid. Both load from Google
+  Fonts and fall back to system sans / Georgia offline.
+- **Header.** Title with the accent monogram, tagline, one quiet "Updated … · N roles" line. Two
+  plain buttons on the right: *Back up statuses*, *My CV*.
+- **Dashboard.** One panel split into four columns by hairlines (no nested cards, no gradients):
+  jobs total with new / high-fit dots; pipeline count over a four-stage row (Applied, Screening,
+  Interviewing, Offer) with rejected and messaged counts underneath; location bar; role-mix bar.
+  Two columns under 1180px, one under 640px.
+- **Toolbar.** Sticky, blurred, three tiers:
+  1. search, then *Role*, *Status* and *Sort* as compact dropdowns (small grey label + value; a dropdown
+     that's filtering gets a dark outline), then the Cards/Table toggle;
+  2. quick-filter chips (Everything, High fit, Visa OK when a location needs a visa, Not applied yet,
+     New since last refresh, Direct listings, LinkedIn), a live count on the right ("319 roles in London")
+     and *Clear filters* when anything is filtering;
+  3. the location tabs.
+  On phones: the view toggle goes first, search is full width, the three dropdowns share a row (labels
+  hidden), and the chips scroll sideways.
+- **Location tabs.** The bottom edge of the sticky toolbar holds one tab per location group (colour dot,
+  name, count under the current filters), plus *Other locations* when needed and *All locations* last. Only
+  the selected group's jobs are drawn, so the page stays short; the choice is remembered per browser
+  (`<prefix>_loctab`). The old Location chip row is hidden. Dashboard numbers still cover every location.
+  With a single location group there are no tabs.
+- **Sections.** Location heading in the serif with its colour dot and a muted count, subtitle beside
+  it, hairline underneath.
+- **Cards.** Flat: 1px border, 14px radius, no shadow, border darkens on hover. Jobs you've acted on
+  get the `--surface-2` tint. *New* is a solid accent pill; *High fit* a green pill; *Medium fit* is
+  plain faint text. Footer: status pill and date on the left; buttons on the right, with **Apply** as
+  the one solid dark button (indirect listings get an outlined *Open page*).
+- **Status pill.** Neutral outline for *To apply*; solid ink for Applied; tinted for Screening (blue),
+  Interviewing (amber), Rejected (red); solid green for Offer; faint for closed/skipped/duplicate.
+- **Table.** Same tokens; cells vertically centred; 30px controls; header on `--surface-2`.
+- **Portals.** A single bordered grid of tiles split by 1px gaps, each with an "Open ↗" text link.
+
+## Theme tokens ("paper and ink", 19 Nov 2026)
+
+A neutral off-white page with near-black text and buttons and no colour accent. Colour is kept for
+meaning only: fit, visa, status, and the location / role-track colours.
 
 | Token | Value | Use |
 |---|---|---|
-| `--bg` | `#efe8de` | page background |
-| `--surface` | `#fffdf9` | cards, dialogs, buttons |
-| `--ink` / `--ink2` | `#1f1a16` / `#3a2f27` | main / secondary text |
-| `--muted` / `--faint` | `#6b5d52` / `#8a7b6f` | hints, labels |
-| `--line` / `--line2` | `#ddd2c4` / `#e9e0d4` | borders, dividers |
-| `--accent` / `--accent-2` | `#b4532a` / `#c8643a` | primary accent (burnt orange) |
-| `--accent-soft` | `#fbe7d8` | accent backgrounds |
-| `--ok` / `--ok-soft` | `#047857` / `#ecfdf5` | high fit, visa OK |
-| `--warn` / `--warn-soft` | `#b45309` / `#fffbeb` | warnings, visa unclear |
-| Shadows | `--sh-1: 0 1px 3px rgba(60,40,20,.10)`; `--sh-2: 0 1px 3px rgba(60,40,20,.08), 0 10px 28px -10px rgba(60,40,20,.22)` | cards / raised |
+| `--bg` / `--bg-2` | `#f6f6f4` / `#ebebe8` | page background / sunken fills (toggle track, hovers) |
+| `--surface` / `--surface-2` | `#ffffff` / `#f8f8f6` | cards, dialogs / tracked jobs, table header |
+| `--ink` / `--ink2` | `#161616` / `#333333` | main / secondary text, active chips |
+| `--muted` / `--faint` | `#666660` / `#8f8f88` | labels, hints |
+| `--line` / `--line2` / `--line-strong` | `#e3e3df` / `#efefec` / `#c9c9c3` | borders, dividers, hover borders |
+| `--accent` / `--accent-ink` | `#1f1f1f` / `#000000` | Apply, New, primary buttons / hover |
+| `--accent-soft` / `--accent-line` | `#ececea` / `#d0d0cb` | soft button backgrounds (📝 Answers, badges) / borders |
+| `--ok`, `--warn`, `--bad`, `--info` | `#1d7a52`, `#9a5606`, `#b42318`, `#1f6a98` | each with `-soft` and `-line` variants |
+| `--r-sm` / `--r` / `--r-lg` | 8 / 10 / 14px | radii |
+| `--gut` | 32px (16px on phones) | page side gutter |
+
+To re-theme, change these tokens only; nothing else in the stylesheet hard-codes a page colour.
 
 Role-track and location colours are assigned in profile order from fixed palettes in the template
 (`TRACK_COLORS`, `LOC_COLORS`): first track purple `#7c3aed`, then teal `#0f766e`, amber `#a16207`, and

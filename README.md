@@ -62,8 +62,52 @@ get committed. To keep a private backup, put `me/` in its own private repo or cl
 | `me/jobs.json` | All tracked roles ([example](examples/jobs.example.json)) |
 | `me/notes.md` | Interviews, recruiter notes, open questions ([example](examples/notes.example.md)) |
 
-Statuses you set in the page are saved in that browser. Use **💾 Backup** in the page to copy them
-somewhere safe or move them to another browser.
+| `me/statuses.json` | Your statuses copied out of the browser (made by `backup.py`, see below) |
+
+### Backups and moving to another computer
+
+Your data lives in two places:
+
+- **On disk:** everything in `me/`, plus your tailored-CV folder, the tracker page and the Excel copy.
+- **In your browser:** statuses and their history, interview rounds, where each rejection happened,
+  people you added and "messaged" ticks. These are saved in the browser you use the tracker in.
+
+**1. Download a backup from the page.** Click **Back up statuses** → **⬇ Download backup file**. You get
+`<you>-tracker-backup-<date>.json` in Downloads. It holds everything from the browser *and* every job's
+details, answers, people and dates. **Restore from file** in the same dialog loads it back. A restore
+only ever applies changes that are newer than what's there.
+
+**2. Keep your statuses on disk.**
+
+```bash
+python scripts/backup.py statuses
+```
+
+This copies the newest backup file from Downloads into `me/statuses.json`. Every rebuild puts those
+statuses into the page, so a new or cleared browser shows them without restoring anything. (A refresh
+by Claude does this step too when there's a newer backup file.)
+
+**3. Make one archive of everything.**
+
+```bash
+python scripts/backup.py save
+```
+
+This zips `me/`, your tailored CVs, the tracker page, the Excel file and the newest browser backup into
+`~/Documents/Next Move backups/` (set `backup_folder:` in your profile to change it).
+
+**4. Restore on a new computer.** Clone this repo, then:
+
+```bash
+python scripts/backup.py restore "~/Documents/Next Move backups/next-move-<you>-<date>.zip"
+python scripts/build.py
+```
+
+Restore never overwrites anything: files that already exist are left alone, and if `me/` already has
+data it unpacks into `me.restored-<date>/` so you can compare first.
+
+Tip: do steps 1–3 every week or two, and keep the backups folder in iCloud Drive, Dropbox or similar.
+`me/` is never committed to git.
 
 ## Countries
 
@@ -76,6 +120,7 @@ remote-EU. Missing yours? Ask Claude to *"add a country pack for Portugal"* — 
 - "Pull latest jobs" · "Add this job: <link>" · "Tailor my CV for the Acme role" · "Write answers for the Acme application"
 - "Also look in Amsterdam" · "I now have the right to work in Ireland" · "Skip agency posts from X"
 - "What follow-ups are due?" · "Regenerate tailored CVs for jobs I haven't applied to"
+- "Find job portals for Germany" · "Back up my tracker" · "Redo the answers for the Acme application"
 
 ## How it works
 
@@ -93,7 +138,7 @@ profile.yaml + cv.json ──► search_jobs.py / browser / web search ──►
 ```
 
 Scripts (all `--help`-documented): `build.py`, `jobs.py`, `search_jobs.py`, `fetch_posting.py`,
-`check_sponsor.py`, `tailor_cv.py`, `answers.py`, `cv_pdf.py`, `sync_xlsx.py`, `import_legacy.py`. Claude's
+`check_sponsor.py`, `tailor_cv.py`, `answers.py`, `cv_pdf.py`, `sync_xlsx.py`, `backup.py`, `import_legacy.py`. Claude's
 instructions are in [`CLAUDE.md`](CLAUDE.md) and [`.claude/skills/`](.claude/skills/).
 
 Try the demo without any setup: `python scripts/build.py --example` and open `examples/Example_Job_Tracker.html`.

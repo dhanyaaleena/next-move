@@ -33,21 +33,66 @@ questions ("happy to be in 4 days a week?") get a direct Yes/No based on `work_m
 
 ## 3. Open questions: the quality bar
 
-Before writing, read the full posting and one or two pages about the company (product, customers, recent
-news) so you have something specific to say.
+The test for every open answer: **could it be sent to another company by swapping the name?** If yes, it
+isn't done. Each one has to show that the user read about *this* company and connect it to something
+*they* actually built, in their own voice.
+
+### a. Research first: a company brief (write it down before drafting)
+
+Read the full posting, the company's own site (product pages, about, customers, engineering blog) and one
+recent item (launch, funding, case study, talk). Note 3–5 concrete facts in your scratch notes, each with
+where you read it:
+- what they sell and to whom (in plain words, e.g. "brokerage APIs that let AI agents trade for users");
+- the hard problem underneath it (scale, latency, regulation, data quality, reliability…);
+- what this team/role owns, in the posting's own words;
+- one recent, specific thing (a launch, a customer, a technical choice they've written about).
+Use only what you read; don't infer funding, size or tech stack.
+
+### b. Pick the user's stories, not just their skills
+
+From `cv.json` (and `notes.md`, `profile.writing.about_me`), pick the 2–3 experiences that best match the
+posting's main requirements. For each, have the story ready: **the situation, what they personally did,
+how, and the result with its real number**. "Rebuilt the payments
+API at Acme (idempotency keys, retries, webhooks); it now handles 2M requests a day at p99 under 200 ms"
+beats "experience with APIs".
+Prefer the experience that is closest to the company's hard problem from (a).
+
+### c. Write
 
 **Why do you want to work here?** (60–110 words)
-- Open with something specific and true about *this* company: what it builds, for whom, a hard problem it
-  takes on. Not "I'm excited about your mission".
-- Link it to something the user has actually done or cares about (from `cv.json` / `notes.md`).
-- Name the company at least once. Add a practical line only if useful (e.g. "moving to London next month").
+- Open with the specific thing from the brief that genuinely connects to the user, in their words: what
+  the company does and why that problem is interesting *to them*. Not "I'm excited about your mission".
+- Tie it to one real experience or interest of theirs (a problem they've hit, a domain they've worked in,
+  a thing they built that touches the same space) — say what it was.
+- Name the company and at least one concrete product/customer/technical detail. Add a practical line only
+  if it helps (e.g. "I'm moving to London next month").
 
 **Why this role / why are you a good fit?** (80–130 words)
 - First sentence maps the role to their experience directly ("This role is about owning the AI layer:
   prompting, retrieval and output quality. That's very close to what I do at Instead.").
-- 2–3 pieces of evidence from the CV with their real numbers, chosen to match the posting's requirements.
+- Then the 2–3 stories from (b), short: what they built, how, the number. Match the posting's wording for
+  the requirement each one answers.
 - If the posting asks for something they don't have, say so plainly and bridge to the closest real
   experience ("I haven't built an MCP server yet, but I've built the tool-calling layer it's based on").
+
+### d. Make it sound like them
+
+- Follow `profile.writing` (tone, and `about_me` if present: what they enjoy, why they're moving, what they
+  want next). If `about_me` is missing, ask the user 2–3 quick questions once (what they enjoyed most in
+  their last role, what kind of product they want to work on, anything personal they're happy to mention)
+  and save the answers to `profile.writing.about_me`.
+- First person, plain words, short sentences, contractions. One real opinion or feeling is fine ("the bit
+  I enjoyed most was…"). No clichés ("passionate about", "thrilled", "leverage", "fast-paced", "proven
+  track record", "I am writing to"), no em-dash chains, no lists unless the question asks for them.
+- It should read like the user typed it in five minutes on a good day.
+
+### e. Self-check before saving (rewrite anything that fails)
+
+1. Swap test: would it still work for a competitor? → add the specific detail from the brief.
+2. Does it name a concrete thing they built, with what/how/result? → add the story.
+3. Is every fact about the company something you actually read? Every number from the CV/facts?
+4. Is the "why us" different from every other company's (`python scripts/answers.py audit`)?
+5. Read it aloud in their voice: anything they wouldn't say? → cut it.
 
 **"Tell us about yourself"**: two short paragraphs: who they are and what they've done recently (with one
 metric), then why this company. **"Anything you'd like to learn in the first call?"**: 1–2 genuine
@@ -55,17 +100,15 @@ questions about how the team works on this role's real problems. **Technical / o
 directly with how *they* work, based on their stack; if it goes beyond the CV, mark the spot with
 `[edit to match what you've actually used]` rather than inventing experience.
 
-**Voice** — follow `profile.writing`: casual, brief, first person, plain words, short sentences. No clichés
-("passionate about", "thrilled", "leverage", "fast-paced", "proven track record", "I am writing to"), no
-em-dash chains, no lists unless the question asks for them. It should read like the user typed it in five
-minutes on a good day.
-
 **Truth** — only facts from `cv.json`, `profile.cv.confirmed_extras` and `application_facts`. Every number
 must already be there. Never claim a skill from `profile.cv.ask_before_claiming`; say honestly they haven't
 used it yet, or ask the user. Respect any character/word limit on the form.
 
 **Different for every company** — don't reuse a "why us" paragraph across companies; the evidence can
 repeat, the reasons shouldn't.
+
+**Redoing old answers** — when the user asks to improve existing answers, keep the routine facts, redo the
+open ones with steps a–e, and save with `answers.py set` (it replaces that job's answers).
 
 ## 4. Check and save
 
@@ -77,6 +120,6 @@ python scripts/answers.py set --id "<job id>" --file /tmp/<slug>_answers.json
 
 ✘ items block saving: fix them. ! items are warnings: fix them unless there's a good reason. The script
 lists every `[placeholder]` left for the user; mention those in your report. Rebuild the page afterwards
-(`python scripts/build.py`). The 📝 Answers button shows while the job's status is **To apply**.
+(`python scripts/build.py`). The answers show under the job's 📝 Answers button and inside its job-link dialog.
 
 To review everything saved so far: `python scripts/answers.py audit`.

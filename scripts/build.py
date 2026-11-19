@@ -100,11 +100,15 @@ def build(me, out=None, example=False):
         sys.exit("Can't build:\n  " + "\n  ".join(errs))
 
     data = {"jobs": jobs.get("jobs", []), "portals": portals_for(profile, jobs)}
+    # statuses saved on disk by scripts/backup.py; the page merges them into a new or cleared browser
+    saved_path = None if example else me_path(me, "statuses.json")
+    saved = load_json(saved_path) if saved_path and os.path.exists(saved_path) else None
     cfg = (
         "var PROFILE = " + js({k: profile.get(k) for k in PROFILE_KEYS if profile.get(k) is not None}) + ";\n"
         "var DEFAULT_CV_JSON = " + js(cv) + ";\n"
         "var DATA = " + js(data) + ";\n"
         "var DATA_VERSION = " + js(str(jobs.get("version") or today())) + ";\n"
+        "var SAVED_STORE = " + js(saved) + ";\n"
     )
     with open(TEMPLATE, encoding="utf-8") as f:
         html = f.read()

@@ -51,7 +51,13 @@ route (official link), whether an official sponsor register exists (official lin
 phrases in postings that signal sponsorship, language notes, the `linkedin_location` string, and 4–6
 well-known job boards (verify each URL loads). Don't write salary thresholds — link to the official page.
 
-## 3. Create the rest and build
+## 3. Job portals
+
+Run the **job-tracker-portals** skill: it finds the main boards for each country they chose, boards for
+their role tracks and, where they need a visa, sponsorship/relocation boards, checks each link, and adds
+them to `profile.portals`.
+
+## 4. Create the rest and build
 
 ```bash
 mkdir -p me
@@ -74,7 +80,7 @@ Create `me/notes.md`:
 Send them the tracker page. If they have an older tracker in the array format, import it first with
 `python scripts/import_legacy.py <file>`, and make the profile's location/track ids match what it prints.
 
-## 4. Offer next steps
+## 5. Offer next steps
 
 Offer to (a) run the first pull now (job-tracker-refresh), and (b) set up a scheduled task that pulls
 on a schedule they choose, e.g. weekday mornings, using this prompt:

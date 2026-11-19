@@ -83,6 +83,35 @@ def test_answers_checker():
     assert any("never names" in x for x in A.check(job, generic, prof, cv)[1])
 
 
+def test_backup_merge_and_roundtrip():
+    import backup as B
+    cur = {"jobs": {"a|x": {"status": "Applied", "updated": "2026-11-10T10:00:00Z"},
+                    "b|y": {"status": "To apply", "updated": "2026-11-12T10:00:00Z"}}}
+    inc = {"jobs": {"a|x": {"status": "Rejected", "updated": "2026-11-11T10:00:00Z", "hist": [{"s": "Applied"}, {"s": "Rejected"}]},
+                    "b|y": {"status": "Applied", "updated": "2026-11-01T10:00:00Z"},
+                    "c|z": {"status": "Interviewing", "updated": "2026-11-05T10:00:00Z", "round": 2}},
+           "msgd": {"a|x|Sam": "2026-11-02"}, "extra": {"a|x": [["Sam Lee", "EM", "", "Added by you"]]}}
+    assert B.merge(cur, inc) == 2
+    assert cur["jobs"]["a|x"]["status"] == "Rejected" and cur["jobs"]["a|x"]["hist"]   # newer wins
+    assert cur["jobs"]["b|y"]["status"] == "To apply"                                   # newer local reset kept
+    assert cur["jobs"]["c|z"]["round"] == 2 and cur["msgd"] and cur["extra"]["a|x"]
+    tmp = tempfile.mkdtemp()
+    try:
+        me = os.path.join(tmp, "me"); os.makedirs(me)
+        open(os.path.join(me, "profile.yaml"), "w").write("storage_prefix: t\n")
+        open(os.path.join(me, "jobs.json"), "w").write('{"jobs": []}')
+        bk = os.path.join(tmp, "t-tracker-backup-2026-11-19.json")
+        json.dump({"format": "next-move-backup", "browser": {"store": inc, "tailored": {}}}, open(bk, "w"))
+        B.cmd_save(me, bk, os.path.join(tmp, "out"))
+        assert json.load(open(os.path.join(me, "statuses.json")))["store"]["jobs"]["c|z"]["status"] == "Interviewing"
+        z = [f for f in os.listdir(os.path.join(tmp, "out")) if f.endswith(".zip")][0]
+        me2 = os.path.join(tmp, "me2")
+        B.cmd_restore(me2, os.path.join(tmp, "out", z))
+        assert os.path.exists(os.path.join(me2, "statuses.json")) and os.path.exists(os.path.join(me2, "jobs.json"))
+    finally:
+        shutil.rmtree(tmp)
+
+
 if __name__ == "__main__":
     for k, f in list(globals().items()):
         if k.startswith("test_"):

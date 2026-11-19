@@ -120,8 +120,9 @@ watchlist:
   - {name: "Adyen", ats: "greenhouse", slug: "adyen"}
   - {name: "Intercom", ats: "greenhouse", slug: "intercom"}
 
-# Extra job boards to show at the bottom of the tracker (country boards are
-# added automatically from countries/*.yaml).
+# Your own job boards, shown at the bottom of the tracker and searched on every refresh.
+# Filled in by the job-tracker-portals skill for your countries, role tracks and visa needs;
+# boards in countries/*.yaml are added automatically on top. badge: country code, track label or "Visa".
 portals: []
 
 # ── CV ───────────────────────────────────────────────────────────────────────
@@ -146,6 +147,8 @@ cv:
 
 # Where Claude saves PDFs it tailors for you (shown as a hint in the tracker).
 tailored_cv_folder: "Tailored CVs"
+# Where `python scripts/backup.py save` puts its zip (default: ~/Documents/Next Move backups).
+# backup_folder: "~/Documents/Next Move backups"
 
 # ── Outreach ─────────────────────────────────────────────────────────────────
 # {NAME} → " Sam" (or empty), {ROLE} → job title, {COMPANY} → company.
@@ -173,6 +176,10 @@ writing:
   tone: "Casual, brief, and not AI-sounding."
   sign_off: "Best,\nAlex"
   recruiter_reply: "Say I'm interested, open to relocating to Berlin, Amsterdam or Dublin, and will need visa sponsorship."
+  # A few true, personal lines that make application answers sound like you (optional; Claude asks if empty).
+  about_me: >-
+    I like owning a service end to end, from design to on-call. The work I enjoyed most was cutting
+    payment latency at my last job. I want product companies where engineers talk to users.
 
 # Standard facts for application forms. Claude uses these word for word for routine
 # questions; anything left blank is written as [your …] for you to fill in before sending.

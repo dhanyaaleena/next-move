@@ -35,8 +35,10 @@ titles) and each location group: search with the date filter covering the time s
 results page by page. **Browse gently**: pause a few seconds between pages, don't open dozens of tabs,
 stop if LinkedIn shows a warning or captcha and tell the user.
 
-**c. Web search across country boards** — for each location's country pack (`countries/<CODE>.yaml`
-→ `boards`), search for the track titles + place. Prefer links to the company's own posting (ATS page) over
+**c. Web search across job boards** — the boards in each location's country pack (`countries/<CODE>.yaml`
+→ `boards`) and the user's own `profile.portals`: search for the track titles + place. If a location's
+country or a role track has no boards in `profile.portals` yet (the profile changed since setup), run
+the **job-tracker-portals** skill first. Prefer links to the company's own posting (ATS page) over
 aggregators.
 
 Merge everything into one candidate list. Drop anything already in `/tmp/known.json` (same id
@@ -107,6 +109,7 @@ the user must fill in.
 ## 7. Rebuild and sync
 
 ```bash
+python scripts/backup.py statuses      # if a newer <prefix>-tracker-backup-*.json is in Downloads (skip if none)
 python scripts/jobs.py pulled          # records today as the last pull
 python scripts/build.py                # tracker page (keeps all statuses — they live in the browser)
 python scripts/sync_xlsx.py            # if profile.excel

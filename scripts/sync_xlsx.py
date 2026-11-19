@@ -32,7 +32,7 @@ LINK = Font(name=F, size=10, color="0563C1", underline="single")
 INPUT = PatternFill("solid", fgColor="FFF2CC")
 thin = Side(style="thin", color="D9D9D9")
 BORDER = Border(left=thin, right=thin, top=thin, bottom=thin)
-STATUSES = ["To apply", "Applied", "Screening", "Interviewing", "Offer", "Rejected", "Closed", "Skipped", "Duplicate", "Wrong location"]
+STATUSES = ["To apply", "Applied", "Screening", "Interviewing", "Offer", "Rejected", "Not interested", "Closed", "Skipped", "Duplicate", "Wrong location"]
 COLS = ["#", "Company", "Role", "Location", "Region", "Experience asked", "Visa / sponsorship", "Salary",
         "Job link", "Resume", "Status", "Applied on", "Follow up on", "Notes"]
 WIDTHS = [5, 24, 36, 24, 14, 14, 36, 16, 13, 28, 12, 12, 12, 50]
@@ -61,7 +61,7 @@ def create(path, profile, portals):
     ws.add_data_validation(dv)
     dv.add(f"K2:K{MAXR}")
     fills = {"Applied": "DDEBF7", "Screening": "BDD7EE", "Interviewing": "C6E0B4", "Offer": "A9D08E",
-             "Rejected": "F8CBAD", "Closed": "D9D9D9", "Skipped": "EDEDED", "Duplicate": "EDEDED", "Wrong location": "EDEDED"}
+             "Rejected": "F8CBAD", "Not interested": "EDEDED", "Closed": "D9D9D9", "Skipped": "EDEDED", "Duplicate": "EDEDED", "Wrong location": "EDEDED"}
     for s, col in fills.items():
         ws.conditional_formatting.add(f"A2:J{MAXR}", FormulaRule(formula=[f'$K2="{s}"'], fill=PatternFill("solid", fgColor=col)))
     ws.conditional_formatting.add(f"M2:M{MAXR}", FormulaRule(

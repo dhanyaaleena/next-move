@@ -11,6 +11,7 @@ session, then read the user's `me/profile.yaml` and `me/notes.md` before doing a
 | `me/profile.yaml` | The user's targets: role tracks, location groups (+ visa need per country), salary, fit rules, search sources, contacts, CV rules, writing style, hard rules. **Source of truth for every decision.** |
 | `me/cv.json` | Their base CV, structured (shape: `examples/cv.example.json`). Tailored CVs may only use facts from here or `profile.cv.confirmed_extras`. |
 | `me/jobs.json` | Every role the tracker shows. Only change it through `scripts/jobs.py`. |
+| `me/statuses.json` | Statuses copied out of the browser (`backup.py`). Embedded in the page on every build so a new or cleared browser gets them back. |
 | `me/notes.md` | Running notes: interviews in progress, recruiter replies, open questions, last pull summary. Keep it short and current. |
 | `me/output/*.html` (or `profile.output_file`) | The tracker page. Rebuilt by `scripts/build.py`. |
 | `countries/<CODE>.yaml` | Per-country visa route, official sponsor register, job boards. |
@@ -24,6 +25,7 @@ If `me/` doesn't exist, the user hasn't been set up — use the **job-tracker-se
 - **job-tracker-refresh** — "pull latest jobs" / "refresh my tracker": search, verify, add, contacts, tailored CVs, rebuild, report.
 - **job-tracker-add** — the user shares one job link to log.
 - **job-tracker-tailor-cv** — make or redo a one-page tailored CV for a job.
+- **job-tracker-portals** — find job boards for the user's countries, role tracks and visa needs → `profile.portals` (shown under Job portals).
 - **job-tracker-answers** — draft and check answers to a job's application-form questions (shown under 📝 Answers).
 
 If your environment doesn't load skills automatically, open the matching `SKILL.md` and follow it.
@@ -40,6 +42,7 @@ python scripts/check_sponsor.py <CODE> "Company"      # official sponsor registe
 python scripts/tailor_cv.py --id <job id> --cv f.json # check + fit one page + save PDF
 python scripts/answers.py set|check|audit|missing    # application answers (quality + truth checks)
 python scripts/sync_xlsx.py                           # Excel copy (Jobs + People + Portals)
+python scripts/backup.py statuses|save|restore        # browser statuses → me/statuses.json; zip / unpack everything
 python tests/test_scripts.py                          # offline tests
 ```
 
