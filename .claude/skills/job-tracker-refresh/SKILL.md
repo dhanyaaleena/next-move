@@ -1,13 +1,13 @@
 ---
 name: job-tracker-refresh
-description: Pull new jobs into the user's tracker according to their profile - searches LinkedIn and company career boards for their role tracks and locations, checks fit, language, seniority and visa-sponsorship evidence, adds contacts, makes a tailored one-page CV per job, rebuilds the tracker page and Excel copy, and reports. Use when the user says "pull latest jobs", "refresh my tracker", "find new jobs", or a scheduled run asks for a refresh.
+description: Pull new jobs into the user's tracker according to their profile - searches LinkedIn and company career boards for their role tracks and locations, checks fit, language, seniority and visa-sponsorship evidence, adds contacts, makes a tailored one-page CV and application answers per job, rebuilds the tracker page and Excel copy, and reports. Use when the user says "pull latest jobs", "refresh my tracker", "find new jobs", or a scheduled run asks for a refresh.
 ---
 
 # Pull latest jobs
 
 Read `CLAUDE.md`, `me/profile.yaml` and `me/notes.md` first. Everything below is driven by the profile —
 never assume a country, role or visa situation. Set up a task list: search → review → add → contacts →
-CVs → rebuild → report.
+CVs → answers → rebuild → report.
 
 ## 0. Where to start from
 
@@ -98,7 +98,13 @@ python scripts/jobs.py update --id "<id>" --json '{"people": [{"name": "...", "t
 For every new job run the **job-tracker-tailor-cv** skill (one PDF per job). If there are many, do the
 High-fit ones first and tell the user how many are left.
 
-## 6. Rebuild and sync
+## 6. Application answers
+
+For every new job run the **job-tracker-answers** skill: read the application form's questions and save
+checked answers, so **📝 Answers** is ready in the tracker. High-fit jobs first; note any `[placeholders]`
+the user must fill in.
+
+## 7. Rebuild and sync
 
 ```bash
 python scripts/jobs.py pulled          # records today as the last pull
@@ -108,12 +114,12 @@ python scripts/sync_xlsx.py            # if profile.excel
 If `profile.artifact` names a published copy of the tracker, republish the new page to it.
 Send the user the rebuilt page.
 
-## 7. Report (short)
+## 8. Report (short)
 
 Update `me/notes.md` (Status: date of pull, how many added). Then reply with:
 - **Best matches** — High fit, one line each: company, role, place, why.
 - **Other matches** — count + a few names.
 - **Skipped** — grouped by reason (seniority, language, no sponsorship, agency, closed, duplicate…) with counts.
-- Anything that needs the user (a skill to confirm for a CV, a LinkedIn warning, blocked network).
+- Anything that needs the user: answer placeholders to fill (notice period, salary…), a skill to confirm for a CV or answer, a LinkedIn warning, blocked network.
 
 No step-by-step recap of what you did.

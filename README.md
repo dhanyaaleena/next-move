@@ -15,6 +15,7 @@ visa needs, salary floor, languages and tone all come from your `profile.yaml`.
 - **A tracker page** (one HTML file): roles grouped by your locations, filters by role type, fit, visa and status, a pipeline dashboard, and statuses that survive every refresh. Cards and table view.
 - **Pulls that match you**: LinkedIn (signed-in browser or public search), the career boards of companies you like *and* of every company already in your tracker, and the main job boards of each country you target.
 - **Visa-aware filtering**: for each country you mark as needing sponsorship, a role is added only with evidence — the posting's own words, or the employer on the country's official sponsor register (the UK register is checked automatically).
+- **Answers to each job's application questions**, ready under 📝 Answers: routine facts (location, right to work, notice, salary) taken word for word from your profile, and short, specific "why us / why this role" answers backed by real numbers from your CV. A checker blocks invented numbers or skills and flags generic, AI-sounding wording.
 - **A one-page tailored CV per job**, as a PDF, built only from facts in your CV. Invented numbers or skills are rejected by a checker, and skills you list as "ask first" are never claimed without you.
 - **People to reach out to** for each role (names and public profile links; Claude never messages anyone), plus a ready outreach message and a ≤280-character connection note in your voice.
 - **An Excel copy** (Jobs, People, Portals, Summary) if you want one. Claude only ever adds rows.
@@ -72,7 +73,7 @@ remote-EU. Missing yours? Ask Claude to *"add a country pack for Portugal"* — 
 
 ## Common things to ask Claude
 
-- "Pull latest jobs" · "Add this job: <link>" · "Tailor my CV for the Acme role"
+- "Pull latest jobs" · "Add this job: <link>" · "Tailor my CV for the Acme role" · "Write answers for the Acme application"
 - "Also look in Amsterdam" · "I now have the right to work in Ireland" · "Skip agency posts from X"
 - "What follow-ups are due?" · "Regenerate tailored CVs for jobs I haven't applied to"
 
@@ -86,12 +87,13 @@ profile.yaml + cv.json ──► search_jobs.py / browser / web search ──►
                        jobs.py add (dedupe, stable IDs, visa gate) ──► jobs.json
                                                                         │
            tailor_cv.py (fact check, one page) ──► Tailored CVs/<Company>/…pdf
+           answers.py (truth + quality check)  ──► 📝 Answers on each job
                                                                         │
                     build.py ──► <Name>_Job_Tracker.html     sync_xlsx.py ──► Job_Tracker.xlsx
 ```
 
 Scripts (all `--help`-documented): `build.py`, `jobs.py`, `search_jobs.py`, `fetch_posting.py`,
-`check_sponsor.py`, `tailor_cv.py`, `cv_pdf.py`, `sync_xlsx.py`, `import_legacy.py`. Claude's
+`check_sponsor.py`, `tailor_cv.py`, `answers.py`, `cv_pdf.py`, `sync_xlsx.py`, `import_legacy.py`. Claude's
 instructions are in [`CLAUDE.md`](CLAUDE.md) and [`.claude/skills/`](.claude/skills/).
 
 Try the demo without any setup: `python scripts/build.py --example` and open `examples/Example_Job_Tracker.html`.

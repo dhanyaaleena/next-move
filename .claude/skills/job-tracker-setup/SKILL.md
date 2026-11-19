@@ -35,7 +35,8 @@ Ask only what you can't infer from the CV. Use multiple-choice questions where t
 8. **LinkedIn** — are they signed in to LinkedIn in a browser you can use? (`search.linkedin_signed_in`)
 9. **CV rules** — titles they're happy to use; skills to ask about before claiming; anything true that isn't in the CV yet (`confirmed_extras`).
 10. **Voice** — how messages should sound and their sign-off; a 2–3 line outreach blurb (who they are, right-to-work/relocation line, portfolio link).
-11. **Files** — where tailored CV PDFs should go (`tailored_cv_folder`), whether they want an Excel copy, and where to save the tracker page.
+11. **Application facts** — location line, right to work / sponsorship per country, notice period, salary expectation (or leave blank to fill per role), start date, work mode, links (`application_facts`).
+12. **Files** — where tailored CV PDFs should go (`tailored_cv_folder`), whether they want an Excel copy, and where to save the tracker page.
 
 Write `me/profile.yaml` from `examples/profile.example.yaml`, keeping its comments. Rules:
 - `storage_prefix`: lowercase first name (a–z, 0–9, _). Never change it later.

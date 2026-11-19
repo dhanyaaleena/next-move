@@ -66,6 +66,23 @@ def test_pipeline():
         shutil.rmtree(me)
 
 
+def test_answers_checker():
+    import answers as A
+    prof, cv = profile(), json.load(open(os.path.join(ROOT, "examples", "cv.example.json")))
+    job = {"company": "Example Fintech GmbH", "role": "Backend Engineer"}
+    good = [{"q": "Why do you want to work here?", "a": "Example Fintech is rebuilding card payments, which is what I do. I moved our ledger to Go handling 3M+ transactions a day."}]
+    e, w, _ = A.check(job, good, prof, cv)
+    assert not e and not w, (e, w)
+    bad = [{"q": "Why this role?", "a": "I'm passionate about Rust and cut costs by 85%.", "limit": 20}]
+    e, w, _ = A.check(job, bad, prof, cv)
+    assert any("85" in x for x in e) and any("Rust" in x for x in e) and any("allows 20" in x for x in e), e
+    assert any("passionate" in x for x in w), w
+    honest = [{"q": "Fit?", "a": "I haven't used Rust yet, but I'd pick it up quickly."}]
+    assert not A.check(job, honest, prof, cv)[0]
+    generic = [{"q": "Why do you want to work here?", "a": "I like building reliable systems that people depend on every day, with a team that cares about quality."}]
+    assert any("never names" in x for x in A.check(job, generic, prof, cv)[1])
+
+
 if __name__ == "__main__":
     for k, f in list(globals().items()):
         if k.startswith("test_"):

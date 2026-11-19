@@ -174,6 +174,20 @@ writing:
   sign_off: "Best,\nAlex"
   recruiter_reply: "Say I'm interested, open to relocating to Berlin, Amsterdam or Dublin, and will need visa sponsorship."
 
+# Standard facts for application forms. Claude uses these word for word for routine
+# questions; anything left blank is written as [your …] for you to fill in before sending.
+application_facts:
+  location: "Lisbon, Portugal; relocating for this role"
+  right_to_work: "EU-based; I'd need a visa for Germany, the Netherlands and Ireland (EU Blue Card / HSM / Critical Skills)"
+  visa_sponsorship: "Yes, for on-site roles in Germany, the Netherlands and Ireland"
+  notice_period: "1 month"
+  salary_expectation: ""          # blank = Claude writes [your expectation] — fill per role
+  start_date: ""
+  work_mode: "Happy with hybrid or on-site; open to relocating"
+  links: "LinkedIn: linkedin.com/in/alex-morgan-example · GitHub: github.com/alexmorgan-example"
+  how_heard: ""                   # blank = Claude uses where it found the job (e.g. "LinkedIn")
+  other: []                       # any other facts you're happy to reuse, e.g. "Pronouns: they/them"
+
 # Hard rules for Claude while working on your search.
 rules:
   - "Never message, connect with or apply to anyone on my behalf."
@@ -185,3 +199,5 @@ excel: true
 
 features:
   optimize_button: true   # "✨ Optimize CV" in the page (asks Claude to tailor your CV in the browser)
+  pdf_button: false       # show a "📎 PDF ready" hint on jobs with a tailored CV (📝 Answers sits there by default)
+  how_it_works: false     # show the "How this tracker works" box

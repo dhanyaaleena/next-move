@@ -456,6 +456,33 @@ header{background:var(--surface);border-bottom:1px solid var(--line)}
 .m-visa.v-no{color:#b91c1c;background:#fef2f2}
 .c-visa{font-size:11px;color:var(--muted);margin:2px 0 6px;line-height:1.45}
 .lg span{white-space:nowrap}
+/* application answers */
+.ansb{cursor:pointer;border:1px solid #e9c9ae;background:#fdf0e6;color:#9a3f1f;border-radius:9px;padding:6px 10px;font-size:12px;font-weight:650}
+.ansb:hover{background:#fbe2d0}
+.ansb.ib{padding:4px 7px}
+.ans-ov{position:fixed;inset:0;z-index:200;background:rgba(41,28,18,.45);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.ans-ov.on{display:flex}
+.ans-box{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh-2);width:min(720px,100%);padding:18px 20px}
+.ans-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px}
+.ans-co{font-weight:750;font-size:16px;color:var(--ink)}.ans-ro{color:var(--muted);font-size:12.5px}
+.ans-x{border:none;background:#efe5d8;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:14px}
+.ans-tip{font-size:12px;color:var(--muted);margin:4px 0 12px}
+.ans-q{border:1px solid var(--line2);border-radius:12px;padding:10px 12px;margin-bottom:10px;background:#fbf7f1;position:relative}
+.ans-qt{font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:5px;padding-right:80px}
+.ans-a{font-size:13px;line-height:1.55;color:var(--ink)}
+.ans-c{position:absolute;top:8px;right:8px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:3px 8px;font-size:11.5px;cursor:pointer}
+.t-ppl0{opacity:.75}.t-plist .t-nop{flex-wrap:wrap;gap:6px}
+.ansb.ib{padding:6px 10px;white-space:nowrap;height:36px}
+.jt col.w-ppl{width:96px!important}
+.pp-box{width:min(520px,100%)}
+.pp-box .t-plist{width:100%!important;margin-top:6px;gap:6px}
+.pp-box .tp{padding:8px 10px;border:1px solid var(--line2);border-radius:10px;background:#fbf7f1}
+.pp-box .tp-r{white-space:normal}
+.t-acts{gap:10px!important}
+.ansb.ib{padding:7px 14px!important;height:36px;border-radius:10px;font-size:12.5px}
+.jt col.w-act{width:200px!important}
+.ansb.ans-t{display:inline-flex;align-items:center;gap:5px;width:auto;min-width:0;height:36px;padding:0 14px;border-radius:10px;font-size:13px;font-weight:650;white-space:nowrap;line-height:1}
+.pp-ov{align-items:center!important}.ans-ov{z-index:1000!important}#ansModal{align-items:center}#ansModal .ans-box{max-height:85vh;overflow:auto}
 .a-opt,.a-link,.dlcv{white-space:nowrap}
 .empty-hint{margin:40px auto;max-width:560px;text-align:center;color:var(--muted);line-height:1.6}
 </style>
@@ -628,9 +655,9 @@ header{background:var(--surface);border-bottom:1px solid var(--line)}
 
 <script>
 // ── Injected by scripts/build.py: PROFILE, DEFAULT_CV_JSON, DATA, DATA_VERSION ──
-var PROFILE = {"name": "Alex Morgan", "tracker_title": "Alex's Job Tracker", "tagline": "Backend · Platform · AI Engineer — Berlin, Amsterdam, Dublin & remote EU", "storage_prefix": "alex", "role_tracks": [{"id": "Backend", "label": "Backend", "emoji": "⚙️", "titles": ["Backend Engineer", "Software Engineer Backend", "Python Developer", "Go Engineer"]}, {"id": "Platform", "label": "Platform / Infra", "emoji": "🏗️", "titles": ["Platform Engineer", "Site Reliability Engineer", "Infrastructure Engineer"]}, {"id": "AI Engineer", "label": "AI Engineer", "emoji": "🤖", "titles": ["AI Engineer", "LLM Engineer", "Applied AI Engineer"]}], "locations": [{"id": "Berlin", "label": "Berlin", "emoji": "🇩🇪", "country": "DE", "places": ["Berlin"], "subtitle": "Berlin, on-site or hybrid", "needs_visa_sponsorship": true}, {"id": "Netherlands", "label": "Netherlands", "emoji": "🇳🇱", "country": "NL", "places": ["Amsterdam", "Rotterdam", "Utrecht", "Eindhoven", "The Hague"], "subtitle": "Amsterdam · Rotterdam · Utrecht · Eindhoven", "needs_visa_sponsorship": true}, {"id": "Dublin", "label": "Dublin", "emoji": "🇮🇪", "country": "IE", "places": ["Dublin"], "needs_visa_sponsorship": true}, {"id": "Remote EU", "label": "Remote (EU)", "emoji": "🌍", "country": "EU", "places": ["Remote - Europe", "Remote - EMEA"], "subtitle": "Fully remote, hiring in your timezone", "needs_visa_sponsorship": false}], "fit": {"high": "Python or Go backend services, distributed systems, or LLM/RAG features are the core of the role", "medium": "General software engineering where backend is a meaningful part", "avoid_keywords": ["security clearance", "unpaid", "commission only"], "avoid_companies": [], "prefer": ["fintech", "developer tools", "climate"]}, "cv": {"base_cv_date": "2026-11-01", "allowed_titles": ["Backend Engineer", "Software Engineer", "Platform Engineer", "Senior Software Engineer", "AI Engineer"], "links": [], "one_page": true, "confirmed_extras": [], "ask_before_claiming": ["Rust", "Azure"], "conditional_bullets": []}, "outreach": {"message": "Hi{NAME}, hope you're well!\n\nI just applied for the {ROLE} role at {COMPANY}. I've spent 5 years building backend systems in Python and Go, most recently payments infrastructure at Acme.\n\nI'd need visa sponsorship, and I'm happy to relocate. You can see my work at github.com/alexmorgan.\n\nWould love to chat if you think there's a fit!\n\nBest,\nAlex", "note": "Hi{NAME}, I just applied for the {ROLE} role at {COMPANY}. 5 years building Python/Go backends, most recently payments at Acme. Open to relocating. Would love to connect if you think there is a fit! github.com/alexmorgan", "note_shorten": [[" Would love to connect if you think there is a fit!", " Would love to connect!"], [" Open to relocating.", ""]]}, "features": {"optimize_button": true}, "tailored_cv_folder": "Tailored CVs"};
+var PROFILE = {"name": "Alex Morgan", "tracker_title": "Alex's Job Tracker", "tagline": "Backend · Platform · AI Engineer — Berlin, Amsterdam, Dublin & remote EU", "storage_prefix": "alex", "role_tracks": [{"id": "Backend", "label": "Backend", "emoji": "⚙️", "titles": ["Backend Engineer", "Software Engineer Backend", "Python Developer", "Go Engineer"]}, {"id": "Platform", "label": "Platform / Infra", "emoji": "🏗️", "titles": ["Platform Engineer", "Site Reliability Engineer", "Infrastructure Engineer"]}, {"id": "AI Engineer", "label": "AI Engineer", "emoji": "🤖", "titles": ["AI Engineer", "LLM Engineer", "Applied AI Engineer"]}], "locations": [{"id": "Berlin", "label": "Berlin", "emoji": "🇩🇪", "country": "DE", "places": ["Berlin"], "subtitle": "Berlin, on-site or hybrid", "needs_visa_sponsorship": true}, {"id": "Netherlands", "label": "Netherlands", "emoji": "🇳🇱", "country": "NL", "places": ["Amsterdam", "Rotterdam", "Utrecht", "Eindhoven", "The Hague"], "subtitle": "Amsterdam · Rotterdam · Utrecht · Eindhoven", "needs_visa_sponsorship": true}, {"id": "Dublin", "label": "Dublin", "emoji": "🇮🇪", "country": "IE", "places": ["Dublin"], "needs_visa_sponsorship": true}, {"id": "Remote EU", "label": "Remote (EU)", "emoji": "🌍", "country": "EU", "places": ["Remote - Europe", "Remote - EMEA"], "subtitle": "Fully remote, hiring in your timezone", "needs_visa_sponsorship": false}], "fit": {"high": "Python or Go backend services, distributed systems, or LLM/RAG features are the core of the role", "medium": "General software engineering where backend is a meaningful part", "avoid_keywords": ["security clearance", "unpaid", "commission only"], "avoid_companies": [], "prefer": ["fintech", "developer tools", "climate"]}, "cv": {"base_cv_date": "2026-11-01", "allowed_titles": ["Backend Engineer", "Software Engineer", "Platform Engineer", "Senior Software Engineer", "AI Engineer"], "links": [], "one_page": true, "confirmed_extras": [], "ask_before_claiming": ["Rust", "Azure"], "conditional_bullets": []}, "outreach": {"message": "Hi{NAME}, hope you're well!\n\nI just applied for the {ROLE} role at {COMPANY}. I've spent 5 years building backend systems in Python and Go, most recently payments infrastructure at Acme.\n\nI'd need visa sponsorship, and I'm happy to relocate. You can see my work at github.com/alexmorgan.\n\nWould love to chat if you think there's a fit!\n\nBest,\nAlex", "note": "Hi{NAME}, I just applied for the {ROLE} role at {COMPANY}. 5 years building Python/Go backends, most recently payments at Acme. Open to relocating. Would love to connect if you think there is a fit! github.com/alexmorgan", "note_shorten": [[" Would love to connect if you think there is a fit!", " Would love to connect!"], [" Open to relocating.", ""]]}, "features": {"optimize_button": true, "pdf_button": false, "how_it_works": false}, "tailored_cv_folder": "Tailored CVs"};
 var DEFAULT_CV_JSON = {"name": "ALEX MORGAN", "title": "Backend Engineer", "contact": ["Lisbon, Portugal", "alex@example.com", "linkedin.com/in/alex-morgan-example", "github.com/alexmorgan-example"], "rightToWork": "Will need visa sponsorship for DE, NL and IE; open to relocate", "profile": "Backend engineer with five years' experience building payment APIs, event-driven services and the data infrastructure beneath them. Most recently led the move of a card-payments ledger to Go microservices.", "skills": [[{"label": "Backend", "items": ["Go", "Python", "FastAPI", "gRPC", "REST APIs", "OAuth2"]}], [{"label": "Data & Messaging", "items": ["PostgreSQL", "Redis", "Kafka", "BigQuery"]}], [{"label": "Infrastructure", "items": ["Docker", "Kubernetes", "Terraform", "AWS", "CI/CD"]}], [{"label": "AI", "items": ["RAG", "Embeddings", "OpenAI API"]}]], "experience": [{"role": "Backend Engineer", "company": "Northwind Pay", "location": "Lisbon, Portugal", "dates": "Mar 2023 – Present", "tagline": "Card-issuing platform for European fintechs", "bullets": ["Led the migration of the card ledger from a Python monolith to **Go microservices**, handling **3M+ transactions a day** at **p99 under 120 ms**.", "Built an event-driven reconciliation pipeline on **Kafka** that cut manual finance checks by **70%**.", "Added a **RAG** assistant over internal runbooks that answers on-call questions in seconds."]}, {"role": "Software Engineer", "company": "Contoso Logistics", "location": "Porto, Portugal", "dates": "Jul 2021 – Feb 2023", "tagline": "", "bullets": ["Designed shipment-tracking APIs in **FastAPI** and PostgreSQL serving **40+ partner integrations**.", "Moved deployments to **Kubernetes** with Terraform, cutting release time from **2 hours to 10 minutes**."]}], "projects": [{"name": "pgqueue", "sub": "Open-source Go job queue on Postgres", "dates": "2024", "bullets": ["Lightweight job queue using SKIP LOCKED; **600+ GitHub stars**."]}], "education": [{"degree": "BSc Computer Science", "school": "University of Porto", "location": "Porto, Portugal", "dates": "2017 – 2021"}]};
-var DATA = {"jobs": [{"location": "Berlin", "track": "Backend", "company": "Example Fintech GmbH", "role": "Senior Backend Engineer (Go)", "place": "Berlin (hybrid)", "salary": "€75k–€90k", "salary_num": 90, "skills": ["Go", "PostgreSQL", "Kafka", "Payments"], "url": "https://example.com/careers/senior-backend-engineer-go", "source": "Company careers page", "fit": "High", "direct": true, "note": "Payments ledger team; Go + Kafka matches your last role", "visa": {"status": "sponsors", "evidence": "Posting: \"We sponsor EU Blue Card applications and help with relocation.\""}, "people": [{"name": "Sam Example", "title": "Engineering Manager, Payments", "url": "https://www.linkedin.com/in/sam-example", "tag": "Hiring manager"}], "posted": "2026-11-15"}, {"location": "Netherlands", "track": "AI Engineer", "company": "Example Analytics BV", "role": "AI Engineer", "place": "Amsterdam", "salary": "Not listed", "salary_num": 0, "skills": ["Python", "RAG", "LLM evals"], "url": "https://example.com/jobs/ai-engineer-amsterdam", "source": "LinkedIn", "fit": "Medium", "direct": true, "note": "RAG product team; asks for 3+ years", "visa": {"status": "sponsors", "evidence": "On the IND public register of recognised sponsors"}, "people": [], "posted": "2026-11-12"}, {"location": "Remote EU", "track": "Platform", "company": "Example Cloud", "role": "Platform Engineer", "place": "Remote (Europe)", "salary": "€70k–€85k", "salary_num": 85, "skills": ["Kubernetes", "Terraform", "AWS"], "url": "https://example.com/jobs/platform-engineer-remote", "source": "Ashby (company ATS)", "fit": "High", "direct": true, "note": "Remote-first; hires through an employer of record", "visa": {"status": "not_needed", "evidence": "Fully remote via EOR"}, "people": [], "posted": "2026-11-17"}], "portals": [["Arbeitnow", "Jobs in Germany with a visa-sponsorship filter", "https://www.arbeitnow.com/", "DE"], ["GermanTechJobs", "Tech roles in Germany with salary ranges", "https://germantechjobs.de/", "DE"], ["Berlin Startup Jobs", "Berlin startup roles", "https://berlinstartupjobs.com/", "DE"], ["StepStone", "Germany's largest job board", "https://www.stepstone.de/", "DE"], ["Bundesagentur für Arbeit – Jobsuche", "Federal employment agency job search", "https://www.arbeitsagentur.de/jobsuche/", "DE"], ["Relocate.me", "Tech jobs with relocation support", "https://relocate.me/", "DE"], ["IamExpat Jobs", "English-language jobs in the Netherlands", "https://www.iamexpat.nl/career/jobs-netherlands", "NL"], ["Indeed Netherlands", "Dutch edition of Indeed", "https://nl.indeed.com/", "NL"], ["Welcome to the Jungle", "Startup & scale-up roles", "https://app.welcometothejungle.com/", "NL"], ["IrishJobs.ie", "Ireland's largest job board", "https://www.irishjobs.ie/", "IE"], ["Jobs.ie", "Irish general board", "https://www.jobs.ie/", "IE"], ["Indeed Ireland", "Irish edition of Indeed", "https://ie.indeed.com/", "IE"], ["We Work Remotely", "Remote jobs board", "https://weworkremotely.com/", "EU"], ["Remote OK", "Remote jobs board", "https://remoteok.com/", "EU"], ["LinkedIn Jobs", "Set your location and title filters", "https://www.linkedin.com/jobs/", "Global"]]};
+var DATA = {"jobs": [{"location": "Berlin", "track": "Backend", "company": "Example Fintech GmbH", "role": "Senior Backend Engineer (Go)", "place": "Berlin (hybrid)", "salary": "€75k–€90k", "salary_num": 90, "skills": ["Go", "PostgreSQL", "Kafka", "Payments"], "url": "https://example.com/careers/senior-backend-engineer-go", "source": "Company careers page", "fit": "High", "direct": true, "note": "Payments ledger team; Go + Kafka matches your last role", "visa": {"status": "sponsors", "evidence": "Posting: \"We sponsor EU Blue Card applications and help with relocation.\""}, "people": [{"name": "Sam Example", "title": "Engineering Manager, Payments", "url": "https://www.linkedin.com/in/sam-example", "tag": "Hiring manager"}], "posted": "2026-11-15", "answers": [{"q": "Why do you want to work here?", "a": "Example Fintech is rebuilding card payments for European fintechs on a modern ledger, which is exactly the problem I've spent the last two years on at Northwind Pay. I like that the payments team owns its services end to end, and Berlin is where I want to be next."}, {"q": "Why this role / why are you a good fit?", "a": "This role is about scaling a Go ledger without losing money in the cracks. At Northwind Pay I led the move from a Python monolith to Go microservices handling 3M+ transactions a day at p99 under 120 ms, and built Kafka reconciliation that cut manual finance checks by 70%. I haven't used CockroachDB yet, but I know Postgres well and would pick it up quickly."}, {"q": "Will you need visa sponsorship?", "a": "Yes, for an EU Blue Card in Germany."}, {"q": "Notice period", "a": "1 month"}, {"q": "Salary expectation", "a": "[your expectation]"}]}, {"location": "Netherlands", "track": "AI Engineer", "company": "Example Analytics BV", "role": "AI Engineer", "place": "Amsterdam", "salary": "Not listed", "salary_num": 0, "skills": ["Python", "RAG", "LLM evals"], "url": "https://example.com/jobs/ai-engineer-amsterdam", "source": "LinkedIn", "fit": "Medium", "direct": true, "note": "RAG product team; asks for 3+ years", "visa": {"status": "sponsors", "evidence": "On the IND public register of recognised sponsors"}, "people": [], "posted": "2026-11-12"}, {"location": "Remote EU", "track": "Platform", "company": "Example Cloud", "role": "Platform Engineer", "place": "Remote (Europe)", "salary": "€70k–€85k", "salary_num": 85, "skills": ["Kubernetes", "Terraform", "AWS"], "url": "https://example.com/jobs/platform-engineer-remote", "source": "Ashby (company ATS)", "fit": "High", "direct": true, "note": "Remote-first; hires through an employer of record", "visa": {"status": "not_needed", "evidence": "Fully remote via EOR"}, "people": [], "posted": "2026-11-17"}], "portals": [["Arbeitnow", "Jobs in Germany with a visa-sponsorship filter", "https://www.arbeitnow.com/", "DE"], ["GermanTechJobs", "Tech roles in Germany with salary ranges", "https://germantechjobs.de/", "DE"], ["Berlin Startup Jobs", "Berlin startup roles", "https://berlinstartupjobs.com/", "DE"], ["StepStone", "Germany's largest job board", "https://www.stepstone.de/", "DE"], ["Bundesagentur für Arbeit – Jobsuche", "Federal employment agency job search", "https://www.arbeitsagentur.de/jobsuche/", "DE"], ["Relocate.me", "Tech jobs with relocation support", "https://relocate.me/", "DE"], ["IamExpat Jobs", "English-language jobs in the Netherlands", "https://www.iamexpat.nl/career/jobs-netherlands", "NL"], ["Indeed Netherlands", "Dutch edition of Indeed", "https://nl.indeed.com/", "NL"], ["Welcome to the Jungle", "Startup & scale-up roles", "https://app.welcometothejungle.com/", "NL"], ["IrishJobs.ie", "Ireland's largest job board", "https://www.irishjobs.ie/", "IE"], ["Jobs.ie", "Irish general board", "https://www.jobs.ie/", "IE"], ["Indeed Ireland", "Irish edition of Indeed", "https://ie.indeed.com/", "IE"], ["We Work Remotely", "Remote jobs board", "https://weworkremotely.com/", "EU"], ["Remote OK", "Remote jobs board", "https://remoteok.com/", "EU"], ["LinkedIn Jobs", "Set your location and title filters", "https://www.linkedin.com/jobs/", "Global"]]};
 var DATA_VERSION = "2026-11-19";
 
 
@@ -697,6 +724,7 @@ var HOME_BADGES = {}; P.locations.forEach(function(l){ if(l.country) HOME_BADGES
   document.getElementById('lgLoc').innerHTML = P.locations.map(function(l, k){ return '<span><i class="dot-l' + k + '"></i>' + e(l.label || l.id) + ' <b id="lgL' + k + '">0</b></span>'; }).join('');
   document.getElementById('lgCat').innerHTML = P.role_tracks.map(function(t, k){ return '<span><i class="dot-t' + k + '"></i>' + e(t.label || t.id) + ' <b id="lgT' + k + '">0</b></span>'; }).join('');
 
+  if(P.features.how_it_works !== true){ var tp = document.querySelector('details.tip'); if(tp) tp.style.display = 'none'; }
   var fit = P.fit || {};
   document.getElementById('tipText').innerHTML =
     '<b>Fit</b> is rated against your CV: ⭐ High = ' + e(fit.high || 'the core of the role matches your strongest experience') + '. Medium = ' + e(fit.medium || 'a reasonable match with some gaps') + '. ' +
@@ -802,11 +830,12 @@ function fromRow(r){
   if(Array.isArray(r)){
     return {sec:r[0], cat:r[1], co:r[2], role:r[3], loc:r[4], sal:r[5], salN:r[6] || 0, skills:r[7] || [], url:r[8],
             src:r[9], fit:r[10], direct:!!r[11], note:r[12] || '', id:r[13] || makeId(r[2], r[3]), people:r[14] || [], cvPdf:r[15] || '',
-            visa:r[16] || null};
+            answers:r[16] || [], visa:r[17] || null};
   }
   return {sec:r.location, cat:r.track, co:r.company, role:r.role, loc:r.place || '', sal:r.salary || 'Not listed', salN:r.salary_num || 0,
           skills:r.skills || [], url:r.url, src:r.source || '', fit:r.fit || 'Medium', direct:r.direct !== false, note:r.note || '',
-          id:r.id || makeId(r.company, r.role), people:(r.people || []).map(personRow), cvPdf:r.cv_pdf || '', visa:r.visa || null};
+          id:r.id || makeId(r.company, r.role), people:(r.people || []).map(personRow), cvPdf:r.cv_pdf || '', visa:r.visa || null,
+          answers:(r.answers || []).map(function(a){ return Array.isArray(a) ? a : [a.q || a.question || '', a.a || a.answer || '']; })};
 }
 function rowId(r){ return Array.isArray(r) ? (r[13] || makeId(r[2], r[3])) : (r.id || makeId(r.company, r.role)); }
 
@@ -1599,6 +1628,29 @@ document.addEventListener('click', function(ev){
   var j = JOBS[+b.getAttribute('data-cvpdf')];
   copyText(TCV_DIR + '/' + j.cvPdf.split('/')[0], 'Folder path');
 }, true);
+// ── Application answers (drafted by Claude for each job; shown while the job is still To apply) ──
+function ansBtn(j, cls, short){
+  if(!j.answers || !j.answers.length || getStatus(j) !== 'To apply') return '';
+  return '<button class="ansb ' + (cls || '') + '" data-ans="' + j.i + '" title="Pre-written answers to this job\'s application questions">📝' + (short ? '' : ' Answers') + '</button>';
+}
+var ANS_CUR = [];
+function showAnswers(i){
+  var j = JOBS[i]; if(!j) return;
+  var m = document.getElementById('ansModal');
+  if(!m){ m = document.createElement('div'); m.id = 'ansModal'; m.className = 'ans-ov'; document.body.appendChild(m);
+    m.addEventListener('click', function(ev){
+      if(ev.target === m || ev.target.closest('.ans-x')){ m.classList.remove('on'); return; }
+      var c = ev.target.closest('[data-acopy]'); if(c){ copyText(ANS_CUR[+c.getAttribute('data-acopy')][1], 'Answer'); }
+    });
+  }
+  ANS_CUR = j.answers;
+  m.innerHTML = '<div class="ans-box"><div class="ans-h"><div><div class="ans-co">' + esc(j.co) + '</div><div class="ans-ro">' + esc(j.role) + '</div></div><button class="ans-x" title="Close">✕</button></div>' +
+    '<p class="ans-tip">Draft answers to this job\'s application questions. Anything in [brackets] needs your input. Read each one before pasting.</p>' +
+    j.answers.map(function(a, n){ return '<div class="ans-q"><div class="ans-qt">' + esc(a[0]) + '</div><div class="ans-a">' + esc(a[1]).replace(/\n/g, '<br>') + '</div><button class="ans-c" data-acopy="' + n + '">📋 Copy</button></div>'; }).join('') + '</div>';
+  m.classList.add('on');
+}
+document.addEventListener('click', function(ev){ var b = ev.target.closest && ev.target.closest('[data-ans]'); if(!b) return; ev.preventDefault(); ev.stopPropagation(); showAnswers(+b.getAttribute('data-ans')); }, true);
+var PDF_BTN = P.features.pdf_button === true;
 function isLinkedIn(j){ return /linkedin/i.test(j.src || '') || /linkedin\.com\/jobs/i.test(j.url || ''); }
 function logoHue(s){ var x = 0; s = String(s); for(var i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) % 360; return x; }
 function card(j){
@@ -1651,7 +1703,7 @@ function card(j){
       '</div>' +
       '<div class="c-btns">' +
         (people.length ? '' : addBtn(j, 'big') + msgdBox(j, '', 'big') + '<button class="a-msg" data-msg="" title="Copy an outreach message">📋 Copy message</button>' + noteBtn(j, '', 'a-msg')) +
-        cvPdfBtn(j, 'a-opt') + (P.features.optimize_button ? '<button class="a-opt" data-opt="' + j.i + '">' + optLabel(j) + '</button>' + dlCvBtn(j, 'a-opt') : '') +
+        (PDF_BTN ? cvPdfBtn(j, 'a-opt') : '') + ansBtn(j, 'a-opt') + (P.features.optimize_button ? '<button class="a-opt" data-opt="' + j.i + '">' + optLabel(j) + '</button>' + dlCvBtn(j, 'a-opt') : '') +
         '<button class="a-link ' + (j.direct ? 'a-green' : 'a-ind') + '" data-url="' + esc(j.url) + '" title="' + esc(src ? 'via ' + src : '') + '">' + (j.direct ? 'Apply' : 'Open page') + ' <span class="arr">↗</span></button>' +
       '</div>' +
     '</div>';
@@ -1720,15 +1772,27 @@ function tableHtml(list){
             '<div class="tp-n"><a href="#"' + (p[2] ? ' data-li="' + esc(p[2]) + '"' : '') + '>' + esc(p[0]) + '</a><span class="ptag pt-' + key + '">' + esc(p[3]) + '</span></div>' +
             '<div class="tp-r" title="' + esc(p[1]) + '">' + esc(p[1]) + '</div></div>' +
             '<div class="tp-acts"><button class="tp-copy" data-msg="' + esc(p[0]) + '" title="Copy a message to ' + esc(p[0]) + '">📋</button>' + noteBtn(j, p[0], 'tp-copy tn') + emailBtn(p, 'tp-copy tn', true) + msgdBox(j, p[0], 'mini') + delBtn(j, p) + '</div></div>'; }).join('') +
-        addBtn(j, 'in-list') + '</div>' : '<div class="t-nop"><button class="tp-copy" data-msg="" title="Copy a general outreach message">📋</button>' + noteBtn(j, '', 'tp-copy tn') + msgdBox(j, '', 'mini') + addBtn(j, 'mini') + '</div>') + '</td>' +
+        addBtn(j, 'in-list') + '</div>' : '<button class="t-ppl t-ppl0" data-pp="' + j.i + '" title="No contacts yet: message, note or add a person">👥 0 <span class="chev">▾</span></button>' +
+        '<div class="t-plist hidden" data-plist="' + j.i + '"><div class="t-nop"><button class="tp-copy" data-msg="" title="Copy a general outreach message">📋</button>' + noteBtn(j, '', 'tp-copy tn') + msgdBox(j, '', 'mini') + addBtn(j, 'mini') + '</div></div>') + '</td>' +
       '<td class="t-date">' + (j.firstSeen ? esc(fmtDate(j.firstSeen)) : '') + '</td>' +
       '<td><select class="st" data-st="' + j.i + '">' + opts.map(function(s){ return '<option' + (s === st ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></td>' +
       '<td class="r"><div class="t-acts">' +
-        cvPdfBtn(j, 'ib', true) + (P.features.optimize_button ? '<button class="ib" data-opt="' + j.i + '" title="' + esc(optLabel(j)) + '">' + (TAILORED[j.id] ? '📄' : '✨') + '</button>' + dlCvBtn(j, 'ib', true) : '') +
+        (PDF_BTN ? cvPdfBtn(j, 'ib', true) : '') + ansBtn(j, 'ans-t') + (P.features.optimize_button ? '<button class="ib" data-opt="' + j.i + '" title="' + esc(optLabel(j)) + '">' + (TAILORED[j.id] ? '📄' : '✨') + '</button>' + dlCvBtn(j, 'ib', true) : '') +
         '<button class="a-link sm" data-url="' + esc(j.url) + '">' + (j.direct ? 'Apply' : 'Open') + ' ↗</button>' +
       '</div></td></tr>';
   });
   return h + '</tbody></table></div>';
+}
+function openPeople(w, list, btn, j){
+  var home = list.parentNode, next = list.nextSibling;
+  var ov = document.createElement('div'); ov.className = 'ans-ov on pp-ov'; ov.setAttribute('data-pprow', j.i);
+  ov.innerHTML = '<div class="ans-box pp-box"><div class="ans-h"><div><div class="ans-co">' + esc(j.co) + '</div><div class="ans-ro">' + esc(j.role) + '</div></div><button class="ans-x" title="Close">✕</button></div></div>';
+  var box = ov.querySelector('.pp-box'); list.classList.remove('hidden'); box.appendChild(list);
+  function close(){ list.classList.add('hidden'); home.insertBefore(list, next); ov.remove(); document.removeEventListener('keydown', esc1); }
+  function esc1(e){ if(e.key === 'Escape') close(); }
+  ov.addEventListener('click', function(ev){ if(ev.target === ov || ev.target.closest('.ans-x')){ ev.stopPropagation(); close(); } });
+  document.addEventListener('keydown', esc1);
+  w.appendChild(ov);
 }
 function wireTable(w){
   w.querySelectorAll('select.st').forEach(function(sel){ styleSel(sel); sel.addEventListener('change', function(){ setStatus(+sel.getAttribute('data-st'), sel.value, sel); }); });
@@ -1738,7 +1802,7 @@ function wireTable(w){
     var t = ev.target.closest('[data-url],[data-li],[data-msg],[data-opt],[data-pp]'); if(!t) return;
     ev.preventDefault();
     var row = t.closest('[data-row],[data-pprow]'), i = row ? +(row.getAttribute('data-row') || row.getAttribute('data-pprow')) : -1, j = JOBS[i];
-    if(t.hasAttribute('data-pp')){ var r = w.querySelector('[data-plist="' + t.getAttribute('data-pp') + '"]'); if(r){ r.classList.toggle('hidden'); t.classList.toggle('open', !r.classList.contains('hidden')); } return; }
+    if(t.hasAttribute('data-pp')){ var r = w.querySelector('[data-plist="' + t.getAttribute('data-pp') + '"]'); if(r) openPeople(w, r, t, j); return; }
     if(t.hasAttribute('data-url')) return openUrl(t.getAttribute('data-url'), j);
     if(t.hasAttribute('data-li')){ var pp = (j.people || []).filter(function(p){ return p[2] === t.getAttribute('data-li'); })[0]; return openUrl(t.getAttribute('data-li'), j, pp ? pp[0] : ''); }
     if(t.hasAttribute('data-msg')){ var n = t.getAttribute('data-msg'); return copyText(outreach(j, n), n ? 'Message to ' + n.split(' ')[0] : 'Message'); }

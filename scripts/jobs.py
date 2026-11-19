@@ -29,7 +29,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import load_json, load_profile, make_id, me_path, save_json, today, url_key  # noqa: E402
 
 FIELDS = ["id", "location", "track", "company", "role", "place", "experience", "salary", "salary_num", "skills", "url", "source",
-          "fit", "direct", "note", "visa", "people", "cv_pdf", "posted", "added"]
+          "fit", "direct", "note", "visa", "people", "answers", "cv_pdf", "posted", "added"]
 VISA = {"sponsors", "not_needed", "unclear", "no"}
 
 
@@ -62,6 +62,10 @@ def validate(job, profile, allow_unclear=False):
             errs.append("visa.evidence is required (quote the posting, or name the register)")
         elif st == "unclear" and not allow_unclear:
             errs.append("visa sponsorship unclear for a location that needs it (use --allow-unclear to keep it flagged)")
+    for a in job.get("answers") or []:
+        if not isinstance(a, dict) or not a.get("q") or not a.get("a"):
+            errs.append('each answer must be {"q": question, "a": answer}')
+            break
     for p in job.get("people") or []:
         if not isinstance(p, dict) or not p.get("name"):
             errs.append("each person needs at least a name")

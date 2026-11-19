@@ -5,7 +5,9 @@
 
 Handles LinkedIn (public guest endpoint), Ashby, Greenhouse, Lever and Workable
 links through their public APIs. Prints JSON: title, company, location,
-salary (if published), description. For any other site it exits with a
+salary (if published), description — and, for Greenhouse, the application
+form's custom questions. For other boards, read the questions from the apply
+page (web fetch or browser). For any other site it exits with a
 message — use web fetch or a browser instead.
 """
 import html
@@ -74,12 +76,15 @@ def greenhouse(url):
     if not m:
         return None
     board, jid = m.groups()
-    s = get(f"https://boards-api.greenhouse.io/v1/boards/{board}/jobs/{jid}")
+    s = get(f"https://boards-api.greenhouse.io/v1/boards/{board}/jobs/{jid}?questions=true")
     if not s:
         sys.exit("Greenhouse didn't return the job — it may be closed.")
     j = json.loads(s)
     return dict(url=url, source="Greenhouse (company ATS)", title=j.get("title"), company=board,
-                location=(j.get("location") or {}).get("name"), salary="", description=text(html.unescape(j.get("content") or "")))
+                location=(j.get("location") or {}).get("name"), salary="", description=text(html.unescape(j.get("content") or "")),
+                questions=[{"q": x.get("label"), "required": x.get("required"),
+                            "type": ((x.get("fields") or [{}])[0]).get("type")} for x in j.get("questions") or []
+                           if x.get("label") and not re.match(r"(first|last) name|email|phone|resume|cv|cover letter$", x.get("label", ""), re.I)])
 
 
 def lever(url):

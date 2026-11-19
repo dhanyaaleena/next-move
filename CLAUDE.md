@@ -14,7 +14,7 @@ session, then read the user's `me/profile.yaml` and `me/notes.md` before doing a
 | `me/notes.md` | Running notes: interviews in progress, recruiter replies, open questions, last pull summary. Keep it short and current. |
 | `me/output/*.html` (or `profile.output_file`) | The tracker page. Rebuilt by `scripts/build.py`. |
 | `countries/<CODE>.yaml` | Per-country visa route, official sponsor register, job boards. |
-| `template/tracker.html` | Shared page template. Don't put user data in it. |
+| `template/tracker.html` | Shared page template. Don't put user data in it. Design notes: `docs/tracker-design.md`. |
 
 If `me/` doesn't exist, the user hasn't been set up — use the **job-tracker-setup** skill.
 
@@ -24,6 +24,7 @@ If `me/` doesn't exist, the user hasn't been set up — use the **job-tracker-se
 - **job-tracker-refresh** — "pull latest jobs" / "refresh my tracker": search, verify, add, contacts, tailored CVs, rebuild, report.
 - **job-tracker-add** — the user shares one job link to log.
 - **job-tracker-tailor-cv** — make or redo a one-page tailored CV for a job.
+- **job-tracker-answers** — draft and check answers to a job's application-form questions (shown under 📝 Answers).
 
 If your environment doesn't load skills automatically, open the matching `SKILL.md` and follow it.
 
@@ -37,6 +38,7 @@ python scripts/search_jobs.py                         # candidates -> me/candida
 python scripts/fetch_posting.py <url>                 # full posting text (LinkedIn/Ashby/Greenhouse/Lever/Workable)
 python scripts/check_sponsor.py <CODE> "Company"      # official sponsor register (UK automated)
 python scripts/tailor_cv.py --id <job id> --cv f.json # check + fit one page + save PDF
+python scripts/answers.py set|check|audit|missing    # application answers (quality + truth checks)
 python scripts/sync_xlsx.py                           # Excel copy (Jobs + People + Portals)
 python tests/test_scripts.py                          # offline tests
 ```
@@ -48,7 +50,7 @@ python tests/test_scripts.py                          # offline tests
 3. **Never delete or reset the user's work.** Don't remove jobs from `jobs.json`, don't regenerate their Excel file, don't change `storage_prefix` or job IDs (the browser keys statuses on them). Ask before deleting any file.
 4. **Never act as the user.** Don't apply, message, connect, or submit anything. Don't type passwords — the user signs in themselves. Contacts are names + public profile links only.
 5. **Follow `profile.rules` and `profile.writing`** for anything written in the user's name.
-6. **Ask before claiming** anything in `profile.cv.ask_before_claiming`, and don't use skills or numbers that aren't in `cv.json` / `confirmed_extras` (`tailor_cv.py` enforces this — don't work around it).
+6. **Ask before claiming** anything in `profile.cv.ask_before_claiming`, and don't use skills or numbers that aren't in `cv.json` / `confirmed_extras` / `application_facts`, in CVs or in application answers (`tailor_cv.py` and `answers.py` enforce this — don't work around them).
 
 ## Network
 

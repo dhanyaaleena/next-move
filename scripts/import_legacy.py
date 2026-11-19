@@ -6,13 +6,15 @@
 
 Old row format:
   [section, category, company, role, location, salary text, salary number, skills[],
-   url, source, fit, direct, note, id, people[], cv path]
+   url, source, fit, direct, note, id, people[], cv path, answers[]]
+  answer: [question, answer]
   person: [name, title, linkedin, tag, email?, email confidence?]
 
 Section and category become the job's location and track, so make sure
 profile.yaml has location groups / role tracks with those exact ids.
 IDs are kept as they are, so statuses saved in the browser still line up.
-Jobs already in jobs.json (same id) are skipped.
+Jobs already in jobs.json (same id) are skipped; add --update to copy their
+answers / people / cv path / note across from the old file.
 """
 import json
 import os
@@ -36,7 +38,7 @@ def read(path):
 
 
 def convert(r):
-    r = list(r) + [None] * (17 - len(r))
+    r = list(r) + [None] * (18 - len(r))
     people = []
     for p in r[14] or []:
         p = list(p) + [None] * (6 - len(p))
@@ -47,7 +49,9 @@ def convert(r):
     if r[15]:
         j["cv_pdf"] = r[15]
     if r[16]:
-        j["visa"] = r[16]
+        j["answers"] = [{"q": a[0], "a": a[1]} for a in r[16] if isinstance(a, (list, tuple)) and len(a) >= 2]
+    if r[17]:
+        j["visa"] = r[17]
     return j
 
 
@@ -62,9 +66,16 @@ def main():
     cur = load_json(path, default={"version": today(), "jobs": []})
     have = {j["id"] for j in cur["jobs"]}
     n = 0
+    update = "--update" in sys.argv
+    byid = {j["id"]: j for j in cur["jobs"]}
     for r in src.get("jobs", []):
         j = convert(r) if isinstance(r, list) else r
         if j["id"] in have:
+            if update:  # refresh fields from the old tracker (e.g. new answers/people), keep everything else
+                old = byid[j["id"]]
+                for k in ("answers", "people", "cv_pdf", "note"):
+                    if j.get(k) and j[k] != old.get(k):
+                        old[k] = j[k]
             continue
         cur["jobs"].append(j)
         have.add(j["id"])
