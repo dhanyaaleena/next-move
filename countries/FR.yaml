@@ -1,0 +1,37 @@
+# Country pack: France. Facts that change (salary floors, fees) are deliberately NOT written here —
+# Claude looks them up live from the official links. If a link has moved, search for its name.
+code: FR
+name: France
+linkedin_location: France
+visa:
+  route: Talent Passport (Passeport Talent) or EU Blue Card
+  route_url: https://france-visas.gouv.fr/
+  register:
+    name: No sponsor register
+    url: https://france-visas.gouv.fr/
+    how: No licence list — rely on posting wording. Many French tech startups hiring in English state 'visa support'
+      or 'relocation'.
+  salary_rule: Talent Passport and Blue Card have minimum salaries that change; check france-visas.gouv.fr.
+  signals:
+  - visa sponsorship
+  - we sponsor
+  - sponsorship available
+  - relocation support
+  - relocation package
+  - help with your visa
+  - passeport talent
+  - talent passport
+  language_note: Many postings require French; drop those unless the user speaks French.
+boards:
+- name: Welcome to the Jungle
+  desc: France's main startup & tech job board
+  url: https://www.welcometothejungle.com/
+- name: APEC
+  desc: Jobs for managers & engineers
+  url: https://www.apec.fr/
+- name: France Travail
+  desc: National employment agency
+  url: https://candidat.francetravail.fr/
+- name: Indeed France
+  desc: French edition of Indeed
+  url: https://fr.indeed.com/

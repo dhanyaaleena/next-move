@@ -1,0 +1,41 @@
+# Country pack: Netherlands. Facts that change (salary floors, fees) are deliberately NOT written here —
+# Claude looks them up live from the official links. If a link has moved, search for its name.
+code: NL
+name: Netherlands
+linkedin_location: Netherlands
+visa:
+  route: Highly Skilled Migrant permit (employer must be an IND recognised sponsor)
+  route_url: https://ind.nl/en/residence-permits/work/highly-skilled-migrant
+  register:
+    name: IND public register of recognised sponsors
+    url: https://ind.nl/en/public-register-recognised-sponsors
+    how: Only recognised sponsors can hire Highly Skilled Migrants. Search the IND register (labour / highly skilled
+      migrants list) for the company's legal name (often ends in 'B.V.'). If the link has moved, search 'IND public
+      register recognised sponsors'.
+  salary_rule: The HSM permit has age-based minimum salaries indexed every January; check the current figures on
+    ind.nl.
+  signals:
+  - visa sponsorship
+  - we sponsor
+  - sponsorship available
+  - relocation support
+  - relocation package
+  - help with your visa
+  - highly skilled migrant
+  - kennismigrant
+  - 30% ruling
+  - IND
+  language_note: Some postings require Dutch; drop those unless the user speaks Dutch.
+boards:
+- name: IamExpat Jobs
+  desc: English-language jobs in the Netherlands
+  url: https://www.iamexpat.nl/career/jobs-netherlands
+- name: Indeed Netherlands
+  desc: Dutch edition of Indeed
+  url: https://nl.indeed.com/
+- name: Welcome to the Jungle
+  desc: Startup & scale-up roles
+  url: https://app.welcometothejungle.com/
+- name: Relocate.me
+  desc: Tech jobs with relocation support
+  url: https://relocate.me/

@@ -1,0 +1,48 @@
+# Country pack: Germany. Facts that change (salary floors, fees) are deliberately NOT written here —
+# Claude looks them up live from the official links. If a link has moved, search for its name.
+code: DE
+name: Germany
+linkedin_location: Germany
+visa:
+  route: EU Blue Card (or skilled-worker residence permit)
+  route_url: https://www.make-it-in-germany.com/en/visa-residence/types/eu-blue-card
+  register:
+    name: No sponsor register
+    url: https://www.make-it-in-germany.com/en/visa-residence/types/eu-blue-card
+    how: Any German employer can hire you on a Blue Card if salary and qualification rules are met — there is no
+      licence. What matters is whether the company supports relocation/visa and works in English. Rely on posting
+      wording ('visa sponsorship', 'relocation support', 'English-speaking team').
+  salary_rule: The Blue Card has a minimum gross salary (lower for shortage occupations like IT) that changes every
+    year. Check the current figure before judging.
+  signals:
+  - visa sponsorship
+  - we sponsor
+  - sponsorship available
+  - relocation support
+  - relocation package
+  - help with your visa
+  - blue card
+  - relocation
+  - english-speaking team
+  - no german required
+  language_note: Many German postings require German (Deutsch, 'fließend', C1). Drop those unless the user speaks
+    German.
+boards:
+- name: Arbeitnow
+  desc: Jobs in Germany with a visa-sponsorship filter
+  url: https://www.arbeitnow.com/
+- name: GermanTechJobs
+  desc: Tech roles in Germany with salary ranges
+  url: https://germantechjobs.de/
+- name: Berlin Startup Jobs
+  desc: Berlin startup roles
+  url: https://berlinstartupjobs.com/
+- name: StepStone
+  desc: Germany's largest job board
+  url: https://www.stepstone.de/
+- name: Bundesagentur für Arbeit – Jobsuche
+  desc: Federal employment agency job search
+  url: https://www.arbeitsagentur.de/jobsuche/
+- name: Relocate.me
+  desc: Tech jobs with relocation support
+  url: https://relocate.me/

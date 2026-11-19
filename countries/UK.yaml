@@ -1,0 +1,73 @@
+# Country pack: United Kingdom. Facts that change (salary floors, fees) are deliberately NOT written here —
+# Claude looks them up live from the official links. If a link has moved, search for its name.
+code: UK
+name: United Kingdom
+linkedin_location: United Kingdom
+visa:
+  route: Skilled Worker visa (employer must hold a sponsor licence)
+  route_url: https://www.gov.uk/skilled-worker-visa
+  register:
+    name: 'Register of licensed sponsors: workers'
+    url: https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers
+    how: 'Run: python scripts/check_sponsor.py UK "Company name". Licence names are legal names (e.g. ''Acme Technologies
+      Ltd''), so match loosely. Being on the register means the company CAN sponsor, not that this role will — prefer
+      posting wording when it exists.'
+  other_routes:
+  - Global Talent visa (no employer sponsor needed)
+  - Graduate visa
+  - High Potential Individual visa
+  salary_rule: Sponsored roles must meet a minimum salary and the occupation's going rate. Look up the current figures
+    on gov.uk before judging; they change.
+  signals:
+  - visa sponsorship
+  - we sponsor
+  - sponsorship available
+  - relocation support
+  - relocation package
+  - help with your visa
+  - skilled worker visa
+  - certificate of sponsorship
+  - CoS
+boards:
+- name: Welcome to the Jungle (formerly Otta)
+  desc: UK startup & scale-up tech jobs; salary shown on most posts
+  url: https://app.welcometothejungle.com/
+- name: CWJobs
+  desc: UK's largest IT-only job board
+  url: https://www.cwjobs.co.uk/
+- name: Totaljobs
+  desc: Large UK general board with strong tech volume
+  url: https://www.totaljobs.com/
+- name: Reed
+  desc: Large UK board
+  url: https://www.reed.co.uk/
+- name: CV-Library
+  desc: UK board; good for agency-posted roles
+  url: https://www.cv-library.co.uk/
+- name: Technojobs
+  desc: UK tech-only board
+  url: https://www.technojobs.co.uk/
+- name: Jobserve
+  desc: UK IT board, strong for contract roles
+  url: https://www.jobserve.com/gb/en/Job-Search/
+- name: Work in Startups
+  desc: UK startup job board
+  url: https://workinstartups.com/
+- name: cord
+  desc: UK direct-to-hiring-manager tech platform
+  url: https://cord.co/
+- name: Built In London
+  desc: London tech companies & roles
+  url: https://builtinlondon.uk/
+- name: eFinancialCareers UK
+  desc: Finance & fintech tech roles
+  url: https://www.efinancialcareers.co.uk/
+- name: Adzuna UK
+  desc: UK aggregator with salary data
+  url: https://www.adzuna.co.uk/
+- name: Guardian Jobs
+  desc: UK board; media/public-sector
+  url: https://jobs.theguardian.com/
+- name: Indeed UK
+  desc: UK edition of Indeed
+  url: https://uk.indeed.com/

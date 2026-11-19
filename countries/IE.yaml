@@ -1,0 +1,39 @@
+# Country pack: Ireland. Facts that change (salary floors, fees) are deliberately NOT written here —
+# Claude looks them up live from the official links. If a link has moved, search for its name.
+code: IE
+name: Ireland
+linkedin_location: Ireland
+visa:
+  route: Critical Skills Employment Permit (or General Employment Permit)
+  route_url: https://enterprise.gov.ie/en/what-we-do/workplace-and-skills/employment-permits/permit-types/critical-skills-employment-permit/
+  register:
+    name: No public sponsor register
+    url: https://enterprise.gov.ie/en/what-we-do/workplace-and-skills/employment-permits/
+    how: Ireland has no list of licensed sponsors — any Irish employer can apply for a permit. Rely on posting wording.
+      The department publishes yearly lists of companies granted employment permits (search 'employment permits
+      issued to companies <year>' on enterprise.gov.ie) — a strong hint a company sponsors.
+  salary_rule: Permits have salary floors that rise over time; check the current figures on enterprise.gov.ie. Some
+    employers can't sponsor if over half their staff are non-EEA.
+  signals:
+  - visa sponsorship
+  - we sponsor
+  - sponsorship available
+  - relocation support
+  - relocation package
+  - help with your visa
+  - employment permit
+  - critical skills
+  - stamp 1
+boards:
+- name: IrishJobs.ie
+  desc: Ireland's largest job board
+  url: https://www.irishjobs.ie/
+- name: Jobs.ie
+  desc: Irish general board
+  url: https://www.jobs.ie/
+- name: Indeed Ireland
+  desc: Irish edition of Indeed
+  url: https://ie.indeed.com/
+- name: Welcome to the Jungle
+  desc: Startup & scale-up roles
+  url: https://app.welcometothejungle.com/

@@ -1,0 +1,31 @@
+# Country pack: Australia. Facts that change (salary floors, fees) are deliberately NOT written here —
+# Claude looks them up live from the official links. If a link has moved, search for its name.
+code: AU
+name: Australia
+linkedin_location: Australia
+visa:
+  route: Skills in Demand visa (subclass 482), employer-sponsored
+  route_url: https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-482
+  register:
+    name: No public sponsor list
+    url: https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-482
+    how: Employers must be approved sponsors, but there's no public search. Rely on posting wording ('482 sponsorship',
+      'visa sponsorship available'). Many Australian ads say 'must have full working rights' — drop those.
+  salary_rule: The visa has income thresholds indexed every July; check immi.homeaffairs.gov.au.
+  signals:
+  - visa sponsorship
+  - we sponsor
+  - sponsorship available
+  - relocation support
+  - relocation package
+  - help with your visa
+  - '482'
+  - skills in demand
+  - tss
+boards:
+- name: SEEK
+  desc: Australia's largest job board
+  url: https://www.seek.com.au/
+- name: Indeed Australia
+  desc: Australian edition of Indeed
+  url: https://au.indeed.com/

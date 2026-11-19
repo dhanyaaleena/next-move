@@ -1,0 +1,35 @@
+{
+  "name": "ALEX MORGAN",
+  "title": "Backend Engineer",
+  "contact": ["Lisbon, Portugal", "alex@example.com", "linkedin.com/in/alex-morgan-example", "github.com/alexmorgan-example"],
+  "rightToWork": "Will need visa sponsorship for DE, NL and IE; open to relocate",
+  "profile": "Backend engineer with five years' experience building payment APIs, event-driven services and the data infrastructure beneath them. Most recently led the move of a card-payments ledger to Go microservices.",
+  "skills": [
+    [{"label": "Backend", "items": ["Go", "Python", "FastAPI", "gRPC", "REST APIs", "OAuth2"]}],
+    [{"label": "Data & Messaging", "items": ["PostgreSQL", "Redis", "Kafka", "BigQuery"]}],
+    [{"label": "Infrastructure", "items": ["Docker", "Kubernetes", "Terraform", "AWS", "CI/CD"]}],
+    [{"label": "AI", "items": ["RAG", "Embeddings", "OpenAI API"]}]
+  ],
+  "experience": [
+    {"role": "Backend Engineer", "company": "Northwind Pay", "location": "Lisbon, Portugal", "dates": "Mar 2023 – Present",
+     "tagline": "Card-issuing platform for European fintechs",
+     "bullets": [
+       "Led the migration of the card ledger from a Python monolith to **Go microservices**, handling **3M+ transactions a day** at **p99 under 120 ms**.",
+       "Built an event-driven reconciliation pipeline on **Kafka** that cut manual finance checks by **70%**.",
+       "Added a **RAG** assistant over internal runbooks that answers on-call questions in seconds."
+     ]},
+    {"role": "Software Engineer", "company": "Contoso Logistics", "location": "Porto, Portugal", "dates": "Jul 2021 – Feb 2023",
+     "tagline": "",
+     "bullets": [
+       "Designed shipment-tracking APIs in **FastAPI** and PostgreSQL serving **40+ partner integrations**.",
+       "Moved deployments to **Kubernetes** with Terraform, cutting release time from **2 hours to 10 minutes**."
+     ]}
+  ],
+  "projects": [
+    {"name": "pgqueue", "sub": "Open-source Go job queue on Postgres", "dates": "2024",
+     "bullets": ["Lightweight job queue using SKIP LOCKED; **600+ GitHub stars**."]}
+  ],
+  "education": [
+    {"degree": "BSc Computer Science", "school": "University of Porto", "location": "Porto, Portugal", "dates": "2017 – 2021"}
+  ]
+}

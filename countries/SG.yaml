@@ -1,0 +1,30 @@
+# Country pack: Singapore. Facts that change (salary floors, fees) are deliberately NOT written here —
+# Claude looks them up live from the official links. If a link has moved, search for its name.
+code: SG
+name: Singapore
+linkedin_location: Singapore
+visa:
+  route: Employment Pass (points-based COMPASS framework)
+  route_url: https://www.mom.gov.sg/passes-and-permits/employment-pass
+  register:
+    name: No sponsor register
+    url: https://www.mom.gov.sg/passes-and-permits/employment-pass
+    how: Any employer can apply for an EP if salary and COMPASS points qualify. Rely on posting wording; many ads
+      say 'Singaporeans/PR only' — drop those.
+  salary_rule: EP has a minimum qualifying salary that rises with age and periodically; check mom.gov.sg.
+  signals:
+  - visa sponsorship
+  - we sponsor
+  - sponsorship available
+  - relocation support
+  - relocation package
+  - help with your visa
+  - employment pass
+  - EP
+boards:
+- name: MyCareersFuture
+  desc: Singapore government job portal
+  url: https://www.mycareersfuture.gov.sg/
+- name: Indeed Singapore
+  desc: Singapore edition of Indeed
+  url: https://sg.indeed.com/

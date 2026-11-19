@@ -1,0 +1,32 @@
+# Country pack: India. Facts that change (salary floors, fees) are deliberately NOT written here —
+# Claude looks them up live from the official links. If a link has moved, search for its name.
+code: IN
+name: India
+linkedin_location: India
+visa:
+  route: Employment visa (for non-Indian citizens)
+  route_url: https://indianvisaonline.gov.in/
+  register:
+    name: Not applicable for Indian citizens
+    url: https://indianvisaonline.gov.in/
+    how: 'Usually set needs_visa_sponsorship: false.'
+  signals:
+  - visa sponsorship
+  - we sponsor
+  - sponsorship available
+  - relocation support
+  - relocation package
+  - help with your visa
+boards:
+- name: Naukri
+  desc: India's largest job board
+  url: https://www.naukri.com/
+- name: Instahyre
+  desc: Curated tech roles
+  url: https://www.instahyre.com/
+- name: Wellfound
+  desc: Startup roles
+  url: https://wellfound.com/
+- name: Cutshort
+  desc: Tech roles at startups
+  url: https://cutshort.io/

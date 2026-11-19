@@ -1,0 +1,187 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Your job-search profile.  Copy to  me/profile.yaml  (Claude does this for you
+#  during setup). Every refresh reads this file to decide what to pull and how
+#  to rate it, and the tracker page is built from it.
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: "Alex Morgan"
+tracker_title: "Alex's Job Tracker"
+tagline: "Backend · Platform · AI Engineer — Berlin, Amsterdam, Dublin & remote EU"
+
+# Prefix for the data your browser saves (statuses, notes, tailored CVs).
+# Set once and never change it, or the page will forget your statuses.
+storage_prefix: "alex"
+
+experience_years: 5
+seniority: ["mid", "senior"]          # junior | mid | senior | staff | lead
+max_years_asked: 7                    # skip roles that demand more than this
+
+# ── What you want to do ──────────────────────────────────────────────────────
+# Each track is a kind of role. Titles are what Claude searches for.
+# `id` is what jobs are tagged with. Keep ids stable once you have jobs.
+role_tracks:
+  - id: "Backend"
+    label: "Backend"
+    emoji: "⚙️"
+    titles: ["Backend Engineer", "Software Engineer Backend", "Python Developer", "Go Engineer"]
+  - id: "Platform"
+    label: "Platform / Infra"
+    emoji: "🏗️"
+    titles: ["Platform Engineer", "Site Reliability Engineer", "Infrastructure Engineer"]
+  - id: "AI Engineer"
+    label: "AI Engineer"
+    emoji: "🤖"
+    titles: ["AI Engineer", "LLM Engineer", "Applied AI Engineer"]
+
+# ── Where you want to work ───────────────────────────────────────────────────
+# Each location group becomes a section in the tracker, a filter chip, and a
+# search target. `country` is an ISO code — it picks the visa rules and job
+# boards from countries/<CODE>.yaml.
+#
+# needs_visa_sponsorship: true  → only keep jobs whose posting says they sponsor,
+#                                  or whose employer is on that country's official
+#                                  sponsor register. Everything else is dropped.
+#                         false → you already have the right to work there.
+locations:
+  - id: "Berlin"
+    label: "Berlin"
+    emoji: "🇩🇪"
+    country: "DE"
+    places: ["Berlin"]
+    subtitle: "Berlin, on-site or hybrid"
+    needs_visa_sponsorship: true
+  - id: "Netherlands"
+    label: "Netherlands"
+    emoji: "🇳🇱"
+    country: "NL"
+    places: ["Amsterdam", "Rotterdam", "Utrecht", "Eindhoven", "The Hague"]
+    subtitle: "Amsterdam · Rotterdam · Utrecht · Eindhoven"
+    needs_visa_sponsorship: true
+  - id: "Dublin"
+    label: "Dublin"
+    emoji: "🇮🇪"
+    country: "IE"
+    places: ["Dublin"]
+    needs_visa_sponsorship: true
+  - id: "Remote EU"
+    label: "Remote (EU)"
+    emoji: "🌍"
+    country: "EU"
+    places: ["Remote - Europe", "Remote - EMEA"]
+    subtitle: "Fully remote, hiring in your timezone"
+    needs_visa_sponsorship: false     # remote contractor / EOR roles
+
+work_modes: ["onsite", "hybrid", "remote"]
+
+# Languages you can work in. Postings that REQUIRE another language are dropped.
+languages: ["English"]
+
+salary:
+  currency: "EUR"
+  minimum: 60000          # annual base; roles clearly below this are dropped
+  keep_unlisted: true     # keep roles that don't publish a salary
+
+# ── How to judge fit ─────────────────────────────────────────────────────────
+# Claude rates every job High or Medium against your CV using these. Jobs that
+# would only be "Low" are not added at all.
+fit:
+  high: "Python or Go backend services, distributed systems, or LLM/RAG features are the core of the role"
+  medium: "General software engineering where backend is a meaningful part"
+  avoid_keywords: ["security clearance", "unpaid", "commission only"]
+  avoid_companies: []
+  prefer: ["fintech", "developer tools", "climate"]
+
+# ── Where to pull jobs from ──────────────────────────────────────────────────
+search:
+  freshness_days: 14          # only postings from the last N days
+  max_new_per_refresh: 40     # stop after this many new roles per run
+  sources:
+    - linkedin                # public LinkedIn job search (no login)
+    - ats_watchlist           # company career boards below (Greenhouse/Lever/Ashby/Workable)
+    - web_search              # Claude's web search across the country job boards
+  linkedin_signed_in: true    # if Claude can use a browser where you're signed in to LinkedIn, it searches there
+                              # (gently, with pauses); otherwise it uses the public search
+  sweep_tracked_boards: true  # also re-check the careers boards of every company already in your tracker
+  # Recruiter / agency posts to skip (they hide the employer and rarely sponsor).
+  skip_agencies: ["Jobgether", "Hays", "Harnham", "Robert Walters", "Michael Page"]
+
+# ── Contacts for each new job (names and LinkedIn links only) ────────────────
+contacts:
+  enabled: true
+  max_per_job: 4
+  order: ["Talent", "Founder", "Hiring manager", "Team"]   # who to look for first
+  guess_emails: true          # from the company's email pattern: "likely" if the pattern is clear (~85%+), else "guess"
+
+# Companies you'd love to work for. Their career boards are checked on every
+# refresh. ats: greenhouse | lever | ashby | workable  — slug is the board name
+# in the careers URL (e.g. boards.greenhouse.io/<slug>, jobs.ashbyhq.com/<slug>).
+watchlist:
+  - {name: "N26", ats: "greenhouse", slug: "n26"}
+  - {name: "Adyen", ats: "greenhouse", slug: "adyen"}
+  - {name: "Intercom", ats: "greenhouse", slug: "intercom"}
+
+# Extra job boards to show at the bottom of the tracker (country boards are
+# added automatically from countries/*.yaml).
+portals: []
+
+# ── CV ───────────────────────────────────────────────────────────────────────
+cv:
+  base_cv_date: "2026-11-01"
+  # A tailored CV may only use one of these titles (plus your own title).
+  allowed_titles: ["Backend Engineer", "Software Engineer", "Platform Engineer", "Senior Software Engineer", "AI Engineer"]
+  # Words in your CV that should become links in the PDF.
+  links: []
+  #   - {text: "Open VSX", url: "https://open-vsx.org/extension/you/your-ext"}
+  one_page: true
+  # Facts you've confirmed that aren't in the CV text yet — Claude may use these.
+  confirmed_extras: []
+  #   - "Worked directly with customers on feature requests at Northwind Pay"
+  # Skills Claude must ASK you about before putting on a CV (not on your CV yet).
+  ask_before_claiming: ["Rust", "Azure"]
+  # Bullets added only when a job matches `when` (a regex on role/notes/skills).
+  conditional_bullets: []
+  #   - when: "customer|client|forward[- ]deployed|solutions engineer"
+  #     company: "Acme"
+  #     text: "Worked directly with **enterprise customers** on integrations."
+
+# Where Claude saves PDFs it tailors for you (shown as a hint in the tracker).
+tailored_cv_folder: "Tailored CVs"
+
+# ── Outreach ─────────────────────────────────────────────────────────────────
+# {NAME} → " Sam" (or empty), {ROLE} → job title, {COMPANY} → company.
+outreach:
+  message: |-
+    Hi{NAME}, hope you're well!
+
+    I just applied for the {ROLE} role at {COMPANY}. I've spent 5 years building backend systems in Python and Go, most recently payments infrastructure at Acme.
+
+    I'd need visa sponsorship, and I'm happy to relocate. You can see my work at github.com/alexmorgan.
+
+    Would love to chat if you think there's a fit!
+
+    Best,
+    Alex
+  # LinkedIn connection note — kept under 280 characters automatically.
+  note: "Hi{NAME}, I just applied for the {ROLE} role at {COMPANY}. 5 years building Python/Go backends, most recently payments at Acme. Open to relocating. Would love to connect if you think there is a fit! github.com/alexmorgan"
+  # If the note is too long, these replacements are tried in order.
+  note_shorten:
+    - [" Would love to connect if you think there is a fit!", " Would love to connect!"]
+    - [" Open to relocating.", ""]
+
+# How anything written in your name should sound (applications, messages).
+writing:
+  tone: "Casual, brief, and not AI-sounding."
+  sign_off: "Best,\nAlex"
+  recruiter_reply: "Say I'm interested, open to relocating to Berlin, Amsterdam or Dublin, and will need visa sponsorship."
+
+# Hard rules for Claude while working on your search.
+rules:
+  - "Never message, connect with or apply to anyone on my behalf."
+  - "Never enter my passwords; I sign in myself."
+  - "Ask before deleting any files."
+
+# Also keep an Excel copy (Jobs + People + Portals sheets) next to the tracker.
+excel: true
+
+features:
+  optimize_button: true   # "✨ Optimize CV" in the page (asks Claude to tailor your CV in the browser)

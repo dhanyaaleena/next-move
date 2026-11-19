@@ -1,0 +1,34 @@
+# Country pack: Canada. Facts that change (salary floors, fees) are deliberately NOT written here —
+# Claude looks them up live from the official links. If a link has moved, search for its name.
+code: CA
+name: Canada
+linkedin_location: Canada
+visa:
+  route: Work permit via LMIA, Global Talent Stream, or Express Entry (permanent residence)
+  route_url: https://www.canada.ca/en/immigration-refugees-citizenship/services/work-canada.html
+  register:
+    name: No sponsor register
+    url: https://www.canada.ca/en/employment-social-development/services/foreign-workers/global-talent.html
+    how: Rely on posting wording; employers using the Global Talent Stream often say so. Job Bank flags some roles
+      open to foreign workers.
+  signals:
+  - visa sponsorship
+  - we sponsor
+  - sponsorship available
+  - relocation support
+  - relocation package
+  - help with your visa
+  - lmia
+  - global talent stream
+  - work permit
+  language_note: Roles in Québec often require French.
+boards:
+- name: Job Bank
+  desc: Government of Canada job board
+  url: https://www.jobbank.gc.ca/
+- name: Indeed Canada
+  desc: Canadian edition of Indeed
+  url: https://ca.indeed.com/
+- name: Wellfound
+  desc: Startup roles
+  url: https://wellfound.com/

@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Tracker</title>
+<style>
+:root{color-scheme:light}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f5fb;color:#1a1a2e;font-size:13px}
+button{font-family:inherit}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:14px;padding:22px 24px;width:100%;max-width:560px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow-y:auto}
+.modal.wide{max-width:700px}
+.modal.xwide{max-width:900px}
+.cvwrap{border:1px solid #e5e7eb;border-radius:8px;max-height:62vh;overflow:auto;background:#fff}
+.mstep{font-size:12px;color:#374151;margin:6px 0}.mstep a{color:#b4532a;font-weight:700}
+.warnbox{background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:8px 10px;font-size:11px;margin-bottom:8px;line-height:1.5}
+.modal h3{font-size:14px;font-weight:800;margin-bottom:4px}
+.modal .sub{font-size:11px;color:#6b7280;margin-bottom:12px;line-height:1.5}
+.url-inp{width:100%;padding:9px 12px;border:2px solid #b4532a;border-radius:8px;font-size:11px;outline:none;background:#fdf0e6;font-family:monospace}
+.modal-actions{display:flex;gap:8px;margin-top:14px;justify-content:flex-end;flex-wrap:wrap}
+.btn-ghost{background:#f3f4f6;border:none;border-radius:8px;padding:7px 16px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer}
+.btn-ghost:hover{background:#e5e7eb}
+.btn-primary{background:#b4532a;color:#fff;border:none;border-radius:8px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer}
+.btn-primary:hover{background:#9a3f1f}
+.btn-open{display:inline-block;background:#059669;color:#fff;border-radius:8px;padding:7px 16px;font-size:12px;font-weight:700;text-decoration:none}
+.rtabs{display:flex;gap:4px;margin-bottom:12px;border-bottom:2px solid #f3f4f6}
+.rtab{background:none;border:none;border-bottom:2px solid transparent;padding:6px 12px;font-size:12px;font-weight:600;color:#9ca3af;cursor:pointer;margin-bottom:-2px}
+.rtab.active{color:#b4532a;border-bottom-color:#b4532a}
+.resume-view{font-size:11px;line-height:1.7;color:#374151;background:#f9fafb;border-radius:8px;padding:12px;max-height:360px;overflow-y:auto;white-space:pre-wrap;word-break:break-word}
+.resume-ta{width:100%;height:300px;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:11px;line-height:1.6;resize:vertical;font-family:inherit;outline:none}
+.resume-ta:focus{border-color:#f0b48e}
+.hidden{display:none!important}
+.okmsg{font-size:11px;color:#059669;margin-top:6px}
+.optim-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.optim-head h3{color:#5b21b6}
+.xbtn{background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af;line-height:1}
+.optim-meta{background:#f5f3ff;border-radius:8px;padding:8px 12px;font-size:11px;color:#6d28d9;margin-bottom:12px;font-weight:600}
+.loading{text-align:center;padding:32px 0}
+.spin{width:32px;height:32px;border:3px solid #ede9fe;border-top-color:#7c3aed;border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.loading p{font-size:12px;color:#7c3aed;font-weight:600}
+.osec{border-radius:10px;padding:11px 13px;margin-bottom:10px}
+.osec h4{font-size:11px;font-weight:800;margin-bottom:6px}
+.osec li{font-size:11px;line-height:1.65;color:#374151;margin-bottom:3px}
+.osec ul{padding-left:16px}
+.o-kw{background:#eff6ff;border:1px solid #bfdbfe}.o-kw h4{color:#1d4ed8}
+.o-sum{background:#f0fdf4;border:1px solid #86efac}.o-sum h4{color:#15803d}
+.o-hi{background:#fef3c7;border:1px solid #fde68a}.o-hi h4{color:#b45309}
+.o-gap{background:#fef2f2;border:1px solid #fecaca}.o-gap h4{color:#dc2626}
+.o-win{background:#f5f3ff;border:1px solid #ddd6fe}.o-win h4{color:#6d28d9}
+.kw{display:inline-block;background:#dbeafe;color:#1d4ed8;border-radius:20px;padding:2px 9px;font-size:10px;font-weight:700;margin:0 4px 4px 0}
+.sumbox{background:#fff;border-radius:6px;padding:9px 11px;font-size:11px;line-height:1.7;border-left:3px solid #22c55e;white-space:pre-wrap}
+.err{color:#dc2626;font-size:12px;text-align:center;padding:20px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#059669;color:#fff;padding:9px 18px;border-radius:30px;font-size:12px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none;z-index:2000}
+.toast.show{opacity:1}
+
+.modal{border-radius:18px}
+#notices{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px;z-index:1500;max-width:340px}
+.notice{background:#14142b;color:#fff;border-radius:12px;padding:10px 12px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.notice span{flex:1}
+.nbtn{background:#fff;color:#14142b;border:none;border-radius:7px;padding:5px 10px;font-size:11.5px;font-weight:800;cursor:pointer}
+.nx{background:none;border:none;color:#9ca3af;cursor:pointer;font-size:12px}
+#bgPill{position:fixed;left:16px;bottom:16px;background:#fffbeb;color:#92400e;border:1px solid #fcd34d;border-radius:20px;padding:6px 12px;font-size:11.5px;font-weight:700;z-index:1400;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+
+
+/* ══ Design v4 ══════════════════════════════════════════════ */
+/* v4 base layout */
+header{display:flex;justify-content:space-between;gap:12px}
+.hidden{display:none!important}
+.pill{display:inline-block;border-radius:999px}
+.cv-btn{display:inline-flex;align-items:center;gap:7px;cursor:pointer;white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%}
+.chip{cursor:pointer;white-space:nowrap}
+.pager{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.pinfo{font-size:12px}.pbtns{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.pg{padding:6px 10px;font-size:12px;cursor:pointer;min-width:32px}.pg[disabled]{opacity:.35;cursor:default}.pdots{color:var(--faint);padding:0 2px}
+.pgrid{display:grid}
+.portal{background:var(--surface);display:flex;flex-direction:column}
+.portal .pt{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
+.pn{font-weight:700;font-size:12.5px;color:var(--ink)}
+.pb{font-size:10px;font-weight:700;border-radius:6px;padding:1px 6px;background:var(--accent-soft);color:var(--accent)}.pb.g{background:#f3ece3;color:var(--muted)}
+.pd{font-size:11.5px;color:var(--muted);line-height:1.5;margin-bottom:8px;flex:1}
+.pbtn{border:none;font-size:11.5px;font-weight:700;cursor:pointer;align-self:flex-start}
+.ph{font-size:11px;font-weight:700;text-transform:uppercase}
+.none{text-align:center}
+
+:root{
+  --bg:#f5f6f8; --surface:#fff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --faint:#94a3b8;
+  --line:#e6e8ee; --line2:#eef0f4; --accent:#b4532a; --accent-2:#c8643a; --accent-soft:#fdf0e6;
+  --ok:#047857; --ok-soft:#ecfdf5; --warn:#b45309; --warn-soft:#fffbeb;
+  --ai:#7c3aed; --ai-soft:#f5f3ff; --be:#0f766e; --be-soft:#f0fdfa; --fs:#c2410c; --fs-soft:#fff7ed;
+  --r-sm:8px; --r:12px; --r-lg:16px;
+  --sh-1:0 1px 2px rgba(41,28,18,.05); --sh-2:0 1px 2px rgba(41,28,18,.04),0 8px 24px -8px rgba(41,28,18,.12);
+}
+body{background:var(--bg);color:var(--ink);font:13.5px/1.45 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+
+/* header */
+header{background:var(--surface);color:var(--ink);padding:22px 32px 18px;border-bottom:1px solid var(--line);align-items:center}
+header h1{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:750;letter-spacing:-.02em;margin:0 0 2px}
+.mark{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#e08a4f);color:#fff;font-size:14px;font-weight:800;box-shadow:0 4px 12px -2px rgba(180,83,42,.45)}
+header p{opacity:1;color:var(--muted);font-size:12.5px;margin-left:40px}
+.pill{margin:8px 0 0 40px;background:var(--line2);border:none;color:var(--muted);font-size:11px;padding:3px 10px}
+.cv-btn{background:var(--surface);color:var(--ink2);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:12.5px;font-weight:600;box-shadow:var(--sh-1)}
+.cv-btn:hover{background:#faf6f0;border-color:#d5d9e2}
+.dot{background:#22c55e;box-shadow:0 0 0 3px #dcfce7}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:0;margin:18px 32px 0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-1);overflow:hidden;position:static}
+.stat{background:transparent;border:none;border-right:1px solid var(--line2);border-radius:0;box-shadow:none;padding:12px 16px;min-width:0}
+.stat:last-child{border-right:none}
+.stat .n{font-size:22px;font-weight:750;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat .l{font-size:10.5px;font-weight:600;letter-spacing:.02em;text-transform:none;color:var(--muted);margin-top:1px}
+.s-ldn .n,.s-ouk .n,.s-ai .n,.s-be .n,.s-fs .n,.s-ap .n{color:var(--ink)}
+.s-hi .n{color:var(--ok)} .s-new .n{color:var(--accent)}
+.stat::before{content:'';display:block;width:18px;height:3px;border-radius:2px;margin-bottom:8px;background:var(--line)}
+.s-ldn::before{background:#ef4444}.s-ouk::before{background:#0ea5e9}.s-ai::before{background:var(--ai)}.s-be::before{background:var(--be)}.s-fs::before{background:var(--fs)}.s-hi::before{background:#10b981}.s-ap::before{background:var(--accent)}.s-new::before{background:#f59e0b}
+
+/* toolbar */
+.toolbar{position:sticky;top:0;z-index:60;margin:16px 0 0;padding:12px 32px;background:rgba(245,246,248,.86);backdrop-filter:saturate(1.6) blur(12px);-webkit-backdrop-filter:saturate(1.6) blur(12px);border-bottom:1px solid transparent;transition:border-color .2s}
+.toolbar .search{margin:0 0 10px;padding:0;background:none;border:none}
+.search input{width:100%;height:42px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat 14px center;padding:0 14px 0 40px;font-size:13.5px;color:var(--ink);box-shadow:var(--sh-1)}
+.search input::placeholder{color:var(--faint)}
+.search input:focus{outline:none;border-color:#f0b48e;box-shadow:0 0 0 4px rgba(200,100,58,.14)}
+.toolbar .controls{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0;padding:0;background:none;border:none;border-radius:0}
+.toolbar .row{display:inline-flex;align-items:center;gap:2px;padding:3px;background:var(--surface);border:1px solid var(--line);border-radius:11px;box-shadow:var(--sh-1);flex-wrap:wrap}
+.toolbar .lab{min-width:0;padding:0 8px 0 7px;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--faint)}
+.chip{border:none;background:transparent;color:var(--ink2);font-size:12px;font-weight:550;padding:6px 10px;border-radius:8px;transition:background .12s,color .12s}
+.chip:hover{background:#f3ece3;border:none}
+.chip.on{background:var(--ink);color:#fff;border:none;box-shadow:0 1px 2px rgba(41,28,18,.2)}
+
+/* help */
+details.tip{margin:14px 32px 0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);color:var(--ink2);box-shadow:var(--sh-1)}
+details.tip summary{cursor:pointer;list-style:none;padding:10px 14px;font-size:12.5px;font-weight:600;color:var(--muted)}
+details.tip summary::-webkit-details-marker{display:none}
+details.tip[open] summary{color:var(--ink)}
+details.tip .tipb{padding:0 14px 14px;font-size:12px;line-height:1.7;color:var(--muted)}
+
+/* section headings */
+.banner{margin:26px 32px 12px;padding:0;background:none!important;border:none!important;display:flex;align-items:baseline;gap:10px;justify-content:flex-start}
+.banner h2{font-size:16px;font-weight:750;letter-spacing:-.015em;color:var(--ink);display:flex;align-items:center;gap:8px}
+.banner h2::before{content:'';width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 4px #fee2e2}
+.b-ouk h2::before{background:#0ea5e9;box-shadow:0 0 0 4px #e0f2fe}
+.banner span{color:var(--faint);font-size:12px}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(460px,1fr));gap:14px;padding:0 32px 4px}
+.card{display:flex;flex-direction:column;gap:0;padding:18px 18px 14px;background:var(--surface);border:1px solid var(--line);border-left-width:1px!important;border-radius:var(--r-lg);box-shadow:var(--sh-1);transition:box-shadow .18s,border-color .18s,transform .18s;position:relative;overflow:visible}
+.card::before{display:none}
+.card:hover{transform:none;border-color:#d5d9e2;box-shadow:var(--sh-2)}
+.card.tracked{background:linear-gradient(180deg,#fdf8f2 0,#fff 60px)}
+.c-top{display:flex;align-items:flex-start;gap:12px}
+.logo{flex:0 0 40px;width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-size:14px;font-weight:750;letter-spacing:.02em;color:hsl(var(--h) 55% 32%);background:hsl(var(--h) 70% 94%);border:1px solid hsl(var(--h) 50% 86%)}
+.c-title{flex:1;min-width:0}
+.co{font-size:15px;font-weight:700;letter-spacing:-.01em;color:var(--ink);line-height:1.3}
+.ro{font-size:13px;font-weight:500;color:var(--ink2);margin-top:1px;line-height:1.35}
+.c-flags{display:flex;gap:6px;flex-shrink:0}
+.flag{font-size:11px;font-weight:650;padding:3px 8px;border-radius:999px;white-space:nowrap;line-height:1.4}
+.f-high{background:var(--ok-soft);color:var(--ok);box-shadow:inset 0 0 0 1px #a7f3d0}
+.f-med{background:#faf6f0;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}
+.f-new{background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 0 0 1px #f3cdb3}
+.c-warn{margin-top:10px;font-size:11.5px;font-weight:600;color:#b91c1c;background:#fef2f2;border-radius:8px;padding:6px 10px}
+.c-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:12px 0 0 52px;font-size:12px;color:var(--muted)}
+.m{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.ic-pin{width:12px;height:12px;display:inline-block;background:no-repeat center/12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z'/%3E%3Ccircle cx='12' cy='9.5' r='2.5'/%3E%3C/svg%3E")}
+.m-cat{font-weight:650;font-size:11.5px;padding:2px 8px;border-radius:6px}
+.c-ai{color:var(--ai);background:var(--ai-soft)}.c-be{color:var(--be);background:var(--be-soft)}.c-fs{color:var(--fs);background:var(--fs-soft)}
+.m-sal{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.m-nosal{color:var(--faint)}
+.c-note{margin:10px 0 0 52px;font-size:12.5px;line-height:1.55;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.c-skills{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0 0 52px}
+.sk{font-size:11px;font-weight:550;color:var(--muted);background:#faf6f0;border:1px solid var(--line2);border-radius:6px;padding:2px 7px}
+.ppl{margin:12px 0 0 52px;border:1px solid var(--line);border-radius:var(--r);background:#fbf7f1;font-size:12px;padding:0}
+.ppl summary{list-style:none;cursor:pointer;padding:8px 12px;font-weight:650;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.ppl summary::-webkit-details-marker{display:none}
+.ppl summary:hover{color:var(--accent)}
+.chev{margin-left:auto;color:var(--faint);transition:transform .15s}
+.ppl[open] .chev{transform:rotate(180deg)}
+.ppl-list{padding:2px 6px 6px;border-top:1px solid var(--line2)}
+.pp{display:flex;align-items:center;gap:10px;padding:7px 6px;border-radius:9px;text-decoration:none;color:inherit;border:none}
+.pp:hover{background:var(--accent-soft)}
+.pav{flex:0 0 28px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:10.5px;font-weight:750;color:hsl(var(--h) 50% 30%);background:hsl(var(--h) 65% 92%)}
+.pinfo2{flex:1;min-width:0;display:flex;flex-direction:column}
+.pn2{font-weight:650;color:var(--ink);font-size:12.5px}
+.pr{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ptag{flex-shrink:0;font-size:10.5px;font-weight:650;border-radius:999px;padding:2px 8px;background:#f3ece3;color:var(--muted);margin:0}
+.ptag.pt-f{background:var(--ai-soft);color:var(--ai)}.ptag.pt-t{background:var(--ok-soft);color:var(--ok)}.ptag.pt-h{background:var(--accent-soft);color:var(--accent)}
+.c-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line2);flex-wrap:wrap}
+.c-left{display:flex;align-items:center;gap:10px;min-width:0}
+.c-date{font-size:11.5px;color:var(--faint);white-space:nowrap}
+.c-btns{display:flex;gap:8px;margin-left:auto}
+select.st{width:auto!important;appearance:none;-webkit-appearance:none;height:32px;padding:0 28px 0 12px;border-radius:999px;border:1px solid var(--line);background:#faf6f0 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 11px center;font-size:12px;font-weight:650;color:var(--ink2);cursor:pointer}
+select.st:focus{outline:none;box-shadow:0 0 0 3px rgba(200,100,58,.15)}
+select.st.applied{background-color:var(--accent-soft);border-color:#f3cdb3;color:var(--accent)}
+select.st.interview{background-color:var(--warn-soft);border-color:#fde68a;color:var(--warn)}
+select.st.offer{background-color:var(--ok-soft);border-color:#a7f3d0;color:var(--ok)}
+select.st.rejected{background-color:#fef2f2;border-color:#fecaca;color:#b91c1c}
+select.st.hold{background-color:#faf6f0;border-color:var(--line);color:var(--faint)}
+.a-opt,.a-link{height:34px;width:auto!important;padding:0 14px;border-radius:10px;font-size:12.5px;font-weight:650;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .12s,box-shadow .12s,transform .05s}
+.a-opt{background:var(--surface);border:1px solid var(--line);color:var(--ink2);box-shadow:var(--sh-1)}
+.a-opt:hover{background:#faf6f0;border-color:#d5d9e2}
+.a-opt.busy{background:var(--warn-soft);border-color:#fde68a;color:var(--warn)}
+.a-opt.ready{background:var(--ok-soft);border-color:#a7f3d0;color:var(--ok)}
+.a-link{border:none;color:#fff;background:var(--ink);box-shadow:0 1px 2px rgba(41,28,18,.25)}
+.a-link:hover{background:#1e293b}
+.a-link.a-ind{background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:var(--sh-1)}
+.a-link.a-ind:hover{background:#faf6f0}
+.a-link:active,.a-opt:active{transform:translateY(1px)}
+.arr{font-size:13px;opacity:.8}
+
+/* pager, portals, misc */
+.pager{margin:12px 32px 8px;padding:8px 10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh-1)}
+.pinfo{color:var(--muted);font-weight:600}
+.pg{border:none;background:transparent;border-radius:8px;color:var(--ink2);font-weight:600}
+.pg:hover:not([disabled]){background:#f3ece3;color:var(--ink);border:none}
+.pg.on{background:var(--ink);color:#fff}
+.ph{padding:30px 32px 10px;color:var(--faint);letter-spacing:.06em}
+.pgrid{padding:0 32px 40px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.portal{border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh-1);padding:14px}
+.portal:hover{box-shadow:var(--sh-2)}
+.pbtn{background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:6px 10px}
+.none{color:var(--faint);padding:40px 20px}
+.modal{border-radius:18px;box-shadow:0 24px 64px rgba(41,28,18,.28)}
+.toast{background:var(--ink)}
+
+
+/* v4 polish (checked in a real browser at 1280px and 390px) */
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border-bottom:1px solid var(--line)}
+.toolbar .search{flex:1 1 260px;margin:0}
+.toolbar .controls{display:contents}
+.card>.c-foot{margin-top:auto}
+.card>*:nth-last-child(2){margin-bottom:14px}
+.toolbar .row::-webkit-scrollbar{display:none}
+@media (max-width:1100px){.stats{grid-template-columns:repeat(5,minmax(0,1fr))}.stat{border-bottom:1px solid var(--line2)}}
+@media (max-width:980px){.cards{grid-template-columns:1fr}}
+@media (max-width:640px){
+  header{padding:16px 16px 14px;flex-direction:column;align-items:flex-start}.pill,header p{margin-left:0}
+  .stats{margin:14px 16px 0;grid-template-columns:repeat(3,minmax(0,1fr))}.stat{padding:10px 12px}
+  .toolbar{position:static;padding:10px 16px}.toolbar .row{max-width:100%;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+  details.tip,.banner,.pager{margin-left:16px;margin-right:16px}.cards,.ph,.pgrid{padding-left:16px;padding-right:16px}
+  .card{padding:16px 14px 12px}.c-meta,.c-note,.c-skills,.ppl{margin-left:0}
+  .c-btns{width:100%}.c-btns>button{flex:1;justify-content:center}
+}
+.m-li{font-size:11.5px;font-weight:650;color:#0a66c2;background:#eef5fc;border-radius:6px;padding:2px 8px 2px 3px;gap:5px}.m-li b{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:3px;background:#0a66c2;color:#fff;font-size:10px;font-weight:800;font-family:Arial,sans-serif;letter-spacing:-.02em}
+.pcopy{flex-shrink:0;margin-left:2px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);font-size:11px;font-weight:650;border-radius:8px;padding:4px 8px;cursor:pointer;white-space:nowrap}.pcopy:hover{background:var(--accent-soft);border-color:#f3cdb3;color:var(--accent)}.a-msg{height:34px;padding:0 12px;border-radius:10px;font-size:12.5px;font-weight:650;cursor:pointer;display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);color:var(--ink2);box-shadow:var(--sh-1)}.a-msg:hover{background:var(--accent-soft);border-color:#f3cdb3;color:var(--accent)}@media (max-width:640px){.pp{flex-wrap:wrap}.pcopy{margin-left:38px}}
+
+/* ── Table view ── */
+.viewtog{display:inline-flex;padding:3px;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:11px;box-shadow:var(--sh-1)}
+.vt{border:none;background:transparent;color:var(--ink2);font-size:12px;font-weight:600;padding:6px 11px;border-radius:8px;cursor:pointer;white-space:nowrap}
+.vt:hover{background:#f3ece3}.vt.on{background:var(--ink);color:#fff}
+.tview{padding:0 32px 4px}
+.twrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-1);overflow:auto}
+table.jt{width:100%;border-collapse:separate;border-spacing:0;font-size:12.5px;min-width:1040px}
+.jt thead th{position:sticky;top:0;z-index:1;background:#faf6f0;color:var(--muted);font-size:11px;font-weight:650;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.jt td{padding:10px 12px;border-bottom:1px solid var(--line2);vertical-align:middle;color:var(--ink2)}
+.jt tbody tr.jr:hover td{background:#fdf8f2}
+.jt tr.tracked td{background:#fdf8f2}
+.jt .r{text-align:right}
+.jt .c-co{min-width:260px;max-width:340px}
+.tco{display:flex;align-items:center;gap:10px}
+.logo.sm{flex:0 0 30px;width:30px;height:30px;border-radius:8px;font-size:11.5px}
+.tco-t{min-width:0}
+.tco-n{font-weight:700;color:var(--ink);font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tco-r{color:var(--muted);font-size:12px;margin-top:1px;line-height:1.35}
+.flag.xs{font-size:10px;padding:1px 6px}
+.m-li.xs{padding:0;background:none}.m-li.xs b{width:14px;height:14px;font-size:9.5px}
+.t-loc{max-width:170px;color:var(--muted)}
+.t-sal{font-weight:700;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}.t-nosal{color:var(--faint)}
+.t-date{color:var(--faint);white-space:nowrap}
+.t-none{color:var(--faint)}
+.t-ppl{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 9px;font-size:11.5px;font-weight:650;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.t-ppl:hover,.t-ppl.open{background:var(--accent-soft);border-color:#f3cdb3;color:var(--accent)}
+.t-ppl.open .chev{transform:rotate(180deg);display:inline-block}
+.jt select.st{height:30px;font-size:11.5px;padding:0 26px 0 10px}
+.t-acts{display:inline-flex;gap:6px;align-items:center;justify-content:flex-end}
+.ib{width:32px;height:30px;padding:0!important;justify-content:center;border:1px solid var(--line);background:var(--surface);border-radius:9px;cursor:pointer;font-size:13px;box-shadow:var(--sh-1);display:inline-flex;align-items:center}
+.ib:hover{background:var(--accent-soft);border-color:#f3cdb3}
+.a-link.sm{height:30px;padding:0 12px;font-size:12px;border-radius:9px}
+.pr-row td{background:#fbf7f1;padding:6px 12px 10px 52px}
+.pr-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:4px 16px}
+.pr-item{display:flex;align-items:center;gap:8px;padding:5px 0;min-width:0}
+.pr-n{font-weight:650;color:var(--ink);text-decoration:none;white-space:nowrap}.pr-n:hover{color:var(--accent);text-decoration:underline}
+.pr-item .pr{flex:1;min-width:0}
+@media (max-width:640px){.tview{padding-left:16px;padding-right:16px}.viewtog{order:-1}}
+.t-pcell{min-width:96px;vertical-align:top!important}
+.jt tr.jr td{vertical-align:top}
+.t-plist{margin-top:8px;display:flex;flex-direction:column;gap:2px;width:250px}
+.tp{display:flex;align-items:flex-start;gap:8px;padding:6px 6px;border-radius:9px}
+.tp:hover{background:var(--accent-soft)}
+.pav.sm{flex:0 0 24px;width:24px;height:24px;font-size:9.5px;margin-top:1px}
+.tp-t{flex:1;min-width:0}
+.tp-n{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tp-n a{font-weight:650;color:var(--ink);text-decoration:none;font-size:12px}
+.tp-n a:hover{color:var(--accent);text-decoration:underline}
+.tp-n .ptag{font-size:9.5px;padding:1px 6px}
+.tp-r{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.tp-copy{flex-shrink:0;width:26px;height:26px;border:1px solid var(--line);background:var(--surface);border-radius:7px;cursor:pointer;font-size:12px;display:grid;place-items:center}
+.tp-copy:hover{background:#fff;border-color:#f3cdb3}
+.jt tr.jr td:not(.t-pcell){padding-top:14px}
+
+.msgd{display:inline-flex;align-items:center;gap:5px;flex-shrink:0;font-size:11px;font-weight:650;color:var(--muted);border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:3px 8px;cursor:pointer;user-select:none;white-space:nowrap}
+.msgd input{width:13px;height:13px;margin:0;accent-color:#059669;cursor:pointer}
+.msgd:hover{border-color:#a7f3d0}
+.msgd.on{background:var(--ok-soft);border-color:#a7f3d0;color:var(--ok)}
+.msgd.big{height:34px;padding:0 12px;border-radius:10px;font-size:12px}
+.msgd.mini{padding:2px 6px;font-size:10.5px;border-radius:7px}
+.msgd.mini span{display:none}.msgd.mini.on span{display:inline}
+.mc{color:var(--ok);font-weight:700}
+.tp-acts{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.t-plist{width:280px}
+
+/* table: fixed column widths so expanding People never resizes other columns */
+table.jt{table-layout:fixed;min-width:1250px}
+.jt col.w-co{width:260px}.jt col.w-loc{width:130px}.jt col.w-type{width:104px}.jt col.w-sal{width:104px}.jt col.w-fit{width:84px}
+.jt col.w-ppl{width:264px}.jt col.w-date{width:96px}.jt col.w-st{width:150px}.jt col.w-act{width:150px}
+.jt .c-co{min-width:0;max-width:none}
+.jt td{overflow:hidden}
+.t-loc{max-width:none;white-space:nowrap;text-overflow:ellipsis}
+.jt td.t-loc{overflow:hidden}
+.t-plist{width:100%}
+.jt select.st{max-width:100%}
+.tco-n,.tco-r{overflow:hidden;text-overflow:ellipsis}
+.tco-r{white-space:nowrap}
+.t-acts{flex-wrap:nowrap}
+.qk{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fbf7f1;display:flex;flex-direction:column;gap:8px}
+.qk-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.qk-l{font-size:12px;font-weight:650;color:var(--ink2)}
+.qk-lab{font-size:11px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;margin-right:4px;min-width:84px}
+.qk-b{border:1px solid var(--line);background:#fff;color:var(--ink2);font-size:12.5px;font-weight:650;border-radius:9px;padding:7px 12px;cursor:pointer}
+.qk-b:hover{border-color:#f3cdb3;background:var(--accent-soft)}
+.qk-b.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.qk-b.ghost{color:var(--muted)}
+.qk-ppl{margin-top:4px;border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:4px;max-height:300px;overflow:auto}
+.qk-ph{font-size:11px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.qk-p{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px;background:#fff;border:1px solid var(--line2)}
+.qk-p.done{background:var(--ok-soft);border-color:#a7f3d0}
+.qk-cb input{width:16px;height:16px;accent-color:#059669;cursor:pointer;margin:0}
+.qk-pt{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.qk-pt a{font-weight:650;font-size:12.5px;color:var(--ink);text-decoration:none}.qk-pt a:hover{color:var(--accent);text-decoration:underline}
+.qk-pt .ptag{font-size:10px;padding:1px 7px}
+.qk-pr{width:100%;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qk-b.sm{padding:5px 10px;font-size:11.5px;flex-shrink:0}
+#urlModal .modal{max-width:620px}
+.t-nop{display:flex;align-items:center;gap:6px}
+.t-nop-l{font-size:11px;color:var(--faint);white-space:nowrap}
+.jt .a-link.sm{white-space:nowrap}
+
+/* ── stats dashboard ── */
+.dash{display:grid;grid-template-columns:1.1fr 1.4fr 1fr 1.2fr;gap:12px;margin:18px 32px 0}
+.dc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-1);padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.dc-hero{background:linear-gradient(135deg,#fdf0e6,#faf5ff);border-color:#fbe2d0}
+.dc-k{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--faint)}
+.dc-big{display:flex;align-items:baseline;gap:8px}
+.dc-big>span:first-child{font-size:30px;font-weight:800;letter-spacing:-.03em;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums}
+.dc-of{font-size:12.5px;color:var(--muted);font-weight:600}
+.dc-pills{display:flex;gap:6px;flex-wrap:wrap}
+.dp{font-size:11.5px;font-weight:600;border-radius:999px;padding:3px 9px;background:#fff;border:1px solid var(--line);color:var(--ink2)}
+.dp b{font-variant-numeric:tabular-nums}
+.dp-new{color:var(--accent);border-color:#f3cdb3}.dp-hi{color:var(--ok);border-color:#a7f3d0}
+.dc-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.st-i{background:#faf6f0;border:1px solid var(--line2);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column}
+.st-i b{font-size:16px;font-weight:750;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.st-i span{font-size:10.5px;color:var(--muted);font-weight:600}
+.seg{display:flex;height:8px;border-radius:999px;overflow:hidden;background:var(--line2);gap:2px}
+.seg i{display:block;height:100%;transition:width .4s}
+.sg-l{background:#ef4444}.sg-o{background:#0ea5e9}.sg-ai{background:var(--ai)}.sg-be{background:var(--be)}.sg-fs{background:var(--fs)}
+.lg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted)}
+.lg span{display:inline-flex;align-items:center;gap:6px}
+.lg b{color:var(--ink);font-variant-numeric:tabular-nums}
+.lg i{width:8px;height:8px;border-radius:3px;display:inline-block}
+.dot-l{background:#ef4444}.dot-o{background:#0ea5e9}.dot-ai{background:var(--ai)}.dot-be{background:var(--be)}.dot-fs{background:var(--fs)}
+@media (max-width:1100px){.dash{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.dash{grid-template-columns:1fr;margin:14px 16px 0}.dc-steps{grid-template-columns:repeat(2,1fr)}}
+.dc-note{font-size:12px;color:var(--muted);margin-top:-4px}.dc-note b{color:var(--accent)}
+.dc-of{margin-left:6px}
+.stf{appearance:none;-webkit-appearance:none;border:none;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 8px center;font:inherit;font-size:12px;font-weight:600;color:var(--ink2);padding:6px 26px 6px 10px;border-radius:8px;cursor:pointer;max-width:290px}
+.stf:hover{background-color:#f3ece3}
+.stf.on{background-color:var(--ink);color:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")}
+
+.addp{border:1px dashed #f3cdb3;background:transparent;color:var(--accent);font-size:11.5px;font-weight:650;border-radius:8px;padding:5px 10px;cursor:pointer;white-space:nowrap}
+.addp:hover{background:var(--accent-soft);border-style:solid}
+.addp.in-list{margin:6px 6px 2px;align-self:flex-start}
+.addp.big{height:34px;padding:0 12px;border-radius:10px;font-size:12px}
+.addp.mini{padding:3px 8px;font-size:10.5px}
+.delp{flex-shrink:0;border:none;background:transparent;color:var(--faint);font-size:11px;cursor:pointer;padding:3px 5px;border-radius:6px}
+.delp:hover{background:#fef2f2;color:#b91c1c}
+.ptag.pt-o{}
+.apl{display:block;font-size:11.5px;font-weight:700;color:var(--ink2);margin-top:10px}
+.apl span{font-weight:500;color:var(--faint)}
+.api{display:block;width:100%;margin-top:4px;height:36px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font:inherit;font-size:13px}
+.api:focus{outline:none;border-color:#f0b48e;box-shadow:0 0 0 3px rgba(200,100,58,.14)}
+.apc{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--ink2);font-weight:600}
+.apc input{width:15px;height:15px;accent-color:#059669}
+.notebtn.tn{width:auto;padding:0 6px;font-size:11px;font-weight:650}
+.notebtn{white-space:nowrap;cursor:pointer}
+.notebtn.pcopy,.notebtn.a-msg{margin-left:0}
+
+.embtn{cursor:pointer;white-space:nowrap}
+.embtn.em-public,.embtn.em-likely{color:var(--ok)}
+.embtn.em-guess{color:#b45309}
+.pcopy.embtn{margin-left:0}
+
+.dlcv{cursor:pointer;white-space:nowrap}
+
+.cvpdf{cursor:pointer;white-space:nowrap;color:var(--ok)}
+
+/* ── Status pill: bigger, solid colour per status ── */
+select.st{height:36px!important;padding:0 32px 0 14px!important;font-size:12.5px!important;font-weight:750!important;letter-spacing:.01em;border-radius:999px;border:1.5px solid transparent!important;box-shadow:0 1px 2px rgba(41,28,18,.12);transition:transform .08s ease, box-shadow .15s ease;min-width:118px}
+select.st:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(41,28,18,.16)}
+select.st:focus{outline:none;box-shadow:0 0 0 3px rgba(200,100,58,.28)!important}
+select.st.todo{background:#1e293b url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center!important;color:#fff!important}
+select.st.applied{background:#b4532a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center!important;color:#fff!important}
+select.st.screening{background:#0284c7 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center!important;color:#fff!important}
+select.st.interview{background:#d97706 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center!important;color:#fff!important}
+select.st.offer{background:#059669 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center!important;color:#fff!important}
+select.st.rejected{background:#fee2e2 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23b91c1c' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center!important;color:#b91c1c!important;border-color:#fca5a5!important}
+select.st.hold{background:#f3ece3 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center!important;color:#64748b!important;border-color:#e2e8f0!important;box-shadow:none}
+select.st option{background:#fff;color:#0f172a;font-weight:600}
+.jt select.st{height:32px!important;font-size:12px!important;min-width:0;width:100%!important;max-width:138px;padding:0 26px 0 12px!important;background-position:right 10px center!important;text-overflow:clip}
+
+.dc-steps{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+
+
+/* ── Warm light theme (17 Nov) ── */
+:root{
+  --bg:#efe8de; --surface:#fffdf9; --ink:#1f1a16; --ink2:#3a2f27; --muted:#6b5d52; --faint:#8a7b6f;
+  --line:#ddd2c4; --line2:#e9e0d4; --accent:#b4532a; --accent-2:#c8643a; --accent-soft:#fbe7d8;
+  --fs:#a16207; --fs-soft:#fef6dc;
+  --sh-1:0 1px 3px rgba(60,40,20,.10); --sh-2:0 1px 3px rgba(60,40,20,.08),0 10px 28px -10px rgba(60,40,20,.22);
+}
+body{background:var(--bg)}
+header{background:var(--surface);border-bottom:1px solid var(--line)}
+.toolbar{background:rgba(239,232,222,.92)}
+.dc,.card,.stats,details.tip,.toolbar .row{border-color:var(--line)}
+.dc-hero{background:linear-gradient(135deg,#fde4cf,#fbe0e0);border-color:#f0c9ad}
+.dc-k,.toolbar .lab{color:var(--muted)}
+.st-i,.sk,.f-med,select.st.hold,.jt thead th{background:#f5eee5}
+.st-i{border-color:var(--line)}
+.ppl,.pr-row td,.qk{background:#fbf7f1}
+.card.tracked{background:linear-gradient(180deg,#fdf1e6 0,var(--surface) 60px)}
+.jt tr.tracked td{background:#fdf3ea}
+.jt tbody tr.jr:hover td{background:#f9efe4}
+.jt td{border-color:var(--line2)}
+.chip:hover,.vt:hover,.pg:hover:not([disabled]),.stf:hover{background:#efe5d8}
+.ptag{background:#efe5d8;color:var(--ink2)}
+.search input{border-color:var(--line);background-color:var(--surface)}
+.cv-btn{background:var(--surface)}
+.cv-btn:hover{background:#faf3ea;border-color:#d6c7b5}
+.mark{box-shadow:0 4px 12px -2px rgba(180,83,42,.45)}
+
+/* ── visa + dynamic groups (job-tracker template) ── */
+.m-visa{font-weight:650}
+.m-visa.v-ok{color:var(--ok);background:var(--ok-soft)}
+.m-visa.v-unclear{color:var(--warn);background:var(--warn-soft)}
+.m-visa.v-no{color:#b91c1c;background:#fef2f2}
+.c-visa{font-size:11px;color:var(--muted);margin:2px 0 6px;line-height:1.45}
+.lg span{white-space:nowrap}
+.a-opt,.a-link,.dlcv{white-space:nowrap}
+.empty-hint{margin:40px auto;max-width:560px;text-align:center;color:var(--muted);line-height:1.6}
+</style>
+</head>
+<body>
+
+<div class="modal-overlay" id="urlModal"><div class="modal">
+  <h3 id="modalTitle">🔗 Job link</h3>
+  <p class="sub" id="modalSub">Open it directly, or copy it with Cmd+C / Ctrl+C.</p>
+  <input class="url-inp" id="modalUrl" readonly onclick="this.select()">
+  <div id="modalQuick"></div>
+  <div class="modal-actions">
+    <button class="btn-ghost" onclick="closeM('urlModal')">Close</button>
+    <a class="btn-open" id="modalOpen" href="#" target="_blank" rel="noopener noreferrer">Open in browser ↗</a>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="cvModal"><div class="modal xwide">
+  <h3>📄 Your CV</h3>
+  <p class="sub">This is the layout every tailored CV uses. To change your CV, paste the new text under <b>Update</b> — it's converted into this same layout and saved in this browser.</p>
+  <div class="rtabs">
+    <button class="rtab active" id="tabView" onclick="cvTab('view')">View</button>
+    <button class="rtab" id="tabEdit" onclick="cvTab('edit')">Update</button>
+  </div>
+  <div id="cvView"><div class="cvwrap" id="cvText"></div><div class="note" id="cvMeta" style="margin-top:6px"></div></div>
+  <div id="cvEdit" class="hidden">
+    <textarea class="resume-ta" id="cvTa" placeholder="Paste your full CV text here…"></textarea>
+    <div class="okmsg hidden" id="cvOk">✅ Saved — the optimizer will use this version.</div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn-ghost" onclick="resetCV()">Reset to base CV</button>
+    <button class="btn-ghost" onclick="closeM('cvModal')">Close</button>
+    <button class="btn-primary hidden" id="cvSave" onclick="saveCV()">💾 Save CV</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="optModal"><div class="modal xwide">
+  <div class="optim-head"><h3>✨ CV tailored for <span id="optCo"></span></h3><button class="xbtn" onclick="closeM('optModal')">✕</button></div>
+  <div class="optim-meta" id="optMeta"></div>
+  <div class="rtabs">
+    <button class="rtab active" id="otCv" onclick="optTab('cv')">📄 Tailored CV</button>
+    <button class="rtab" id="otNotes" onclick="optTab('notes')">💡 What changed &amp; gaps</button>
+  </div>
+  <div id="optBody"></div>
+  <div id="optNotes" class="hidden"></div>
+  <div class="modal-actions">
+    <button class="btn-ghost hidden" id="optRetry" onclick="optRetry()">↻ Regenerate</button>
+    <button class="btn-ghost hidden" id="optHtml" onclick="optDownload()">⬇️ Download</button>
+    <button class="btn-primary hidden" id="optPrint" onclick="optPrint()">🖨️ Print / Save as PDF</button>
+    <button class="btn-ghost" onclick="closeM('optModal')">Close</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="msgModal"><div class="modal">
+  <h3>📋 Your message</h3>
+  <p class="sub">Copying isn't allowed here, so the text is selected below. Press Cmd+C (Ctrl+C on Windows) to copy it.</p>
+  <textarea class="resume-ta" id="msgText" style="height:170px" onclick="this.select()"></textarea>
+  <div class="modal-actions"><button class="btn-ghost" onclick="closeM('msgModal')">Close</button></div>
+</div></div>
+
+<div class="modal-overlay" id="addpModal"><div class="modal">
+  <h3>➕ Add someone you messaged</h3>
+  <p class="sub" id="apFor"></p>
+  <label class="apl">Name<input class="api" id="apName" placeholder="e.g. Sam Patel"></label>
+  <label class="apl">Title <span>(optional)</span><input class="api" id="apTitle" placeholder="e.g. Engineering Manager"></label>
+  <label class="apl">LinkedIn URL <span>(optional)</span><input class="api" id="apUrl" placeholder="linkedin.com/in/…"></label>
+  <label class="apc"><input type="checkbox" id="apMsgd" checked> I've already messaged them</label>
+  <div class="modal-actions">
+    <button class="btn-ghost" onclick="closeM('addpModal')">Cancel</button>
+    <button class="btn-primary" onclick="saveAddPerson()">Add person</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="bkModal"><div class="modal">
+  <h3>💾 Back up your statuses</h3>
+  <p class="sub">Statuses are saved in this browser and kept through every refresh. For extra safety, copy this text somewhere (Cmd+A, Cmd+C). If browser data is ever cleared, paste it below — it merges, and never overwrites a status you changed more recently.</p>
+  <textarea class="resume-ta" id="bkOut" readonly style="height:90px;font-family:monospace" onclick="this.select()"></textarea>
+  <div class="note" id="bkMsg" style="margin:4px 0 12px"></div>
+  <p class="sub" style="margin-bottom:6px"><b>Restore:</b> paste a backup here</p>
+  <textarea class="resume-ta" id="bkIn" style="height:70px;font-family:monospace" placeholder="Paste backup text…"></textarea>
+  <div class="modal-actions">
+    <button class="btn-ghost" onclick="closeM('bkModal')">Close</button>
+    <button class="btn-primary" onclick="restoreBackup()">Restore (merge)</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+<div id="notices"></div>
+<div id="bgPill" class="hidden"></div>
+
+<header>
+  <div>
+    <h1><span class="mark" id="hMark">J</span><span id="hTitle">Job Tracker</span></h1>
+    <p id="hTag"></p>
+    <span class="pill">🔄 Data: <span id="dataVer"></span> · <span id="totalCnt">—</span> roles · your statuses are kept across refreshes</span>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+    <button class="cv-btn" onclick="openBackup()">💾 Backup</button>
+    <button class="cv-btn" onclick="openCV()"><span class="dot"></span>📄 My CV</button>
+  </div>
+</header>
+
+<div class="dash">
+  <div class="dc dc-hero">
+    <div class="dc-k">Jobs in your tracker</div>
+    <div class="dc-big"><span id="sTot">0</span><span class="dc-of">roles</span></div>
+    <div class="dc-note" id="sFilt">Showing all <span id="sShow">0</span></div>
+    <div class="dc-pills"><span class="dp dp-new">🆕 <b id="sNew">0</b> new</span><span class="dp dp-hi">★ <b id="sHi">0</b> high fit</span></div>
+  </div>
+  <div class="dc">
+    <div class="dc-k">Your pipeline</div>
+    <div class="dc-big"><span id="sAp">0</span><span class="dc-of">in progress</span></div>
+    <div class="dc-steps">
+      <div class="st-i"><b id="sApp">0</b><span>Applied</span></div>
+      <div class="st-i"><b id="sScr">0</b><span>Screening</span></div>
+      <div class="st-i"><b id="sInt">0</b><span>Interviewing</span></div>
+      <div class="st-i"><b id="sOff">0</b><span>Offer</span></div>
+      <div class="st-i"><b id="sRej">0</b><span>Rejected</span></div>
+      <div class="st-i"><b id="sMsg">0</b><span>Messaged</span></div>
+    </div>
+  </div>
+  <div class="dc">
+    <div class="dc-k">Location</div>
+    <div class="dc-big"><span id="sLocPct">0%</span><span class="dc-of" id="sLocLab">in your first location</span></div>
+    <div class="seg" id="segLoc"></div>
+    <div class="lg" id="lgLoc"></div>
+  </div>
+  <div class="dc">
+    <div class="dc-k">Role mix</div>
+    <div class="dc-big"><span id="sCatPct">0%</span><span class="dc-of" id="sCatLab">first track</span></div>
+    <div class="seg" id="segCat"></div>
+    <div class="lg" id="lgCat"></div>
+  </div>
+</div>
+
+
+<div class="toolbar">
+<div class="search"><input id="q" placeholder="Search company, role, skill, city, person…" oninput="PAGE = {}; render()"></div>
+<div class="viewtog" role="group" aria-label="Layout"><button class="vt" data-view="cards" title="Card view">▦ Cards</button><button class="vt" data-view="table" title="Table view">☰ Table</button></div>
+<div class="controls">
+  <div class="row" id="locChips"><span class="lab">Location</span></div>
+  <div class="row" id="catChips"><span class="lab">Role</span></div>
+  <div class="row"><span class="lab">Show</span>
+    <button class="chip on" data-g="fit" data-v="all">Everything</button>
+    <button class="chip" data-g="fit" data-v="High">⭐ High fit only</button>
+    <button class="chip" data-g="fit" data-v="visa" id="visaChip">🛂 Visa OK</button>
+    <button class="chip" data-g="fit" data-v="direct">🔗 Direct listings only</button>
+    <button class="chip" data-g="fit" data-v="linkedin">LinkedIn jobs</button>
+    <button class="chip" data-g="fit" data-v="todo">📝 Not applied yet</button>
+    <button class="chip" data-g="fit" data-v="new">🆕 New since last refresh</button>
+  </div>
+  <div class="row"><span class="lab">Status</span><select id="stF" class="stf" onchange="PAGE = {}; render()"></select></div>
+  <div class="row"><span class="lab">Sort</span>
+    <button class="chip on" data-g="sort" data-v="new">📅 Newest added</button>
+    <button class="chip" data-g="sort" data-v="fit">Best fit</button>
+    <button class="chip" data-g="sort" data-v="sal">Salary ↓</button>
+    <button class="chip" data-g="sort" data-v="az">A – Z</button>
+  </div>
+</div>
+
+</div>
+
+<details class="tip"><summary>ℹ️ How this tracker works</summary><div class="tipb" id="tipText"></div></details>
+
+<div id="main"></div>
+<div class="none hidden" id="none">No roles match these filters.</div>
+
+<div class="ph">🔎 Job portals — check weekly</div>
+<div class="pgrid" id="portals"></div>
+
+<script>
+// ── Injected by scripts/build.py: PROFILE, DEFAULT_CV_JSON, DATA, DATA_VERSION ──
+var PROFILE = {"name": "Alex Morgan", "tracker_title": "Alex's Job Tracker", "tagline": "Backend · Platform · AI Engineer — Berlin, Amsterdam, Dublin & remote EU", "storage_prefix": "alex", "role_tracks": [{"id": "Backend", "label": "Backend", "emoji": "⚙️", "titles": ["Backend Engineer", "Software Engineer Backend", "Python Developer", "Go Engineer"]}, {"id": "Platform", "label": "Platform / Infra", "emoji": "🏗️", "titles": ["Platform Engineer", "Site Reliability Engineer", "Infrastructure Engineer"]}, {"id": "AI Engineer", "label": "AI Engineer", "emoji": "🤖", "titles": ["AI Engineer", "LLM Engineer", "Applied AI Engineer"]}], "locations": [{"id": "Berlin", "label": "Berlin", "emoji": "🇩🇪", "country": "DE", "places": ["Berlin"], "subtitle": "Berlin, on-site or hybrid", "needs_visa_sponsorship": true}, {"id": "Netherlands", "label": "Netherlands", "emoji": "🇳🇱", "country": "NL", "places": ["Amsterdam", "Rotterdam", "Utrecht", "Eindhoven", "The Hague"], "subtitle": "Amsterdam · Rotterdam · Utrecht · Eindhoven", "needs_visa_sponsorship": true}, {"id": "Dublin", "label": "Dublin", "emoji": "🇮🇪", "country": "IE", "places": ["Dublin"], "needs_visa_sponsorship": true}, {"id": "Remote EU", "label": "Remote (EU)", "emoji": "🌍", "country": "EU", "places": ["Remote - Europe", "Remote - EMEA"], "subtitle": "Fully remote, hiring in your timezone", "needs_visa_sponsorship": false}], "fit": {"high": "Python or Go backend services, distributed systems, or LLM/RAG features are the core of the role", "medium": "General software engineering where backend is a meaningful part", "avoid_keywords": ["security clearance", "unpaid", "commission only"], "avoid_companies": [], "prefer": ["fintech", "developer tools", "climate"]}, "cv": {"base_cv_date": "2026-11-01", "allowed_titles": ["Backend Engineer", "Software Engineer", "Platform Engineer", "Senior Software Engineer", "AI Engineer"], "links": [], "one_page": true, "confirmed_extras": [], "ask_before_claiming": ["Rust", "Azure"], "conditional_bullets": []}, "outreach": {"message": "Hi{NAME}, hope you're well!\n\nI just applied for the {ROLE} role at {COMPANY}. I've spent 5 years building backend systems in Python and Go, most recently payments infrastructure at Acme.\n\nI'd need visa sponsorship, and I'm happy to relocate. You can see my work at github.com/alexmorgan.\n\nWould love to chat if you think there's a fit!\n\nBest,\nAlex", "note": "Hi{NAME}, I just applied for the {ROLE} role at {COMPANY}. 5 years building Python/Go backends, most recently payments at Acme. Open to relocating. Would love to connect if you think there is a fit! github.com/alexmorgan", "note_shorten": [[" Would love to connect if you think there is a fit!", " Would love to connect!"], [" Open to relocating.", ""]]}, "features": {"optimize_button": true}, "tailored_cv_folder": "Tailored CVs"};
+var DEFAULT_CV_JSON = {"name": "ALEX MORGAN", "title": "Backend Engineer", "contact": ["Lisbon, Portugal", "alex@example.com", "linkedin.com/in/alex-morgan-example", "github.com/alexmorgan-example"], "rightToWork": "Will need visa sponsorship for DE, NL and IE; open to relocate", "profile": "Backend engineer with five years' experience building payment APIs, event-driven services and the data infrastructure beneath them. Most recently led the move of a card-payments ledger to Go microservices.", "skills": [[{"label": "Backend", "items": ["Go", "Python", "FastAPI", "gRPC", "REST APIs", "OAuth2"]}], [{"label": "Data & Messaging", "items": ["PostgreSQL", "Redis", "Kafka", "BigQuery"]}], [{"label": "Infrastructure", "items": ["Docker", "Kubernetes", "Terraform", "AWS", "CI/CD"]}], [{"label": "AI", "items": ["RAG", "Embeddings", "OpenAI API"]}]], "experience": [{"role": "Backend Engineer", "company": "Northwind Pay", "location": "Lisbon, Portugal", "dates": "Mar 2023 – Present", "tagline": "Card-issuing platform for European fintechs", "bullets": ["Led the migration of the card ledger from a Python monolith to **Go microservices**, handling **3M+ transactions a day** at **p99 under 120 ms**.", "Built an event-driven reconciliation pipeline on **Kafka** that cut manual finance checks by **70%**.", "Added a **RAG** assistant over internal runbooks that answers on-call questions in seconds."]}, {"role": "Software Engineer", "company": "Contoso Logistics", "location": "Porto, Portugal", "dates": "Jul 2021 – Feb 2023", "tagline": "", "bullets": ["Designed shipment-tracking APIs in **FastAPI** and PostgreSQL serving **40+ partner integrations**.", "Moved deployments to **Kubernetes** with Terraform, cutting release time from **2 hours to 10 minutes**."]}], "projects": [{"name": "pgqueue", "sub": "Open-source Go job queue on Postgres", "dates": "2024", "bullets": ["Lightweight job queue using SKIP LOCKED; **600+ GitHub stars**."]}], "education": [{"degree": "BSc Computer Science", "school": "University of Porto", "location": "Porto, Portugal", "dates": "2017 – 2021"}]};
+var DATA = {"jobs": [{"location": "Berlin", "track": "Backend", "company": "Example Fintech GmbH", "role": "Senior Backend Engineer (Go)", "place": "Berlin (hybrid)", "salary": "€75k–€90k", "salary_num": 90, "skills": ["Go", "PostgreSQL", "Kafka", "Payments"], "url": "https://example.com/careers/senior-backend-engineer-go", "source": "Company careers page", "fit": "High", "direct": true, "note": "Payments ledger team; Go + Kafka matches your last role", "visa": {"status": "sponsors", "evidence": "Posting: \"We sponsor EU Blue Card applications and help with relocation.\""}, "people": [{"name": "Sam Example", "title": "Engineering Manager, Payments", "url": "https://www.linkedin.com/in/sam-example", "tag": "Hiring manager"}], "posted": "2026-11-15"}, {"location": "Netherlands", "track": "AI Engineer", "company": "Example Analytics BV", "role": "AI Engineer", "place": "Amsterdam", "salary": "Not listed", "salary_num": 0, "skills": ["Python", "RAG", "LLM evals"], "url": "https://example.com/jobs/ai-engineer-amsterdam", "source": "LinkedIn", "fit": "Medium", "direct": true, "note": "RAG product team; asks for 3+ years", "visa": {"status": "sponsors", "evidence": "On the IND public register of recognised sponsors"}, "people": [], "posted": "2026-11-12"}, {"location": "Remote EU", "track": "Platform", "company": "Example Cloud", "role": "Platform Engineer", "place": "Remote (Europe)", "salary": "€70k–€85k", "salary_num": 85, "skills": ["Kubernetes", "Terraform", "AWS"], "url": "https://example.com/jobs/platform-engineer-remote", "source": "Ashby (company ATS)", "fit": "High", "direct": true, "note": "Remote-first; hires through an employer of record", "visa": {"status": "not_needed", "evidence": "Fully remote via EOR"}, "people": [], "posted": "2026-11-17"}], "portals": [["Arbeitnow", "Jobs in Germany with a visa-sponsorship filter", "https://www.arbeitnow.com/", "DE"], ["GermanTechJobs", "Tech roles in Germany with salary ranges", "https://germantechjobs.de/", "DE"], ["Berlin Startup Jobs", "Berlin startup roles", "https://berlinstartupjobs.com/", "DE"], ["StepStone", "Germany's largest job board", "https://www.stepstone.de/", "DE"], ["Bundesagentur für Arbeit – Jobsuche", "Federal employment agency job search", "https://www.arbeitsagentur.de/jobsuche/", "DE"], ["Relocate.me", "Tech jobs with relocation support", "https://relocate.me/", "DE"], ["IamExpat Jobs", "English-language jobs in the Netherlands", "https://www.iamexpat.nl/career/jobs-netherlands", "NL"], ["Indeed Netherlands", "Dutch edition of Indeed", "https://nl.indeed.com/", "NL"], ["Welcome to the Jungle", "Startup & scale-up roles", "https://app.welcometothejungle.com/", "NL"], ["IrishJobs.ie", "Ireland's largest job board", "https://www.irishjobs.ie/", "IE"], ["Jobs.ie", "Irish general board", "https://www.jobs.ie/", "IE"], ["Indeed Ireland", "Irish edition of Indeed", "https://ie.indeed.com/", "IE"], ["We Work Remotely", "Remote jobs board", "https://weworkremotely.com/", "EU"], ["Remote OK", "Remote jobs board", "https://remoteok.com/", "EU"], ["LinkedIn Jobs", "Set your location and title filters", "https://www.linkedin.com/jobs/", "Global"]]};
+var DATA_VERSION = "2026-11-19";
+
+
+var P = PROFILE;
+P.locations = P.locations || []; P.role_tracks = P.role_tracks || [];
+P.cv = P.cv || {}; P.outreach = P.outreach || {}; P.features = P.features || {};
+var SP = String(P.storage_prefix || 'jobtracker');
+function locById(id){ return P.locations.filter(function(l){ return l.id === id; })[0]; }
+function trackById(id){ return P.role_tracks.filter(function(t){ return t.id === id; })[0]; }
+var STATUS_ALL = ['To apply','Applied','Screening','Interviewing','Offer','Rejected','Closed','Skipped','Duplicate','Wrong location'];
+var NEEDS_VISA = P.locations.some(function(l){ return l.needs_visa_sponsorship; });
+
+// ── Colours: one per role track and per location group, in profile order ──
+var TRACK_COLORS = [['#7c3aed','#f5f3ff'],['#0f766e','#f0fdfa'],['#a16207','#fef6dc'],['#be185d','#fdf2f8'],['#1d4ed8','#eff6ff'],['#4d7c0f','#f7fee7'],['#9a3412','#fff7ed'],['#0369a1','#f0f9ff']];
+var LOC_COLORS = [['#ef4444','#fee2e2'],['#0ea5e9','#e0f2fe'],['#16a34a','#dcfce7'],['#a855f7','#f3e8ff'],['#f59e0b','#fef3c7'],['#ec4899','#fce7f3'],['#14b8a6','#ccfbf1'],['#64748b','#e2e8f0']];
+function trackIdx(id){ for(var k = 0; k < P.role_tracks.length; k++) if(P.role_tracks[k].id === id) return k; return P.role_tracks.length; }
+function locIdx(id){ for(var k = 0; k < P.locations.length; k++) if(P.locations[k].id === id) return k; return P.locations.length; }
+function trackLabel(id){ var t = trackById(id); return t ? (t.label || t.id) : String(id || 'Other'); }
+function locLabel(id){ var l = locById(id); return l ? (l.label || l.id) : String(id || 'Other'); }
+
+// ── Visa: only matters for location groups where you need sponsorship ──
+function visaNeeded(j){ var l = locById(j.sec); return !!(l && l.needs_visa_sponsorship); }
+function visaStatus(j){ return (j.visa && j.visa.status) || 'unclear'; }
+function visaOk(j){ return !visaNeeded(j) || /^(sponsors|not_needed)$/.test(visaStatus(j)); }
+function visaChip(j, small){
+  if(!visaNeeded(j)) return '';
+  var s = visaStatus(j), t = s === 'sponsors' ? ['v-ok', '🛂 Sponsors visa'] : s === 'not_needed' ? ['v-ok', '🛂 No visa needed'] : s === 'no' ? ['v-no', '🛂 No sponsorship'] : ['v-unclear', '🛂 Visa unclear'];
+  return '<span class="m m-visa ' + t[0] + '"' + (j.visa && j.visa.evidence ? ' title="' + esc(j.visa.evidence) + '"' : '') + '>' + (small ? t[1].replace('🛂 ', '') : t[1]) + '</span>';
+}
+var HOME_BADGES = {}; P.locations.forEach(function(l){ if(l.country) HOME_BADGES[l.country] = 1; HOME_BADGES[l.label || l.id] = 1; });
+
+// ── Build the parts of the page that depend on your profile ──
+(function setupUI(){
+  function e(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  var css = '';
+  P.role_tracks.concat([{}]).forEach(function(t, k){ var c = TRACK_COLORS[k % TRACK_COLORS.length];
+    css += '.c-t' + k + '{color:' + c[0] + ';background:' + c[1] + '}.sg-t' + k + ',.dot-t' + k + '{background:' + c[0] + '}'; });
+  P.locations.concat([{}]).forEach(function(l, k){ var c = LOC_COLORS[k % LOC_COLORS.length];
+    css += '.b-l' + k + ' h2::before{background:' + c[0] + ';box-shadow:0 0 0 4px ' + c[1] + '}.sg-l' + k + ',.dot-l' + k + '{background:' + c[0] + '}'; });
+  css += '.b-lx h2::before{background:#94a3b8;box-shadow:0 0 0 4px #e2e8f0}';
+  var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+
+  var title = P.tracker_title || ((P.name ? String(P.name).split(' ')[0] + '\'s ' : '') + 'Job Tracker');
+  document.title = title;
+  document.getElementById('hTitle').textContent = title;
+  document.getElementById('hMark').textContent = String(P.name || title).trim().charAt(0).toUpperCase();
+  document.getElementById('hTag').textContent = P.tagline || '';
+
+  var lc = document.getElementById('locChips');
+  lc.insertAdjacentHTML('beforeend', '<button class="chip on" data-g="loc" data-v="all">All locations</button>' +
+    P.locations.map(function(l){ return '<button class="chip" data-g="loc" data-v="' + e(l.id) + '">' + (l.emoji ? e(l.emoji) + ' ' : '') + e(l.label || l.id) + '</button>'; }).join(''));
+  if(P.locations.length < 2) lc.style.display = 'none';
+  var cc = document.getElementById('catChips');
+  cc.insertAdjacentHTML('beforeend', '<button class="chip on" data-g="cat" data-v="all">All roles</button>' +
+    P.role_tracks.map(function(t){ return '<button class="chip" data-g="cat" data-v="' + e(t.id) + '">' + (t.emoji ? e(t.emoji) + ' ' : '') + e(t.label || t.id) + '</button>'; }).join(''));
+  if(P.role_tracks.length < 2) cc.style.display = 'none';
+  if(!NEEDS_VISA) document.getElementById('visaChip').style.display = 'none';
+
+  var first = P.locations[0], ft = P.role_tracks[0];
+  document.getElementById('sLocLab').textContent = first ? 'in ' + (first.label || first.id) : '';
+  document.getElementById('sCatLab').textContent = ft ? (ft.label || ft.id) : '';
+  document.getElementById('segLoc').innerHTML = P.locations.map(function(l, k){ return '<i class="sg-l' + k + '"></i>'; }).join('');
+  document.getElementById('segCat').innerHTML = P.role_tracks.map(function(t, k){ return '<i class="sg-t' + k + '"></i>'; }).join('');
+  document.getElementById('lgLoc').innerHTML = P.locations.map(function(l, k){ return '<span><i class="dot-l' + k + '"></i>' + e(l.label || l.id) + ' <b id="lgL' + k + '">0</b></span>'; }).join('');
+  document.getElementById('lgCat').innerHTML = P.role_tracks.map(function(t, k){ return '<span><i class="dot-t' + k + '"></i>' + e(t.label || t.id) + ' <b id="lgT' + k + '">0</b></span>'; }).join('');
+
+  var fit = P.fit || {};
+  document.getElementById('tipText').innerHTML =
+    '<b>Fit</b> is rated against your CV: ⭐ High = ' + e(fit.high || 'the core of the role matches your strongest experience') + '. Medium = ' + e(fit.medium || 'a reasonable match with some gaps') + '. ' +
+    (NEEDS_VISA ? '🛂 Where you need sponsorship, a role is only added if the posting says it sponsors or the employer is on the country\'s official sponsor register — hover the visa tag for the evidence. ' : '') +
+    '🟡 Yellow <b>Open page</b> = link opens a results or careers page, not the exact posting. Listings close fast — confirm before applying. ' +
+    'Each role has a permanent ID, so refreshes only add new roles — no duplicates, and your statuses are never reset. Roles you\'re tracking stay visible even if a refresh drops them. ' +
+    '📎 <b>PDF ready</b> means a CV tailored to that job is saved in ' + e(String(P.tailored_cv_folder || 'Tailored CVs').replace(/\//g, ' › ')) + ' › [Company].';
+})();
+
+function cvToText(cv){
+  var L = [];
+  function strip(s){ return String(s || '').replace(/\*\*/g, ''); }
+  L.push(cv.name, cv.title, (cv.contact || []).join(' | '));
+  if(cv.rightToWork) L.push('Right to work: ' + cv.rightToWork);
+  L.push('', 'PROFILE', strip(cv.profile), '', 'SKILLS');
+  (cv.skills || []).forEach(function(line){ L.push(line.map(function(g){ return g.label + ': ' + g.items.join(', '); }).join(' | ')); });
+  L.push('', 'EXPERIENCE');
+  (cv.experience || []).forEach(function(e){
+    L.push(e.role + ' | ' + e.company + ' | ' + e.location + ' | ' + e.dates);
+    if(e.tagline) L.push(e.tagline);
+    e.bullets.forEach(function(b){ L.push('• ' + strip(b)); });
+    L.push('');
+  });
+  if((cv.projects || []).length){
+    L.push('PROJECTS');
+    cv.projects.forEach(function(p){ L.push(p.name + ' | ' + p.sub + ' | ' + p.dates); p.bullets.forEach(function(b){ L.push('• ' + strip(b)); }); });
+    L.push('');
+  }
+  L.push('EDUCATION');
+  (cv.education || []).forEach(function(e){ L.push(e.degree + ' | ' + e.school + ' | ' + e.location + ' | ' + e.dates); });
+  return L.join('\n');
+}
+var DEFAULT_CV = cvToText(DEFAULT_CV_JSON);
+// The profile opens with the same role as the title, e.g. "AI backend engineer with five years'…"
+function rolePhrase(title){ var w = String(title).split(/\s+/).map(function(x, i){ return /^(AI|ML|LLM)$/i.test(x) ? x.toUpperCase() : i ? x.toLowerCase() : x.charAt(0).toUpperCase() + x.slice(1).toLowerCase(); }); return w.join(' '); }
+function fixProfileRole(profile, title){
+  var s = String(profile || ''), m = s.match(/^\s*(?:\*\*)?(?:an?\s+)?(?:[A-Za-z][\w\/&+.-]*\s+){0,4}?(?:engineer|developer)(?:\*\*)?\b/i);
+  return m ? rolePhrase(title) + s.slice(m[0].length) : s;
+}
+// The only titles a tailored CV may use (your base title is always allowed too)
+var TITLES = (P.cv.allowed_titles || []).slice();
+if(DEFAULT_CV_JSON.title && TITLES.indexOf(DEFAULT_CV_JSON.title) === -1) TITLES.unshift(DEFAULT_CV_JSON.title);
+
+
+// ── storage helpers ─────────────────────────────────────────
+function lsGet(k, d){ try { var v = localStorage.getItem(k); return v === null ? d : v; } catch(e){ return d; } }
+function lsSet(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+// ── CV state (text you can edit + structured version used for the layout) ──
+var CV_TEXT_KEY = SP + '_cv_text_v5', CV_JSON_KEY = SP + '_cv_json_v5', CV_STALE_KEY = SP + '_cv_stale_v5';
+var CV = lsGet(CV_TEXT_KEY, null);
+var CV_JSON = null; try { CV_JSON = JSON.parse(lsGet(CV_JSON_KEY, 'null')); } catch(e){ CV_JSON = null; }
+var CV_STALE = lsGet(CV_STALE_KEY, '') === '1';
+(function initCV(){
+  if(CV === null) CV = DEFAULT_CV;
+  if(!CV_JSON || !CV_JSON.experience) CV_JSON = JSON.parse(JSON.stringify(DEFAULT_CV_JSON));
+})();
+function cvHash(){ var s = JSON.stringify(CV_JSON), h = 0; for(var i = 0; i < s.length; i++){ h = (h * 31 + s.charCodeAt(i)) | 0; } return String(h); }
+
+// ── Persistent store: survives reloads and data refreshes ───
+// STORE.jobs[id] = {status, updated, firstSeen, lastSeen, snap}
+var STORE_KEY = SP + '_tracker_store_v1';
+function norm(s){ return String(s == null ? '' : s).toLowerCase().replace(/\([^)]*\)/g,' ').replace(/[^a-z0-9]+/g,' ').trim(); }
+function makeId(co, role){ return norm(co) + '|' + norm(role); }
+function urlKey(u){
+  try { var x = new URL(u); return (x.hostname.replace(/^www\./,'') + x.pathname.replace(/\/application\/?$/,'').replace(/\/+$/,'')).toLowerCase(); }
+  catch(e){ return String(u || '').toLowerCase(); }
+}
+function loadStore(){
+  var s = null;
+  try { s = JSON.parse(lsGet(STORE_KEY, 'null')); } catch(e){ s = null; }
+  if(!s || typeof s !== 'object' || !s.jobs || typeof s.jobs !== 'object') s = {baseline: DATA_VERSION, jobs: {}};
+  if(!s.baseline) s.baseline = DATA_VERSION;
+  return s;
+}
+var STORE = loadStore();
+function saveStore(){ lsSet(STORE_KEY, JSON.stringify(STORE)); }
+
+// One-time migration of statuses saved by the previous version ("Company|Role" -> status)
+(function migrate(){
+  if(STORE.migratedV3) return;
+  var old = {}; try { old = JSON.parse(lsGet(SP + '_status_v3','{}')) || {}; } catch(e){}
+  var map = {'Not Applied':'To apply','Interview':'Interviewing','On Hold':'Skipped'};
+  Object.keys(old).forEach(function(k){
+    var p = k.split('|'), id = makeId(p[0], p.slice(1).join('|'));
+    var rec = STORE.jobs[id] || (STORE.jobs[id] = {});
+    if(!rec.status) rec.status = map[old[k]] || old[k];
+  });
+  STORE.migratedV3 = true;
+})();
+(function migrateStatusNames(){
+  if(STORE.migratedWL) return;
+  Object.keys(STORE.jobs).forEach(function(id){ if(STORE.jobs[id].status === 'Not UK') STORE.jobs[id].status = 'Wrong location'; });
+  STORE.migratedWL = true; saveStore();
+})();
+
+// Jobs come from data/jobs.json as objects. Older trackers stored rows as arrays,
+// and those snapshots may still be in your browser, so both shapes are read.
+function personRow(p){
+  if(Array.isArray(p)) return p;
+  return [p.name || '', p.title || '', p.url || '', p.tag || 'Team', p.email || '', p.email_confidence || ''];
+}
+function fromRow(r){
+  if(Array.isArray(r)){
+    return {sec:r[0], cat:r[1], co:r[2], role:r[3], loc:r[4], sal:r[5], salN:r[6] || 0, skills:r[7] || [], url:r[8],
+            src:r[9], fit:r[10], direct:!!r[11], note:r[12] || '', id:r[13] || makeId(r[2], r[3]), people:r[14] || [], cvPdf:r[15] || '',
+            visa:r[16] || null};
+  }
+  return {sec:r.location, cat:r.track, co:r.company, role:r.role, loc:r.place || '', sal:r.salary || 'Not listed', salN:r.salary_num || 0,
+          skills:r.skills || [], url:r.url, src:r.source || '', fit:r.fit || 'Medium', direct:r.direct !== false, note:r.note || '',
+          id:r.id || makeId(r.company, r.role), people:(r.people || []).map(personRow), cvPdf:r.cv_pdf || '', visa:r.visa || null};
+}
+function rowId(r){ return Array.isArray(r) ? (r[13] || makeId(r[2], r[3])) : (r.id || makeId(r.company, r.role)); }
+
+// Build the job list: skip duplicates (same ID, or same direct-posting URL),
+// keep your status, and keep roles you're tracking even if a refresh drops them.
+var JOBS = [], DUPES = 0;
+function buildJobs(){
+  JOBS = []; DUPES = 0;
+  var ids = {}, urls = {};
+  function take(j){
+    var uk = j.direct ? urlKey(j.url) : null;
+    if(ids[j.id] || (uk && urls[uk])) return false;
+    ids[j.id] = 1; if(uk) urls[uk] = 1;
+    JOBS.push(j); return true;
+  }
+  DATA.jobs.forEach(function(r){
+    var j = fromRow(r);
+    if(ids[j.id] || (j.direct && urls[urlKey(j.url)])){ DUPES++; return; }
+    var rec = STORE.jobs[j.id] || (STORE.jobs[j.id] = {});
+    if(!rec.firstSeen) rec.firstSeen = DATA_VERSION;
+    rec.lastSeen = DATA_VERSION;
+    rec.snap = r;
+    j.firstSeen = rec.firstSeen;
+    take(j);
+  });
+  Object.keys(STORE.jobs).forEach(function(id){
+    var rec = STORE.jobs[id];
+    if(ids[id] || !rec.snap || !rec.status || rec.status === 'To apply') return;
+    var j = fromRow(rec.snap); j.id = id; j.gone = true; j.firstSeen = rec.firstSeen;
+    take(j);
+  });
+  JOBS.forEach(function(j, i){ j.i = i; });
+  saveStore();
+}
+buildJobs();
+function getStatus(j){ var r = STORE.jobs[j.id]; return (r && r.status) || 'To apply'; }
+function isNew(j){ return !j.gone && j.firstSeen === DATA_VERSION && STORE.baseline !== DATA_VERSION; }
+function fmtDate(v){ var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || ''); if(!m) return ''; return +m[3] + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1] + ' ' + m[1]; }
+
+// ── Backup / restore (merge, never overwrite newer changes) ─
+function openBackup(){
+  var slim = {exported: new Date().toISOString().slice(0,10), baseline: STORE.baseline, jobs: {}};
+  Object.keys(STORE.jobs).forEach(function(id){
+    var r = STORE.jobs[id];
+    if(r.status && r.status !== 'To apply') slim.jobs[id] = {status:r.status, updated:r.updated, firstSeen:r.firstSeen, snap:r.snap};
+  });
+  slim.msgd = STORE.msgd || {};
+  slim.extra = STORE.extra || {};
+  document.getElementById('bkOut').value = JSON.stringify(slim);
+  document.getElementById('bkIn').value = '';
+  document.getElementById('bkMsg').textContent = Object.keys(slim.jobs).length + ' tracked roles in this backup.';
+  document.getElementById('bkModal').classList.add('open');
+}
+function restoreBackup(){
+  var inc;
+  try { inc = JSON.parse(document.getElementById('bkIn').value); } catch(e){ toast('That text isn\'t a valid backup'); return; }
+  if(!inc || !inc.jobs){ toast('That text isn\'t a valid backup'); return; }
+  var n = 0;
+  if(inc.extra){ STORE.extra = STORE.extra || {}; Object.keys(inc.extra).forEach(function(id){ var cur = STORE.extra[id] || (STORE.extra[id] = []); (inc.extra[id] || []).forEach(function(x){ if(!cur.some(function(y){ return y[0] === x[0]; })) cur.push(x); }); }); }
+  if(inc.msgd){ STORE.msgd = STORE.msgd || {}; Object.keys(inc.msgd).forEach(function(k){ if(!STORE.msgd[k]) STORE.msgd[k] = inc.msgd[k]; }); }
+  Object.keys(inc.jobs).forEach(function(id){
+    var a = inc.jobs[id], b = STORE.jobs[id] || (STORE.jobs[id] = {});
+    var takeIt = !b.status || b.status === 'To apply' || (a.updated && (!b.updated || a.updated > b.updated));
+    if(takeIt && a.status){ b.status = a.status; b.updated = a.updated; n++; }
+    if(!b.firstSeen && a.firstSeen) b.firstSeen = a.firstSeen;
+    if(!b.snap && a.snap) b.snap = a.snap;
+  });
+  saveStore(); buildJobs(); render();
+  toast('Restored ' + n + ' statuses (newer local changes kept)');
+  closeM('bkModal');
+}
+
+var F = {loc:'all', cat:'all', fit:'all', sort:'new'};
+var lastOpt = '';
+
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function toast(m){ var t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove('show');},2200); }
+function closeM(id){ document.getElementById(id).classList.remove('open'); if(id === 'optModal') OPEN_ID = null; }
+['urlModal','cvModal','optModal','bkModal'].forEach(function(id){
+  document.getElementById(id).addEventListener('click', function(e){ if(e.target.id===id) closeM(id); });
+});
+
+var URL_CTX = null;
+function quickHtml(){
+  var c = URL_CTX; if(!c || !c.j) return '';
+  var j = c.j, st = getStatus(j), h = '<div class="qk"><div class="qk-row"><span class="qk-l">' + esc(j.co) + ' · ' + esc(j.role) + '</span></div><div class="qk-row">';
+  h += '<span class="qk-lab">Mark job as</span>' + ['Applied','Skipped','Closed','Duplicate','Wrong location'].map(function(s){
+    return '<button class="qk-b' + (st === s ? ' on' : '') + '" data-qs="' + s + '">' + ({Applied:'✅ Applied', Skipped:'⏭️ Skipped', Closed:'🚫 Closed', Duplicate:'👯 Duplicate', 'Wrong location':'🌍 Wrong location'})[s] + '</button>'; }).join('');
+  if(st !== 'To apply') h += '<button class="qk-b ghost" data-qs="To apply">↺ Reset</button>';
+  h += '</div>';
+  if(/^(Applied|Screening|Interviewing|Offer)$/.test(st)){
+    var ppl = j.people || [];
+    h += '<div class="qk-ppl"><div class="qk-ph">👥 Reach out' + (ppl.length ? ' · ' + msgdCount(j) + '/' + ppl.length + ' messaged' : '') + '</div>';
+    if(ppl.length) h += ppl.map(function(p){ var on = isMsgd(j, p[0]);
+      var key = /Founder/i.test(p[3]) ? 'f' : /Talent/i.test(p[3]) ? 't' : /Hiring/i.test(p[3]) ? 'h' : 'o';
+      return '<div class="qk-p' + (on ? ' done' : '') + '"><label class="qk-cb"><input type="checkbox" data-qpm="' + esc(p[0]) + '"' + (on ? ' checked' : '') + '></label>' +
+        '<div class="qk-pt">' + (p[2] ? '<a href="' + esc(p[2]) + '" target="_blank" rel="noopener noreferrer">' + esc(p[0]) + ' ↗</a>' : '<b>' + esc(p[0]) + '</b>') + '<span class="ptag pt-' + key + '">' + esc(p[3]) + '</span><div class="qk-pr">' + esc(p[1]) + '</div></div>' +
+        '<button class="qk-b sm" data-qpc="' + esc(p[0]) + '">📋 Copy message</button>' + noteBtn(j, p[0], 'qk-b sm') + emailBtn(p, 'qk-b sm') + delBtn(j, p) + '</div>'; }).join('');
+    else { var on0 = isMsgd(j, '');
+      h += '<div class="qk-p' + (on0 ? ' done' : '') + '"><label class="qk-cb"><input type="checkbox" data-qpm=""' + (on0 ? ' checked' : '') + '></label><div class="qk-pt"><span class="qk-pr">No contacts saved for this job — copy a general message.</span></div><button class="qk-b sm" data-qpc="">📋 Copy message</button>' + noteBtn(j, '', 'qk-b sm') + '</div>'; }
+    h += addBtn(j, 'in-list') + '</div>';
+  }
+  if(c.person){ var on = isMsgd(j, c.person);
+    h += '<div class="qk-row"><span class="qk-lab">' + esc(c.person.split(' ')[0]) + '</span><button class="qk-b' + (on ? ' on' : '') + '" data-qm="1">' + (on ? '✓ Messaged' : '✉️ Mark messaged') + '</button><button class="qk-b ghost" data-qc="1">📋 Copy message</button>' + noteBtn(j, c.person, 'qk-b ghost') + '</div>'; }
+  return h + '</div>';
+}
+function drawQuick(){ document.getElementById('modalQuick').innerHTML = quickHtml(); }
+document.addEventListener('click', function(ev){
+  var b = ev.target.closest && ev.target.closest('#modalQuick [data-qs], #modalQuick [data-qm], #modalQuick [data-qc], #modalQuick [data-qpc]'); if(!b || !URL_CTX) return;
+  var j = URL_CTX.j;
+  if(b.hasAttribute('data-qs')){ var s = b.getAttribute('data-qs'), dummy = document.createElement('select'); setStatus(j.i, s, dummy); toast(s === 'To apply' ? 'Status reset' : 'Marked as ' + s); }
+  else if(b.hasAttribute('data-qm')){ var on = !isMsgd(j, URL_CTX.person); setMsgd(j, URL_CTX.person, on); toast(on ? '✓ Marked ' + URL_CTX.person.split(' ')[0] + ' as messaged' : 'Unmarked'); setTimeout(render, 0); }
+  else if(b.hasAttribute('data-qc')){ copyText(outreach(j, URL_CTX.person), 'Message to ' + URL_CTX.person.split(' ')[0]); }
+  else if(b.hasAttribute('data-qpc')){ var n = b.getAttribute('data-qpc'); copyText(outreach(j, n), n ? 'Message to ' + n.split(' ')[0] : 'Message'); return; }
+  drawQuick();
+});
+document.addEventListener('change', function(ev){
+  var cb = ev.target; if(!cb.matches || !cb.matches('#modalQuick input[data-qpm]') || !URL_CTX) return;
+  var n = cb.getAttribute('data-qpm'); setMsgd(URL_CTX.j, n, cb.checked);
+  toast(cb.checked ? '✓ Marked ' + (n ? n.split(' ')[0] : 'this job') + ' as messaged' : 'Unmarked');
+  drawQuick(); setTimeout(render, 0);
+});
+function openUrl(url, j, person){
+  URL_CTX = j ? {j: j, person: person || ''} : null;
+  document.getElementById('modalTitle').textContent = person ? '👤 ' + person + ' on LinkedIn' : '🔗 Job link';
+  document.getElementById('modalSub').textContent = person ? 'Open their profile, or copy the link with Cmd+C / Ctrl+C.' : 'Open it directly, or copy it with Cmd+C / Ctrl+C.';
+  drawQuick();
+  document.getElementById('modalUrl').value = url;
+  document.getElementById('modalOpen').href = url;
+  document.getElementById('urlModal').classList.add('open');
+  setTimeout(function(){ var el=document.getElementById('modalUrl'); el.focus(); el.select(); }, 60);
+}
+
+// ── CV layout (mirrors the uploaded PDF) ────────────────────
+// Measured from the base CV PDF (A4, Arial): every size, colour and gap below is in points.
+var CV_CSS =
+  '.cvdoc{font-family:Arial,Helvetica,sans-serif;color:#111;font-size:10pt;line-height:1.27;background:#fff;width:595pt;padding:24pt 34pt 24pt 33.7pt;margin:0 auto;text-align:left;box-sizing:border-box}' +
+  '.cvdoc *{box-sizing:border-box}' +
+  '.cvdoc b{font-weight:700}' +
+  '.cv-name{font-size:18pt;font-weight:700;color:#1F3A5F;line-height:1.15}' +
+  '.cv-title{font-size:10.5pt;font-weight:700;color:#1F3A5F;margin-top:1pt}' +
+  '.cv-contact{font-size:9pt;color:#222;margin-top:1.6pt}' +
+  '.cv-a{color:inherit;text-decoration:none}' +
+  '.cv-rtw{font-size:9pt;color:#222;margin-top:3.1pt}' +
+  '.cv-sec{font-size:10.2pt;font-weight:700;color:#1F3A5F;letter-spacing:.05em;border-bottom:.75pt solid #1F3A5F;margin:5.3pt 0 4.3pt;padding-bottom:1pt}' +
+  '.cv-skill{margin:0 0 1.2pt}' +
+  '.cv-entry{margin:0 0 3.8pt}' +
+  '.cv-row{display:flex;justify-content:space-between;align-items:baseline;gap:12pt}' +
+  '.cv-l b{font-size:9.9pt}' +
+  '.cv-r{white-space:nowrap}' +
+  '.cv-tag{font-style:italic;color:#333}' +
+  '.cvdoc ul{list-style:none;margin:1.5pt 0 0;padding:0}' +
+  '.cvdoc li{position:relative;padding-left:14.3pt;margin:0}' +
+  '.cvdoc li::before{content:"";position:absolute;left:2.3pt;top:4.75pt;width:3pt;height:3pt;border-radius:50%;background:#111}' +
+  '.cvdoc u{text-decoration-thickness:.75pt;text-underline-offset:1.5pt}' +
+  '.cvwrap{background:#eef0f4;padding:14px 0}.cvwrap .cvdoc{box-shadow:0 2px 10px rgba(0,0,0,.12);min-height:842pt}';
+var PRINT_CSS = '@page{size:A4;margin:0}html,body{margin:0;background:#fff}.cvdoc{margin:0;box-shadow:none;min-height:0}' +
+  '*{-webkit-print-color-adjust:exact;print-color-adjust:exact}';
+(function(){ var st = document.createElement('style'); st.textContent = CV_CSS; document.head.appendChild(st); })();
+
+var CV_LINKS = (P.cv.links || []).filter(function(l){ return l && l.text && l.url; });
+function reEsc(s){ return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function mdb(s){
+  var h = esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  CV_LINKS.forEach(function(l){ h = h.replace(new RegExp(reEsc(esc(l.text)), 'g'), '<a class="cv-a" href="' + esc(l.url) + '"><u>' + esc(l.text) + '</u></a>'); });
+  return h;
+}
+// Contact items are clickable in the PDF, like your base CV
+function contactLink(c){
+  var s = String(c), m = s.match(/^(.*?)([\w.+-]+@[\w-]+\.[\w.]+|(?:[\w-]+\.)+[a-z]{2,}(?:\/[\w\/.-]*)?)$/i);
+  if(!m) return esc(s);
+  var href = /@/.test(m[2]) ? 'mailto:' + m[2] : 'https://' + m[2];
+  return esc(m[1]) + '<a class="cv-a" href="' + esc(href) + '">' + esc(m[2]) + '</a>';
+}
+function renderCV(cv){
+  function sec(t){ return '<div class="cv-sec">' + t + '</div>'; }
+  function row(l, r){ return '<div class="cv-row"><span class="cv-l"><b>' + l + '</b></span><span class="cv-r">' + r + '</span></div>'; }
+  var h = '<div class="cvdoc">';
+  h += '<div class="cv-name">' + esc(cv.name) + '</div><div class="cv-title">' + esc(cv.title) + '</div>';
+  h += '<div class="cv-contact">' + (cv.contact || []).map(contactLink).join(' | ') + '</div>';
+  if(cv.rightToWork) h += '<div class="cv-rtw"><b>Right to work: ' + esc(cv.rightToWork) + '</b></div>';
+  h += sec('PROFILE') + '<div>' + mdb(cv.profile) + '</div>';
+  h += sec('SKILLS') + (cv.skills || []).map(function(line){
+    return '<div class="cv-skill">' + line.map(function(g){ return '<b>' + esc(g.label) + ':</b> ' + esc(g.items.join(', ')); }).join(' &nbsp;| &nbsp;') + '</div>';
+  }).join('');
+  h += sec('EXPERIENCE') + (cv.experience || []).map(function(e){
+    return '<div class="cv-entry">' + row(esc(e.role) + ' | ' + esc(e.company), esc(e.location) + ' | ' + esc(e.dates)) +
+      (e.tagline ? '<div class="cv-tag">' + esc(e.tagline) + '</div>' : '') +
+      '<ul>' + e.bullets.map(function(b){ return '<li>' + mdb(b) + '</li>'; }).join('') + '</ul></div>';
+  }).join('');
+  if((cv.projects || []).length){
+    h += sec('PROJECTS') + cv.projects.map(function(p){
+      return '<div class="cv-entry">' + row(esc(p.name) + ' | ' + esc(p.sub), esc(p.dates)) +
+        '<ul>' + p.bullets.map(function(b){ return '<li>' + mdb(b) + '</li>'; }).join('') + '</ul></div>';
+    }).join('');
+  }
+  h += sec('EDUCATION') + (cv.education || []).map(function(e){
+    return row(esc(e.degree) + ' | ' + esc(e.school), esc(e.location) + ' | ' + esc(e.dates));
+  }).join('');
+  return h + '</div>';
+}
+var CV_BASENAME = String(DEFAULT_CV_JSON.name || P.name || 'My').split(/\s+/).map(function(w){ return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join('_').replace(/[^A-Za-z0-9_]+/g, '') + '_CV';
+function cvFileName(co){ return CV_BASENAME + (co ? '_' + String(co).replace(/\([^)]*\)/g, '').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '') : ''); }
+function cvDocHtml(cv, fname){
+  return '<!doctype html><html><head><meta charset="utf-8"><title>' + esc(fname) + '</title><style>' + CV_CSS + PRINT_CSS + '</style></head><body>' + renderCV(cv) + '</body></html>';
+}
+function printCV(cv, fname){
+  try {
+    var f = document.createElement('iframe');
+    f.setAttribute('aria-hidden', 'true');
+    f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+    document.body.appendChild(f);
+    var d = f.contentWindow.document; d.open(); d.write(cvDocHtml(cv, fname)); d.close();
+    setTimeout(function(){
+      try { f.contentWindow.focus(); f.contentWindow.print(); }
+      catch(e){ toast('Printing is blocked here — use Download, then print that file'); }
+      setTimeout(function(){ if(f.parentNode) f.parentNode.removeChild(f); }, 60000);
+    }, 350);
+  } catch(e){ toast('Printing is blocked here — use Download, then print that file'); }
+}
+function downloadCV(cv, fname){
+  try {
+    var blob = new Blob([cvDocHtml(cv, fname)], {type: 'text/html'});
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fname + '.html';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.parentNode.removeChild(a); }, 1500);
+    toast('Downloaded — open it and use Print → Save as PDF');
+  } catch(e){ toast('Download is blocked here — use Print instead'); }
+}
+
+// ── CV modal ────────────────────────────────────────────────
+function openCV(){
+  var v = document.getElementById('cvText');
+  v.innerHTML = (CV_STALE ? '<div class="warnbox">Your edited CV text hasn\'t been converted to the formatted layout yet. Open <b>Update</b> and press <b>Save CV</b> to convert it.</div>' : '') + renderCV(CV_JSON);
+  document.getElementById('cvTa').value = CV;
+  document.getElementById('cvMeta').textContent = (CV === DEFAULT_CV ? 'Using: base CV' + (P.cv.base_cv_date ? ' from ' + fmtDate(P.cv.base_cv_date) : '') : 'Using: your edited version') + ' · this layout is used for every tailored CV';
+  document.getElementById('cvOk').classList.add('hidden');
+  cvTab('view');
+  document.getElementById('cvModal').classList.add('open');
+}
+function cvTab(t){
+  var edit = t === 'edit';
+  document.getElementById('cvView').classList.toggle('hidden', edit);
+  document.getElementById('cvEdit').classList.toggle('hidden', !edit);
+  document.getElementById('cvSave').classList.toggle('hidden', !edit);
+  document.getElementById('tabView').classList.toggle('active', !edit);
+  document.getElementById('tabEdit').classList.toggle('active', edit);
+}
+async function saveCV(){
+  var v = document.getElementById('cvTa').value.trim();
+  if(!v){ toast('CV is empty — nothing saved'); return; }
+  CV = v; lsSet(CV_TEXT_KEY, v);
+  var ok = document.getElementById('cvOk');
+  ok.classList.remove('hidden'); ok.textContent = '⏳ Saved. Rebuilding the formatted layout…';
+  var prompt =
+    'Convert this CV text into JSON with EXACTLY the same keys and nesting as EXAMPLE. Copy the wording exactly — do not rewrite, add or remove anything. ' +
+    'Wrap the same kinds of phrases the EXAMPLE bolds (metrics and key technologies) in **double asterisks**. Return ONLY the JSON.\n\nEXAMPLE:\n' +
+    JSON.stringify(DEFAULT_CV_JSON) + '\n\nCV TEXT:\n' + v;
+  try {
+    if(!window.cowork || !window.cowork.askClaude) throw new Error('AI helper not available');
+    var parsed = parseJSON(toText(await window.cowork.askClaude(prompt, [])));
+    if(!parsed || !parsed.name || !Array.isArray(parsed.experience) || !Array.isArray(parsed.skills)) throw new Error('Could not read the structure');
+    parsed.projects = parsed.projects || []; parsed.education = parsed.education || []; parsed.contact = parsed.contact || [];
+    CV_JSON = parsed; CV_STALE = false;
+    lsSet(CV_JSON_KEY, JSON.stringify(CV_JSON)); lsSet(CV_STALE_KEY, '0');
+    ok.textContent = '✅ Saved — tailored CVs will use this version in your layout.';
+    toast('✅ CV saved');
+    setTimeout(openCV, 900);
+  } catch(e){
+    CV_STALE = true; lsSet(CV_STALE_KEY, '1');
+    ok.textContent = '⚠️ Text saved, but the formatted layout couldn\'t be rebuilt (' + (e && e.message ? e.message : e) + '). Press Save again to retry.';
+  }
+}
+function resetCV(){
+  CV = DEFAULT_CV; CV_JSON = JSON.parse(JSON.stringify(DEFAULT_CV_JSON)); CV_STALE = false;
+  try { [CV_TEXT_KEY, CV_JSON_KEY, CV_STALE_KEY, SP + '_cv_oct2026'].forEach(function(k){ localStorage.removeItem(k); }); } catch(e){}
+  toast('Reset to uploaded CV');
+  openCV();
+}
+
+// ── Optimizer: tailored CV in your layout ───────────────────
+function toText(r){
+  if(r == null) return '';
+  if(typeof r === 'string') return r;
+  if(Array.isArray(r)) return r.map(toText).filter(Boolean).join('\n');
+  if(typeof r === 'object'){
+    var ks = ['text','content','message','result','output','completion','structuredContent'];
+    for(var i = 0; i < ks.length; i++){ if(r[ks[i]] != null){ var s = toText(r[ks[i]]); if(s) return s; } }
+    try { return JSON.stringify(r); } catch(e){ return String(r); }
+  }
+  return String(r);
+}
+function parseJSON(t){
+  t = String(t || '').replace(/```(?:json)?/gi, '');
+  var a = t.indexOf('{'), b = t.lastIndexOf('}');
+  if(a < 0 || b <= a) return null;
+  try { return JSON.parse(t.slice(a, b + 1)); } catch(e){ return null; }
+}
+function uniq(a){ var s = {}; return a.filter(function(x){ if(s[x]) return false; s[x] = 1; return true; }); }
+
+// Keep the layout and facts locked; accept only reworded content inside it.
+function enforce(base, t){
+  var out = JSON.parse(JSON.stringify(base)), warn = [];
+  if(!t || typeof t !== 'object') return {cv: out, warn: ['The AI reply had no CV — showing your original.']};
+  // Title: only plain, widely-used titles — never niche ones like "Enterprise AI Engineer"
+  if(typeof t.title === 'string'){
+    var want = t.title.trim().toLowerCase().replace(/\s+/g, ' ');
+    var hit = TITLES.filter(function(x){ return x.toLowerCase() === want; })[0];
+    if(hit) out.title = hit;
+    else if(want && want !== String(base.title).toLowerCase()) warn.push('Kept your title “' + base.title + '” (the AI suggested “' + t.title.trim() + '”).');
+  }
+  if(typeof t.profile === 'string' && t.profile.trim().length > 40) out.profile = t.profile.trim();
+  out.profile = fixProfileRole(out.profile, out.title);
+  var baseTxt = JSON.stringify(base).toLowerCase(), dropped = [];
+  if(Array.isArray(t.skills) && t.skills.length){
+    var sk = t.skills.map(function(line){
+      return (Array.isArray(line) ? line : [line]).filter(function(g){ return g && g.label && Array.isArray(g.items); }).map(function(g){
+        return {label: String(g.label), items: g.items.map(String).filter(function(it){
+          var okIt = baseTxt.indexOf(it.toLowerCase()) !== -1; if(!okIt) dropped.push(it); return okIt; })};
+      }).filter(function(g){ return g.items.length; });
+    }).filter(function(l){ return l.length; });
+    if(sk.length >= Math.max(1, base.skills.length - 1)) out.skills = sk;
+  }
+  if(dropped.length) warn.push('Removed skills that aren\'t in your CV: ' + uniq(dropped).join(', '));
+  function bullets(baseArr, newArr){
+    if(!Array.isArray(newArr)) return baseArr;
+    var bs = newArr.filter(function(s){ return typeof s === 'string' && s.trim(); }).slice(0, baseArr.length);
+    while(bs.length < baseArr.length) bs.push(baseArr[bs.length]);
+    return bs;
+  }
+  base.experience.forEach(function(e, i){ var te = (t.experience || [])[i]; if(te) out.experience[i].bullets = bullets(e.bullets, te.bullets); });
+  // conditional bullets (profile.cv.conditional_bullets) are kept word-for-word: they can move, not be reworded
+  out.experience.forEach(function(e, i){
+    COND_BULLETS.forEach(function(cb){
+      if(base.experience[i].bullets.indexOf(cb.text) === -1 || e.bullets.indexOf(cb.text) !== -1) return;
+      var k = -1;
+      e.bullets.forEach(function(b, n){ if(k < 0 && base.experience[i].bullets.indexOf(b) === -1 && b.slice(0, 25).toLowerCase() === cb.text.slice(0, 25).toLowerCase()) k = n; });
+      if(k < 0) e.bullets.forEach(function(b, n){ if(k < 0 && base.experience[i].bullets.indexOf(b) === -1) k = n; });
+      e.bullets[k >= 0 ? k : e.bullets.length - 1] = cb.text;
+    });
+  });
+  (base.projects || []).forEach(function(p, i){ var tp = (t.projects || [])[i]; if(tp) out.projects[i].bullets = bullets(p.bullets, tp.bullets); });
+  // compare whole metrics (number + unit, e.g. 95%, 200K+, 300 ms); digits inside words like "p95" are ignored
+  var NUM_RE = /(?<![A-Za-z\d.,])\d+(?:[.,]\d+)?(?:\s?(?:%|k\+?|\+|x|ms|min|s|m)(?![a-z]))?/gi;
+  function nums(s){ return (String(s).replace(/\*\*/g, '').match(NUM_RE) || []).map(function(n){ return n.replace(/\s+/g, '').toLowerCase(); }); }
+  var baseNums = {}; nums(JSON.stringify(base)).forEach(function(n){ baseNums[n] = 1; });
+  var newTxt = [out.title, out.profile].concat(out.experience.map(function(e){ return e.bullets.join(' '); }), (out.projects || []).map(function(p){ return p.bullets.join(' '); })).join(' ');
+  var odd = uniq(nums(newTxt).filter(function(n){ return !baseNums[n]; }));
+  if(odd.length) warn.push('Check these numbers — they aren\'t in your original CV: ' + odd.join(', '));
+  return {cv: out, warn: warn};
+}
+
+var TAILORED = {}; try { TAILORED = JSON.parse(lsGet(SP + '_tailored_v1', '{}')) || {}; } catch(e){ TAILORED = {}; }
+// Fix niche titles on CVs tailored before the title rule existed
+(function(){ var changed = false;
+  Object.keys(TAILORED).forEach(function(k){ var c = TAILORED[k] && TAILORED[k].cv; if(!c || !c.title) return;
+    if(TITLES.indexOf(c.title) === -1 && c.title !== CV_JSON.title){ c.title = CV_JSON.title; changed = true; }
+    var fp = fixProfileRole(c.profile, c.title); if(c.profile && fp !== c.profile){ c.profile = fp; changed = true; } });
+  if(changed) lsSet(SP + '_tailored_v1', JSON.stringify(TAILORED));
+})();
+var CUR = null;
+
+function optTab(t){
+  var notes = t === 'notes';
+  document.getElementById('optBody').classList.toggle('hidden', notes);
+  document.getElementById('optNotes').classList.toggle('hidden', !notes);
+  document.getElementById('otCv').classList.toggle('active', !notes);
+  document.getElementById('otNotes').classList.toggle('active', notes);
+}
+function setOptButtons(show){
+  ['optRetry','optHtml','optPrint'].forEach(function(id){ document.getElementById(id).classList.toggle('hidden', !show); });
+}
+function showTailored(j, rec){
+  CUR = {j: j, rec: rec};
+  var meta = 'Saved ' + fmtDate(String(rec.at || '').slice(0, 10));
+  var older = rec.cvHash !== cvHash();
+  document.getElementById('optBody').innerHTML =
+    (older ? '<div class="warnbox">This version was made from an older copy of your CV — press <b>Regenerate</b> to use the current one.</div>' : '') +
+    (rec.warn && rec.warn.length ? '<div class="warnbox">⚠️ ' + rec.warn.map(esc).join('<br>⚠️ ') + '</div>' : '') +
+    '<div class="note" style="margin-bottom:6px">' + esc(meta) + ' · Same layout as your uploaded CV — only the wording is tailored. Read it through before sending.</div>' +
+    '<div class="cvwrap">' + renderCV(rec.cv) + '</div>';
+  var n = rec.notes || {};
+  function li(a){ return (a && a.length) ? '<ul>' + a.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '<p class="note">None noted</p>'; }
+  document.getElementById('optNotes').innerHTML =
+    '<div class="osec o-kw"><h4>🔑 Keywords this role looks for</h4>' + ((n.keywords || []).map(function(k){ return '<span class="kw">' + esc(k) + '</span>'; }).join('') || '—') + '</div>' +
+    '<div class="osec o-win"><h4>✏️ What was changed</h4>' + li(n.changes) + '</div>' +
+    '<div class="osec o-gap"><h4>⚠️ Gaps and how to address them</h4>' + li(n.gaps) + '</div>';
+  setOptButtons(true);
+}
+
+// ── Background tailoring ────────────────────────────────────
+// Clicking Optimize starts the job and you can close the window and keep browsing;
+// the card button shows progress and a notice pops up when the CV is ready.
+var BG = {};          // job id -> {state:'queued'|'running'|'error', t0, prompt, err}
+var BG_MAX = 2;       // run at most 2 at a time; the rest wait in a queue
+var OPEN_ID = null;   // job whose tailoring window is open
+
+// Bullets added under one company only when a job matches (profile.cv.conditional_bullets).
+var COND_BULLETS = (P.cv.conditional_bullets || []).filter(function(c){ return c && c.text && c.company; }).map(function(c){
+  var re; try { re = new RegExp(c.when || '.', 'i'); } catch(e){ re = /$^/; }
+  return {re: re, company: String(c.company), text: String(c.text)};
+});
+function baseFor(j){
+  var cv = JSON.parse(JSON.stringify(CV_JSON)), hay = [j.role, j.note, (j.skills || []).join(' ')].join(' ');
+  COND_BULLETS.forEach(function(cb){
+    if(!cb.re.test(hay)) return;
+    var e = cv.experience.filter(function(x){ return String(x.company).toLowerCase().indexOf(cb.company.toLowerCase()) === 0; })[0];
+    if(e && e.bullets.indexOf(cb.text) === -1) e.bullets.push(cb.text);
+  });
+  return cv;
+}
+function buildPrompt(j){
+  var CVB = baseFor(j);
+  var nB = CVB.experience.map(function(x){ return x.bullets.length; }).join(', ');
+  var nP = (CV_JSON.projects || []).map(function(x){ return x.bullets.length; }).join(', ') || '0';
+  return 'You are tailoring a CV for one specific job. Reply with ONLY one JSON object — no markdown, no commentary.\n\n' +
+    'RULES:\n' +
+    '1. Only rewrite: title, profile, skills, and the bullet text. Everything else in the CV is fixed.\n' +
+    '2. "bullets" is a list with one list per experience entry, in the SAME order as ORIGINAL_CV.experience, with EXACTLY these counts: [' + nB + ']. "project_bullets" works the same for projects: [' + nP + '].\n' +
+    '3. You may reorder bullets within a role and reword them to foreground what this job needs. Keep each about the same length (one-page CV).\n' +
+    '4. Never invent facts: no new tools, numbers or achievements. Keep every metric exactly as written.\n' +
+    '5. "skills": same number of lines and the same [[{"label","items"}]] structure as ORIGINAL_CV. Reorder and drop items freely, but only use skills already in ORIGINAL_CV.\n' +
+    '6. Bold key phrases and metrics with **double asterisks**, as ORIGINAL_CV does.\n' +
+    '7. "title" must be EXACTLY one of: ' + TITLES.join(', ') + ' — pick the closest match to the job; never invent a niche title. "profile" must open with that same title as the role (e.g. "' + rolePhrase(TITLES[0] || 'Software Engineer') + ' with five years\u2019 experience…"), never a niche variant. "profile" 2–3 sentences, similar length, written for this company.\n\n' +
+    'Reply shape: {"title": "...", "profile": "...", "skills": [...], "bullets": [[...], ...], "project_bullets": [[...]], ' +
+    '"notes": {"keywords": [5-7 short strings], "changes": [3-5 short strings], "gaps": [2-4 short strings: what the CV does not show and how to address it honestly]}}\n\n' +
+    'TARGET JOB:\nCompany: ' + j.co + '\nTitle: ' + j.role + '\nCategory: ' + trackLabel(j.cat) + '\nLocation: ' + j.loc +
+    '\nKey skills: ' + j.skills.join(', ') + '\nNotes: ' + (j.note || '-') + '\n\nORIGINAL_CV:\n' + JSON.stringify(CVB);
+}
+function optLabel(j){
+  var s = BG[j.id];
+  if(s && s.state === 'running') return '⏳ Tailoring… ' + Math.round((Date.now() - s.t0) / 1000) + 's';
+  if(s && s.state === 'queued') return '🕒 Queued…';
+  if(s && s.state === 'error') return '⚠️ Failed — retry';
+  return TAILORED[j.id] ? '📄 View tailored CV' : '✨ Optimize CV';
+}
+function refreshOptButtons(){
+  JOBS.forEach(function(j){
+    var b = document.querySelector('[data-opt="' + j.i + '"]');
+    if(b){ if(b.classList.contains('ib')){ b.title = optLabel(j); b.textContent = BG[j.id] && BG[j.id].state !== 'error' ? '⏳' : TAILORED[j.id] ? '📄' : '✨'; } else b.textContent = optLabel(j); b.classList.toggle('busy', !!(BG[j.id] && BG[j.id].state !== 'error')); b.classList.toggle('ready', !BG[j.id] && !!TAILORED[j.id]); }
+    document.querySelectorAll('[data-dlcv="' + j.i + '"]').forEach(function(d){ d.classList.toggle('hidden', !(TAILORED[j.id] && !BG[j.id])); });
+  });
+  var n = Object.keys(BG).filter(function(k){ return BG[k].state !== 'error'; }).length;
+  var pill = document.getElementById('bgPill');
+  if(pill){ pill.textContent = '⏳ Tailoring ' + n + ' CV' + (n === 1 ? '' : 's') + ' in the background'; pill.classList.toggle('hidden', !n); }
+}
+setInterval(function(){ if(Object.keys(BG).length) refreshOptButtons(); if(OPEN_ID && BG[OPEN_ID] && BG[OPEN_ID].state === 'running'){ var t = document.getElementById('optTimer'); if(t) t.textContent = Math.round((Date.now() - BG[OPEN_ID].t0) / 1000) + 's'; } }, 1000);
+
+function notify(msg, j){
+  var box = document.getElementById('notices'), n = document.createElement('div');
+  n.className = 'notice';
+  n.innerHTML = '<span>' + esc(msg) + '</span>' + (j ? '<button class="nbtn">View</button>' : '') + '<button class="nx" title="Dismiss">✕</button>';
+  if(j) n.querySelector('.nbtn').addEventListener('click', function(){ n.remove(); optimize(j.i); });
+  n.querySelector('.nx').addEventListener('click', function(){ n.remove(); });
+  box.appendChild(n);
+  setTimeout(function(){ if(n.parentNode) n.remove(); }, 15000);
+}
+
+function openOptModal(j){
+  OPEN_ID = j.id;
+  document.getElementById('optCo').textContent = j.co;
+  document.getElementById('optMeta').textContent = j.role + ' · ' + j.loc + ' · ' + j.sal + ' · ' + j.cat;
+  document.getElementById('optNotes').innerHTML = '';
+  optTab('cv'); setOptButtons(false);
+  document.getElementById('optModal').classList.add('open');
+}
+function showRunning(j){
+  var s = BG[j.id];
+  document.getElementById('optBody').innerHTML = '<div class="loading"><div class="spin"></div><p>' + (s.state === 'queued' ? 'Queued — starts when another CV finishes' : 'Tailoring your CV for ' + esc(j.co) + '… <span id="optTimer">' + Math.round((Date.now() - s.t0) / 1000) + 's</span>') + '</p>' +
+    '<p class="note">This runs in the background — close this window and keep browsing. You\'ll get a notice when it\'s ready.</p>' +
+    '<p style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn-primary" onclick="closeM(\'optModal\')">Keep browsing</button>' +
+    '<button class="btn-ghost" id="optManualBtn">Do it in claude.ai instead</button></p></div>';
+  document.getElementById('optManualBtn').onclick = function(){ cancelBg(j); showManual(j, s.prompt, 'Switched to claude.ai — the background run was cancelled.'); };
+  CUR = {j: j, rec: null};
+}
+function showFailed(j){
+  var s = BG[j.id];
+  document.getElementById('optBody').innerHTML = '<div class="err">Couldn\'t tailor the CV: ' + esc(s.err || 'unknown error') + '</div>' +
+    '<p style="text-align:center;display:flex;gap:8px;justify-content:center"><button class="btn-primary" id="optAgain">↻ Try again</button><button class="btn-ghost" id="optManual2">Do it in claude.ai instead</button></p>';
+  document.getElementById('optAgain').onclick = function(){ delete BG[j.id]; optimize(j.i, true); };
+  document.getElementById('optManual2').onclick = function(){ var pr = s.prompt; delete BG[j.id]; refreshOptButtons(); showManual(j, pr); };
+  CUR = {j: j, rec: null};
+}
+function cancelBg(j){ if(BG[j.id]) BG[j.id].cancelled = true; delete BG[j.id]; refreshOptButtons(); pump(); }
+
+// Card button / "View" / Regenerate all come here.
+async function optimize(i, force){
+  var j = JOBS[i];
+  openOptModal(j);
+  var s = BG[j.id];
+  if(s && s.state !== 'error'){ showRunning(j); return; }
+  if(s && s.state === 'error' && !force){ showFailed(j); return; }
+  var cached = TAILORED[j.id];
+  if(cached && !force){ showTailored(j, cached); return; }
+  var prompt = buildPrompt(j);
+  if(!window.cowork || !window.cowork.askClaude){ showManual(j, prompt); return; }   // normal browser: manual route
+  BG[j.id] = {state: 'queued', t0: Date.now(), prompt: prompt};
+  pump();
+  showRunning(j);
+  refreshOptButtons();
+}
+function pump(){
+  var running = Object.keys(BG).filter(function(k){ return BG[k].state === 'running'; }).length;
+  JOBS.forEach(function(j){
+    if(running >= BG_MAX) return;
+    var s = BG[j.id];
+    if(s && s.state === 'queued'){ running++; runBg(j, s); }
+  });
+}
+async function runBg(j, s){
+  s.state = 'running'; s.t0 = Date.now(); refreshOptButtons();
+  if(OPEN_ID === j.id) showRunning(j);
+  var tmo;
+  try {
+    var reply = await Promise.race([
+      window.cowork.askClaude(s.prompt, []),
+      new Promise(function(_, rej){ tmo = setTimeout(function(){ rej(new Error('It took more than 3 minutes — try again, or use claude.ai.')); }, 180000); })
+    ]).finally(function(){ clearTimeout(tmo); });
+    if(s.cancelled) return;
+    var rec = saveTailored(j, toText(reply));
+    delete BG[j.id];
+    refreshOptButtons();
+    var modalOpen = document.getElementById('optModal').classList.contains('open');
+    if(modalOpen && OPEN_ID === j.id) showTailored(j, rec);
+    else notify('✅ Tailored CV ready for ' + j.co, j);
+  } catch(e){
+    if(s.cancelled) return;
+    s.state = 'error'; s.err = e && e.message ? e.message : String(e);
+    refreshOptButtons();
+    var open2 = document.getElementById('optModal').classList.contains('open');
+    if(open2 && OPEN_ID === j.id) showFailed(j); else notify('⚠️ Couldn\'t tailor the CV for ' + j.co, j);
+  } finally { pump(); }
+}
+
+// Same checks as the automatic path: layout locked, facts locked, invented numbers/skills flagged.
+function saveTailored(j, raw){
+  var parsed = parseJSON(raw);
+  if(parsed && !parsed.cv && (parsed.bullets || parsed.profile)){
+    parsed.cv = {title: parsed.title, profile: parsed.profile, skills: parsed.skills,
+      experience: (parsed.bullets || []).map(function(b){ return {bullets: b}; }),
+      projects: (parsed.project_bullets || []).map(function(b){ return {bullets: b}; })};
+  }
+  if(!parsed || !parsed.cv) throw new Error('The reply wasn\'t in the expected format — make sure you pasted Claude\'s whole answer.');
+  var res = enforce(baseFor(j), parsed.cv);
+  if(CV_STALE) res.warn.unshift('Your edited CV text hasn\'t been converted yet, so this uses the last formatted version. Open My CV → Update → Save CV.');
+  var rec = {cv: res.cv, notes: parsed.notes || {}, warn: res.warn, at: new Date().toISOString(), cvHash: cvHash()};
+  TAILORED[j.id] = rec; lsSet(SP + '_tailored_v1', JSON.stringify(TAILORED));
+  return rec;
+}
+function finishTailor(j, raw){ var rec = saveTailored(j, raw); refreshOptButtons(); showTailored(j, rec); }
+
+function showManual(j, prompt, why){
+  CUR = {j: j, rec: null};
+  document.getElementById('optBody').innerHTML =
+    '<div class="warnbox">' + esc(why || 'You\'re viewing the tracker in a normal browser, which can\'t reach Claude directly.') + ' It takes about 30 seconds by hand — the result uses exactly the same CV template and checks.</div>' +
+    '<div class="mstep"><b>1.</b> Copy this prompt <button class="btn-ghost" id="mCopy" style="padding:3px 10px;font-size:11px">📋 Copy</button> &nbsp;and paste it into <a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">claude.ai</a>.</div>' +
+    '<textarea class="resume-ta" id="mPrompt" readonly style="height:110px;font-family:monospace;font-size:10.5px" onclick="this.select()"></textarea>' +
+    '<div class="mstep" style="margin-top:10px"><b>2.</b> Paste Claude\'s full reply here, then press <b>Build my CV</b>.</div>' +
+    '<textarea class="resume-ta" id="mReply" style="height:110px;font-family:monospace;font-size:10.5px" placeholder="Paste Claude\'s reply (the JSON) here…"></textarea>' +
+    '<div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="btn-primary" id="mBuild">✨ Build my CV</button></div>' +
+    '<div class="err hidden" id="mErr" style="padding:8px 0 0;text-align:left"></div>';
+  var ta = document.getElementById('mPrompt'); ta.value = prompt;
+  document.getElementById('mCopy').onclick = function(){
+    ta.focus(); ta.select();
+    var done = function(){ toast('Prompt copied — paste it into claude.ai'); };
+    try { var pr = navigator.clipboard && navigator.clipboard.writeText(prompt); if(pr && pr.then) pr.then(done, function(){ try { document.execCommand('copy'); done(); } catch(e){ toast('Press Cmd+C to copy'); } }); else { document.execCommand('copy'); done(); } }
+    catch(e){ toast('Press Cmd+C to copy'); }
+  };
+  document.getElementById('mBuild').onclick = function(){
+    var err = document.getElementById('mErr');
+    try { finishTailor(j, document.getElementById('mReply').value); }
+    catch(e){ err.textContent = '⚠️ ' + (e && e.message ? e.message : e); err.classList.remove('hidden'); }
+  };
+}
+function optRetry(){ if(CUR) optimize(CUR.j.i, true); }
+function optPrint(){ if(CUR && CUR.rec) printCV(CUR.rec.cv, cvFileName(CUR.j.co)); }
+function optDownload(){ if(CUR && CUR.rec) downloadCV(CUR.rec.cv, cvFileName(CUR.j.co)); }
+
+// ── Filters ─────────────────────────────────────────────────
+document.querySelectorAll('.chip').forEach(function(b){
+  b.addEventListener('click', function(){
+    var g = b.getAttribute('data-g');
+    F[g] = b.getAttribute('data-v'); PAGE = {};
+    document.querySelectorAll('.chip[data-g="' + g + '"]').forEach(function(x){ x.classList.toggle('on', x === b); });
+    render();
+  });
+});
+
+function setStatus(i, v, el){
+  var j = JOBS[i], rec = STORE.jobs[j.id] || (STORE.jobs[j.id] = {});
+  rec.status = v;
+  rec.updated = new Date().toISOString();
+  if(!rec.snap) rec.snap = DATA.jobs.filter(function(r){ return rowId(r) === j.id; })[0] || null;
+  saveStore();
+  styleSel(el);
+  updateStats();
+  if(typeof render === 'function') setTimeout(render, 0);
+}
+function styleSel(s){
+  s.className = 'st';
+  var m = {'To apply':'todo','Applied':'applied','Screening':'screening','Interviewing':'interview','Offer':'offer','Rejected':'rejected','Closed':'hold','Skipped':'hold','Duplicate':'hold','Wrong location':'hold'};
+  if(m[s.value]) s.classList.add(m[s.value]);
+}
+
+function pass(j, q){
+  if(F.loc !== 'all' && j.sec !== F.loc) return false;
+  if(F.cat !== 'all' && j.cat !== F.cat) return false;
+  if(F.fit === 'High' && j.fit !== 'High') return false;
+  if(F.fit === 'visa' && !visaOk(j)) return false;
+  if(F.fit === 'direct' && !j.direct) return false;
+  if(F.fit === 'linkedin' && !isLinkedIn(j)) return false;
+  if(F.fit === 'todo' && getStatus(j) !== 'To apply') return false;
+  if(F.fit === 'new' && !isNew(j)) return false;
+  var sf = (document.getElementById('stF') || {}).value || 'all', sj = getStatus(j);
+  if(sf === 'active' && STATUS_DONE.indexOf(sj) !== -1) return false;
+  if(sf === 'progress' && STATUS_PROG.indexOf(sj) === -1) return false;
+  if(sf !== 'all' && sf !== 'active' && sf !== 'progress' && sj !== sf) return false;
+  if(q){
+    var hay = [j.co, j.role, j.loc, trackLabel(j.cat), locLabel(j.sec), j.src, j.note, j.visa && j.visa.evidence].concat(j.skills, (j.people || []).map(function(p){ return p[0] + ' ' + p[1]; })).join(' ').toLowerCase();
+    if(hay.indexOf(q) === -1) return false;
+  }
+  return true;
+}
+function statusDate(j){ var r = STORE.jobs[j.id]; return (r && r.updated && getStatus(j) !== 'To apply') ? fmtDate(String(r.updated).slice(0, 10)) : ''; }
+function sorter(a, b){
+  if(F.sort === 'new') return String(b.firstSeen || '').localeCompare(String(a.firstSeen || '')) || ((a.fit === 'High' ? 0 : 1) - (b.fit === 'High' ? 0 : 1)) || a.co.localeCompare(b.co);
+  if(F.sort === 'sal') return (b.salN - a.salN) || a.co.localeCompare(b.co);
+  if(F.sort === 'az') return a.co.localeCompare(b.co) || a.role.localeCompare(b.role);
+  var fa = a.fit === 'High' ? 0 : 1, fb = b.fit === 'High' ? 0 : 1;
+  if(fa !== fb) return fa - fb;
+  var ca = trackIdx(a.cat), cb = trackIdx(b.cat);
+  if(ca !== cb) return ca - cb;
+  if((a.direct?0:1) !== (b.direct?0:1)) return (a.direct?0:1) - (b.direct?0:1);
+  return b.salN - a.salN;
+}
+
+// ── Outreach message (edit the wording here) ──
+var MSG_TEMPLATE = String(P.outreach.message || "Hi{NAME}, I just applied for the {ROLE} role at {COMPANY} and would love to chat if you think there's a fit!");
+// Recruiter posts with no named employer: leave "at {COMPANY}" out of messages
+var HIDDEN_CO_RE = /undisclosed|confidential|stealth|various|\(client\)|jobgether/i;
+function cleanCo(c){ return String(c || '').replace(/\s*\((?:via|client)[^)]*\)\s*/gi, ' ').replace(/\s+/g, ' ').trim(); }
+function outreach(j, person){
+  var first = person ? String(person).trim().split(/\s+/)[0].replace(/[^\p{L}'-]/gu, '') : '';
+  var hidden = HIDDEN_CO_RE.test(j.co);
+  var msg = MSG_TEMPLATE.replace('{NAME}', first ? ' ' + first : '').replace('{ROLE}', j.role);
+  return hidden ? msg.replace(' at {COMPANY}', '') : msg.replace('{COMPANY}', cleanCo(j.co));
+}
+function copyText(text, label){
+  function fallback(){
+    var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0'; document.body.appendChild(ta); ta.select();
+    var ok = false; try { ok = document.execCommand('copy'); } catch(e){}
+    document.body.removeChild(ta);
+    if(ok) toast('📋 ' + (label || 'Message') + ' copied');
+    else { document.getElementById('msgText').value = text; document.getElementById('msgModal').classList.add('open'); setTimeout(function(){ var t = document.getElementById('msgText'); t.focus(); t.select(); }, 50); }
+  }
+  try {
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){ toast('📋 ' + (label || 'Message') + ' copied'); }, fallback);
+    else fallback();
+  } catch(e){ fallback(); }
+}
+// ── "Messaged" ticks (saved with your statuses and included in Backup) ──
+function msgKey(j, n){ return j.id + '|' + (n || ''); }
+function isMsgd(j, n){ return !!(STORE.msgd && STORE.msgd[msgKey(j, n)]); }
+function msgdCount(j){ return (j.people || []).filter(function(p){ return isMsgd(j, p[0]); }).length + (isMsgd(j, '') ? 1 : 0); }
+function setMsgd(j, n, on){ STORE.msgd = STORE.msgd || {}; var k = msgKey(j, n); if(on) STORE.msgd[k] = new Date().toISOString().slice(0, 10); else delete STORE.msgd[k]; saveStore(); }
+function msgdBox(j, n, cls){
+  var on = isMsgd(j, n), d = on ? STORE.msgd[msgKey(j, n)] : '';
+  return '<label class="msgd' + (on ? ' on' : '') + (cls ? ' ' + cls : '') + '" title="' + (on ? 'Messaged on ' + esc(fmtDate(d)) : 'Tick when you\'ve messaged') + '">' +
+    '<input type="checkbox" data-mk="' + j.i + '" data-mn="' + esc(n || '') + '"' + (on ? ' checked' : '') + '><span>' + (on ? 'Messaged' : 'Messaged?') + '</span></label>';
+}
+function wireMsgd(root){
+  root.querySelectorAll('label.msgd').forEach(function(l){ l.addEventListener('click', function(ev){ ev.stopPropagation(); }); });
+  root.querySelectorAll('input[data-mk]').forEach(function(cb){ cb.addEventListener('change', function(ev){
+    ev.stopPropagation(); var j = JOBS[+cb.getAttribute('data-mk')], n = cb.getAttribute('data-mn');
+    setMsgd(j, n, cb.checked);
+    var l = cb.closest('label'); l.classList.toggle('on', cb.checked); l.querySelector('span').textContent = cb.checked ? 'Messaged' : 'Messaged?';
+    l.title = cb.checked ? 'Messaged today' : 'Tick when you\'ve messaged';
+    toast(cb.checked ? '✓ Marked ' + (n ? n.split(' ')[0] : 'this job') + ' as messaged' : 'Unmarked');
+    var c = msgdCount(j); root.querySelectorAll('[data-mc="' + j.i + '"]').forEach(function(x){ x.textContent = c ? '· ✓' + c : ''; });
+  }); });
+}
+// ── People you add yourself (saved with your statuses, included in Backup) ──
+var ADDED_TAG = 'Added by you';
+function applyExtras(){
+  JOBS.forEach(function(j){
+    if(!j.basePeople) j.basePeople = (j.people || []).slice();
+    j.people = j.basePeople.concat(((STORE.extra || {})[j.id] || []).map(function(x){ return [x[0], x[1] || '', x[2] || '', ADDED_TAG]; }));
+  });
+}
+var ADDP_JOB = null;
+function openAddPerson(i){
+  var j = JOBS[i]; ADDP_JOB = j;
+  document.getElementById('apFor').textContent = j.co + ' · ' + j.role;
+  ['apName','apTitle','apUrl'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('apMsgd').checked = true;
+  document.getElementById('addpModal').classList.add('open');
+  setTimeout(function(){ document.getElementById('apName').focus(); }, 50);
+}
+function saveAddPerson(){
+  var j = ADDP_JOB; if(!j) return;
+  var n = document.getElementById('apName').value.trim();
+  if(!n){ toast('Add a name first'); document.getElementById('apName').focus(); return; }
+  var t = document.getElementById('apTitle').value.trim(), u = document.getElementById('apUrl').value.trim();
+  if(u && !/^https?:\/\//i.test(u)) u = 'https://' + u;
+  if((j.people || []).some(function(p){ return p[0].toLowerCase() === n.toLowerCase(); })){ toast(n + ' is already listed for this job'); return; }
+  STORE.extra = STORE.extra || {}; (STORE.extra[j.id] = STORE.extra[j.id] || []).push([n, t, u]);
+  if(document.getElementById('apMsgd').checked){ STORE.msgd = STORE.msgd || {}; STORE.msgd[msgKey(j, n)] = new Date().toISOString().slice(0, 10); }
+  saveStore(); closeM('addpModal'); toast('Added ' + n.split(' ')[0] + ' to ' + j.co);
+  render(); if(URL_CTX && URL_CTX.j === j) drawQuick();
+}
+function removeAddedPerson(i, n){
+  var j = JOBS[i]; if(!STORE.extra || !STORE.extra[j.id]) return;
+  STORE.extra[j.id] = STORE.extra[j.id].filter(function(x){ return x[0] !== n; });
+  if(!STORE.extra[j.id].length) delete STORE.extra[j.id];
+  if(STORE.msgd) delete STORE.msgd[msgKey(j, n)];
+  saveStore(); toast('Removed ' + n.split(' ')[0]); render(); if(URL_CTX && URL_CTX.j === j) drawQuick();
+}
+// capture phase so these buttons work even inside the clickable person rows
+document.addEventListener('click', function(ev){
+  var a = ev.target.closest && ev.target.closest('[data-addp],[data-delp]'); if(!a) return;
+  ev.preventDefault(); ev.stopPropagation();
+  if(a.hasAttribute('data-addp')) openAddPerson(+a.getAttribute('data-addp'));
+  else { var v = a.getAttribute('data-delp').split('|'); removeAddedPerson(+v[0], v.slice(1).join('|')); }
+}, true);
+function addBtn(j, cls){ return '<button class="addp ' + (cls || '') + '" data-addp="' + j.i + '" title="Add someone you messaged who isn\'t listed">+ Add person</button>'; }
+function delBtn(j, p){ return p[3] === ADDED_TAG ? '<button class="delp" data-delp="' + j.i + '|' + esc(p[0]) + '" title="Remove">✕</button>' : ''; }
+// ── Short LinkedIn connection note (max 300 characters) ──
+var NOTE_LIMIT = 280;
+var NOTE_TEMPLATE = String(P.outreach.note || "Hi{NAME}, I just applied for the {ROLE} role at {COMPANY}. Would love to connect if you think there is a fit!");
+var NOTE_SHORTEN = (P.outreach.note_shorten || []).filter(function(x){ return Array.isArray(x) && x.length === 2; });
+function shortOutreach(j, person){
+  var first = person ? String(person).trim().split(/\s+/)[0].replace(/[^\p{L}'-]/gu, '') : '';
+  var hidden = HIDDEN_CO_RE.test(j.co);
+  var role = String(j.role).replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s*[–|].*$/, '').replace(/\s+([,:])/g, '$1').replace(/\s+/g, ' ').trim();
+  if(role.length > 45) role = role.split(/[,:]/)[0].trim();
+  function make(r){ var m = NOTE_TEMPLATE.replace('{NAME}', first ? ' ' + first : '').replace('{ROLE}', r);
+    return hidden ? m.replace(' at {COMPANY}', '') : m.replace('{COMPANY}', cleanCo(j.co)); }
+  var LIM = NOTE_LIMIT, m = make(role);
+  var shortRole = role.split(/[,:]/)[0].trim();
+  var steps = NOTE_SHORTEN.map(function(pair){ return function(x){ return x.split(pair[0]).join(pair[1]); }; }).concat([
+    function(x){ return shortRole && shortRole !== role ? x.replace('the ' + role + ' role', 'the ' + shortRole + ' role') : x; },
+    function(x){ return x.replace(" if you think there is a fit!", "!"); },
+    function(x){ return x.replace(/the [^.]*? role( at)?/, 'a role$1'); }
+  ]);
+  for(var k = 0; k < steps.length && m.length > LIM; k++) m = steps[k](m);
+  return m.slice(0, LIM);
+}
+function noteBtn(j, n, cls){ return '<button class="notebtn ' + (cls || '') + '" data-note="' + j.i + '|' + esc(n || '') + '" title="Copy a short connection-request note (max 280 characters)">✉️ Note</button>'; }
+document.addEventListener('click', function(ev){
+  var b = ev.target.closest && ev.target.closest('[data-note]'); if(!b) return;
+  ev.preventDefault(); ev.stopPropagation();
+  var v = b.getAttribute('data-note').split('|'), j = JOBS[+v[0]], n = v.slice(1).join('|');
+  var m = shortOutreach(j, n); copyText(m, 'Connection note (' + m.length + '/' + NOTE_LIMIT + ')');
+}, true);
+// ── Work emails (p[4] = address, p[5] = public / likely / guess) ──
+var EM_LABEL = { 'public': 'listed publicly', 'likely': 'likely: matches the company’s usual email format', 'guess': 'best guess: company uses a few formats, so double-check' };
+function emailBtn(p, cls, short){
+  if(!p || !p[4]) return '';
+  var c = p[5] || 'guess', q = c === 'guess' ? '?' : '';
+  return '<button class="embtn em-' + c + ' ' + (cls || '') + '" data-em="' + esc(p[4]) + '" data-ec="' + esc(c) + '" title="' + esc(p[4]) + ' (' + esc(EM_LABEL[c] || c) + '). Click to copy">' + (short ? '📧' + q : '📧 Email' + q) + '</button>';
+}
+document.addEventListener('click', function(ev){
+  var b = ev.target.closest && ev.target.closest('[data-em]'); if(!b) return;
+  ev.preventDefault(); ev.stopPropagation();
+  var c = b.getAttribute('data-ec');
+  copyText(b.getAttribute('data-em'), 'Email (' + (c === 'public' ? 'public' : c === 'likely' ? 'likely' : 'best guess') + ') ' + b.getAttribute('data-em') + ' ');
+}, true);
+// ── One-click download of the CV tailored for a job ──
+function dlCvBtn(j, cls, short){
+  var has = !!TAILORED[j.id] && !BG[j.id];
+  return '<button class="dlcv ' + (cls || '') + (has ? '' : ' hidden') + '" data-dlcv="' + j.i + '" title="Download the CV tailored for ' + esc(j.co) + '">' + (short ? '⬇️' : '⬇️ CV') + '</button>';
+}
+document.addEventListener('click', function(ev){
+  var b = ev.target.closest && ev.target.closest('[data-dlcv]'); if(!b) return;
+  ev.preventDefault(); ev.stopPropagation();
+  var j = JOBS[+b.getAttribute('data-dlcv')], rec = j && TAILORED[j.id];
+  if(!rec || !rec.cv){ toast('No tailored CV yet. Click ✨ Optimize CV first'); return; }
+  downloadCV(rec.cv, cvFileName(j.co));
+}, true);
+// ── Tailored PDF CVs made by Claude, saved in Downloads › Tailored CVs ──
+var TCV_DIR = String(P.tailored_cv_folder || 'Tailored CVs');
+function cvPdfBtn(j, cls, short){
+  if(!j.cvPdf) return '';
+  return '<button class="cvpdf ' + (cls || '') + '" data-cvpdf="' + j.i + '" title="Tailored CV ready: ' + esc(TCV_DIR.replace(/\//g, ' › ')) + ' › ' + esc(j.cvPdf.replace('/', ' › ')) + '. Click to copy the folder path">' + (short ? '📎' : '📎 PDF ready') + '</button>';
+}
+document.addEventListener('click', function(ev){
+  var b = ev.target.closest && ev.target.closest('[data-cvpdf]'); if(!b) return;
+  ev.preventDefault(); ev.stopPropagation();
+  var j = JOBS[+b.getAttribute('data-cvpdf')];
+  copyText(TCV_DIR + '/' + j.cvPdf.split('/')[0], 'Folder path');
+}, true);
+function isLinkedIn(j){ return /linkedin/i.test(j.src || '') || /linkedin\.com\/jobs/i.test(j.url || ''); }
+function logoHue(s){ var x = 0; s = String(s); for(var i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) % 360; return x; }
+function card(j){
+  var st = getStatus(j);
+  var cat = 't' + trackIdx(j.cat), catName = trackLabel(j.cat);
+  var opts = STATUS_ALL.map(function(s){
+    return '<option' + (s === st ? ' selected' : '') + '>' + s + '</option>';
+  }).join('');
+  var initials = String(j.co).replace(/\(.*?\)/g, '').trim().split(/\s+/).slice(0, 2).map(function(w){ return w.charAt(0); }).join('').toUpperCase();
+  var hasSal = j.sal && !/not listed/i.test(j.sal);
+  var src = String(j.src || '').replace(/\s*\(.*?\)\s*/g, ' ').trim();
+  var people = j.people || [];
+  var d = document.createElement('div');
+  d.className = 'card l' + locIdx(j.sec) + (st !== 'To apply' ? ' tracked' : '');
+  d.innerHTML =
+    '<div class="c-top">' +
+      '<div class="logo" style="--h:' + logoHue(j.co) + '">' + esc(initials || '?') + '</div>' +
+      '<div class="c-title">' +
+        '<div class="co">' + esc(j.co) + '</div>' +
+        '<div class="ro">' + esc(j.role) + '</div>' +
+      '</div>' +
+      '<div class="c-flags">' +
+        (isNew(j) ? '<span class="flag f-new">New</span>' : '') +
+        (j.fit === 'High' ? '<span class="flag f-high">★ High fit</span>' : '<span class="flag f-med">Medium fit</span>') +
+      '</div>' +
+    '</div>' +
+    (j.gone ? '<div class="c-warn">Not in the latest refresh — check it\'s still open</div>' : '') +
+    '<div class="c-meta">' +
+      '<span class="m m-loc"><i class="ic ic-pin"></i>' + esc(j.loc) + '</span>' +
+      '<span class="m m-cat c-' + cat + '">' + catName + '</span>' +
+      '<span class="m ' + (hasSal ? 'm-sal' : 'm-nosal') + '">' + (hasSal ? esc(j.sal) : 'Salary not listed') + '</span>' +
+      (isLinkedIn(j) ? '<span class="m m-li" title="Found on LinkedIn"><b>in</b>LinkedIn</span>' : '') +
+      visaChip(j) +
+    '</div>' +
+    (j.note ? '<p class="c-note">' + esc(j.note) + '</p>' : '') +
+    (j.visa && j.visa.evidence && visaNeeded(j) ? '<p class="c-visa">🛂 ' + esc(j.visa.evidence) + '</p>' : '') +
+    (j.skills && j.skills.length ? '<div class="c-skills">' + j.skills.map(function(s){ return '<span class="sk">' + esc(s) + '</span>'; }).join('') + '</div>' : '') +
+    (people.length ? '<details class="ppl"><summary><span class="ppl-ic">👥</span> ' + people.length + (people.length === 1 ? ' person' : ' people') + ' to reach out to <span class="mc" data-mc="' + j.i + '">' + (msgdCount(j) ? '· ✓' + msgdCount(j) : '') + '</span><span class="chev">▾</span></summary><div class="ppl-list">' +
+      people.map(function(p){ var key = /Founder/i.test(p[3]) ? 'f' : /Talent/i.test(p[3]) ? 't' : /Hiring/i.test(p[3]) ? 'h' : 'o';
+        var ini = String(p[0]).split(/\s+/).slice(0, 2).map(function(w){ return w.charAt(0); }).join('').toUpperCase();
+        return '<a class="pp" href="#"' + (p[2] ? ' data-li="' + esc(p[2]) + '"' : '') + '><span class="pav" style="--h:' + logoHue(p[0]) + '">' + esc(ini) + '</span>' +
+          '<span class="pinfo2"><span class="pn2">' + esc(p[0]) + '</span><span class="pr">' + esc(p[1]) + '</span></span>' +
+          '<span class="ptag pt-' + key + '">' + esc(p[3]) + '</span>' +
+          '<button class="pcopy" data-msg="' + esc(p[0]) + '" title="Copy a message to ' + esc(p[0]) + '">📋 Copy message</button>' + noteBtn(j, p[0], 'pcopy') + emailBtn(p, 'pcopy') + msgdBox(j, p[0]) + delBtn(j, p) + '</a>'; }).join('') +
+      addBtn(j, 'in-list') + '</div></details>' : '') +
+    '<div class="c-foot">' +
+      '<div class="c-left">' +
+        '<select class="st" data-st="' + j.i + '" title="Application status">' + opts + '</select>' +
+        '<span class="c-date">' + (statusDate(j) ? esc(st) + ' ' + esc(statusDate(j)) : (j.firstSeen ? 'Added ' + esc(fmtDate(j.firstSeen)) : '')) + '</span>' +
+      '</div>' +
+      '<div class="c-btns">' +
+        (people.length ? '' : addBtn(j, 'big') + msgdBox(j, '', 'big') + '<button class="a-msg" data-msg="" title="Copy an outreach message">📋 Copy message</button>' + noteBtn(j, '', 'a-msg')) +
+        cvPdfBtn(j, 'a-opt') + (P.features.optimize_button ? '<button class="a-opt" data-opt="' + j.i + '">' + optLabel(j) + '</button>' + dlCvBtn(j, 'a-opt') : '') +
+        '<button class="a-link ' + (j.direct ? 'a-green' : 'a-ind') + '" data-url="' + esc(j.url) + '" title="' + esc(src ? 'via ' + src : '') + '">' + (j.direct ? 'Apply' : 'Open page') + ' <span class="arr">↗</span></button>' +
+      '</div>' +
+    '</div>';
+  d.querySelector('.a-link').addEventListener('click', function(){ openUrl(j.url, j); });
+  var ob = d.querySelector('[data-opt]'); if(ob) ob.addEventListener('click', function(ev){ ev.preventDefault(); optimize(j.i); });
+  d.querySelectorAll('[data-li]').forEach(function(x){ x.addEventListener('click', function(ev){ ev.preventDefault(); var pp = (j.people || []).filter(function(p){ return p[2] === x.getAttribute('data-li'); })[0]; openUrl(x.getAttribute('data-li'), j, pp ? pp[0] : ''); }); });
+  wireMsgd(d);
+  d.querySelectorAll('[data-msg]').forEach(function(b){ b.addEventListener('click', function(ev){ ev.preventDefault(); ev.stopPropagation(); var n = b.getAttribute('data-msg'); copyText(outreach(j, n), n ? 'Message to ' + n.split(' ')[0] : 'Message'); }); });
+  var sel = d.querySelector('select');
+  sel.addEventListener('change', function(){ setStatus(j.i, sel.value, sel); });
+  styleSel(sel);
+  return d;
+}
+
+// ── Pagination: 10 cards per page per section ──
+var PAGE_SIZE = 10, PAGE = {};
+function goPage(key, p){
+  PAGE[key] = p; render();
+  var b = document.getElementById('sec-' + key); if(b && b.scrollIntoView) b.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+function pagerHtml(key, page, pages, total, from, to){
+  if(pages <= 1) return '';
+  var h = '<div class="pager"><span class="pinfo">Showing ' + from + '–' + to + ' of ' + total + '</span><span class="pbtns">';
+  h += '<button class="pg" ' + (page <= 1 ? 'disabled' : 'onclick="goPage(\'' + key + '\',' + (page - 1) + ')"') + '>‹ Prev</button>';
+  for(var i = 1; i <= pages; i++){
+    if(pages > 7 && i > 2 && i < pages - 1 && Math.abs(i - page) > 1){ if(i === 3 || i === pages - 2) h += '<span class="pdots">…</span>'; continue; }
+    h += '<button class="pg' + (i === page ? ' on' : '') + '" onclick="goPage(\'' + key + '\',' + i + ')">' + i + '</button>';
+  }
+  h += '<button class="pg" ' + (page >= pages ? 'disabled' : 'onclick="goPage(\'' + key + '\',' + (page + 1) + ')"') + '>Next ›</button></span></div>';
+  return h;
+}
+
+// ── Layout toggle: cards or table (remembered in this browser) ──
+var VIEW = (function(){ try { return localStorage.getItem(SP + '_view') || 'cards'; } catch(e){ return 'cards'; } })();
+function setView(v){
+  VIEW = v; try { localStorage.setItem(SP + '_view', v); } catch(e){}
+  PAGE = {}; syncViewButtons(); render();
+}
+function syncViewButtons(){ document.querySelectorAll('.vt').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-view') === VIEW); }); }
+document.addEventListener('click', function(ev){ var b = ev.target.closest && ev.target.closest('.vt'); if(b) setView(b.getAttribute('data-view')); });
+
+function tableHtml(list){
+  var opts = STATUS_ALL;
+  var h = '<div class="twrap"><table class="jt"><colgroup><col class="w-co"><col class="w-loc"><col class="w-type"><col class="w-sal"><col class="w-fit"><col class="w-ppl"><col class="w-date"><col class="w-st"><col class="w-act"></colgroup><thead><tr>' +
+    '<th class="c-co">Company &amp; role</th><th>Location</th><th>Type</th><th class="r">Salary</th><th>Fit</th><th>People</th><th>Added</th><th>Status</th><th class="r">Actions</th>' +
+    '</tr></thead><tbody>';
+  list.forEach(function(j){
+    var st = getStatus(j);
+    var cat = 't' + trackIdx(j.cat);
+    var hasSal = j.sal && !/not listed/i.test(j.sal);
+    var ini = String(j.co).replace(/\(.*?\)/g, '').trim().split(/\s+/).slice(0, 2).map(function(w){ return w.charAt(0); }).join('').toUpperCase();
+    var people = j.people || [];
+    h += '<tr class="jr' + (st !== 'To apply' ? ' tracked' : '') + '" data-row="' + j.i + '">' +
+      '<td class="c-co"><div class="tco"><span class="logo sm" style="--h:' + logoHue(j.co) + '">' + esc(ini || '?') + '</span><div class="tco-t">' +
+        '<div class="tco-n">' + esc(j.co) + (isNew(j) ? ' <span class="flag f-new xs">New</span>' : '') + (isLinkedIn(j) ? ' <span class="m-li xs"><b>in</b></span>' : '') + '</div>' +
+        '<div class="tco-r">' + esc(j.role) + '</div></div></div></td>' +
+      '<td class="t-loc">' + esc(j.loc) + '</td>' +
+      '<td><span class="m-cat c-' + cat + '">' + esc(trackLabel(j.cat)) + '</span>' + (visaNeeded(j) ? '<br>' + visaChip(j, true) : '') + '</td>' +
+      '<td class="r ' + (hasSal ? 't-sal' : 't-nosal') + '">' + (hasSal ? esc(j.sal) : '—') + '</td>' +
+      '<td>' + (j.fit === 'High' ? '<span class="flag f-high">★ High</span>' : '<span class="flag f-med">Medium</span>') + '</td>' +
+      '<td class="t-pcell">' + (people.length ? '<button class="t-ppl" data-pp="' + j.i + '">👥 ' + people.length + ' <span class="mc" data-mc="' + j.i + '">' + (msgdCount(j) ? '· ✓' + msgdCount(j) : '') + '</span> <span class="chev">▾</span></button>' +
+        '<div class="t-plist hidden" data-plist="' + j.i + '">' + people.map(function(p){
+          var key = /Founder/i.test(p[3]) ? 'f' : /Talent/i.test(p[3]) ? 't' : /Hiring/i.test(p[3]) ? 'h' : 'o';
+          var pi = String(p[0]).split(/\s+/).slice(0, 2).map(function(w){ return w.charAt(0); }).join('').toUpperCase();
+          return '<div class="tp"><span class="pav sm" style="--h:' + logoHue(p[0]) + '">' + esc(pi) + '</span><div class="tp-t">' +
+            '<div class="tp-n"><a href="#"' + (p[2] ? ' data-li="' + esc(p[2]) + '"' : '') + '>' + esc(p[0]) + '</a><span class="ptag pt-' + key + '">' + esc(p[3]) + '</span></div>' +
+            '<div class="tp-r" title="' + esc(p[1]) + '">' + esc(p[1]) + '</div></div>' +
+            '<div class="tp-acts"><button class="tp-copy" data-msg="' + esc(p[0]) + '" title="Copy a message to ' + esc(p[0]) + '">📋</button>' + noteBtn(j, p[0], 'tp-copy tn') + emailBtn(p, 'tp-copy tn', true) + msgdBox(j, p[0], 'mini') + delBtn(j, p) + '</div></div>'; }).join('') +
+        addBtn(j, 'in-list') + '</div>' : '<div class="t-nop"><button class="tp-copy" data-msg="" title="Copy a general outreach message">📋</button>' + noteBtn(j, '', 'tp-copy tn') + msgdBox(j, '', 'mini') + addBtn(j, 'mini') + '</div>') + '</td>' +
+      '<td class="t-date">' + (j.firstSeen ? esc(fmtDate(j.firstSeen)) : '') + '</td>' +
+      '<td><select class="st" data-st="' + j.i + '">' + opts.map(function(s){ return '<option' + (s === st ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></td>' +
+      '<td class="r"><div class="t-acts">' +
+        cvPdfBtn(j, 'ib', true) + (P.features.optimize_button ? '<button class="ib" data-opt="' + j.i + '" title="' + esc(optLabel(j)) + '">' + (TAILORED[j.id] ? '📄' : '✨') + '</button>' + dlCvBtn(j, 'ib', true) : '') +
+        '<button class="a-link sm" data-url="' + esc(j.url) + '">' + (j.direct ? 'Apply' : 'Open') + ' ↗</button>' +
+      '</div></td></tr>';
+  });
+  return h + '</tbody></table></div>';
+}
+function wireTable(w){
+  w.querySelectorAll('select.st').forEach(function(sel){ styleSel(sel); sel.addEventListener('change', function(){ setStatus(+sel.getAttribute('data-st'), sel.value, sel); }); });
+  wireMsgd(w);
+  w.addEventListener('click', function(ev){
+    if(ev.target.closest('label.msgd')) return;
+    var t = ev.target.closest('[data-url],[data-li],[data-msg],[data-opt],[data-pp]'); if(!t) return;
+    ev.preventDefault();
+    var row = t.closest('[data-row],[data-pprow]'), i = row ? +(row.getAttribute('data-row') || row.getAttribute('data-pprow')) : -1, j = JOBS[i];
+    if(t.hasAttribute('data-pp')){ var r = w.querySelector('[data-plist="' + t.getAttribute('data-pp') + '"]'); if(r){ r.classList.toggle('hidden'); t.classList.toggle('open', !r.classList.contains('hidden')); } return; }
+    if(t.hasAttribute('data-url')) return openUrl(t.getAttribute('data-url'), j);
+    if(t.hasAttribute('data-li')){ var pp = (j.people || []).filter(function(p){ return p[2] === t.getAttribute('data-li'); })[0]; return openUrl(t.getAttribute('data-li'), j, pp ? pp[0] : ''); }
+    if(t.hasAttribute('data-msg')){ var n = t.getAttribute('data-msg'); return copyText(outreach(j, n), n ? 'Message to ' + n.split(' ')[0] : 'Message'); }
+    if(t.hasAttribute('data-opt')) return optimize(+t.getAttribute('data-opt'));
+  });
+}
+function section(title, cls, list, sub){
+  var m = document.getElementById('main'), key = cls;
+  var size = VIEW === 'table' ? 25 : PAGE_SIZE;
+  var pages = Math.max(1, Math.ceil(list.length / size));
+  var page = Math.min(Math.max(1, PAGE[key] || 1), pages); PAGE[key] = page;
+  var from = (page - 1) * size, slice = list.slice(from, from + size);
+  var b = document.createElement('div');
+  b.className = 'banner ' + cls; b.id = 'sec-' + key;
+  b.innerHTML = '<h2>' + title + ' · ' + list.length + '</h2><span>' + sub + (pages > 1 ? ' · page ' + page + ' of ' + pages : '') + '</span>';
+  m.appendChild(b);
+  var w = document.createElement('div');
+  if(VIEW === 'table'){ w.className = 'tview'; w.innerHTML = tableHtml(slice); wireTable(w); }
+  else { w.className = 'cards'; slice.forEach(function(j){ w.appendChild(card(j)); }); }
+  m.appendChild(w);
+  var pg = document.createElement('div');
+  pg.innerHTML = pagerHtml(key, page, pages, list.length, from + 1, from + slice.length);
+  if(pg.innerHTML) m.appendChild(pg);
+}
+
+var STATUS_DONE = ['Rejected','Closed','Skipped','Duplicate','Wrong location'];
+var STATUS_PROG = ['Applied','Screening','Interviewing','Offer'];
+function fillStatusFilter(){
+  var el = document.getElementById('stF'); if(!el) return;
+  var cur = el.value || 'all', cnt = {};
+  JOBS.forEach(function(j){ var s = getStatus(j); cnt[s] = (cnt[s] || 0) + 1; });
+  var act = JOBS.length - STATUS_DONE.reduce(function(a, s){ return a + (cnt[s] || 0); }, 0);
+  var prog = STATUS_PROG.reduce(function(a, s){ return a + (cnt[s] || 0); }, 0);
+  var o = '<option value="all">All statuses (' + JOBS.length + ')</option>' +
+    '<option value="active">Hide closed, skipped, duplicates &amp; wrong location (' + act + ')</option>' +
+    '<option value="progress">In progress: applied → offer (' + prog + ')</option><option disabled>──────────</option>' +
+    STATUS_ALL.map(function(s){ return '<option value="' + s + '"' + (cnt[s] ? '' : ' disabled') + '>' + s + ' (' + (cnt[s] || 0) + ')</option>'; }).join('');
+  el.innerHTML = o; el.value = cur; if(el.value !== cur) el.value = 'all';
+  el.classList.toggle('on', el.value !== 'all');
+}
+var shown = [];
+function render(){
+  applyExtras();
+  fillStatusFilter();
+  syncViewButtons();
+  var q = document.getElementById('q').value.trim().toLowerCase();
+  shown = JOBS.filter(function(j){ return pass(j, q); }).sort(sorter);
+  document.getElementById('main').innerHTML = '';
+  P.locations.forEach(function(l, k){
+    var list = shown.filter(function(j){ return j.sec === l.id; });
+    if(list.length) section((l.emoji ? l.emoji + ' ' : '') + esc(l.label || l.id), 'b-l' + k, list, esc(l.subtitle || (l.places || []).join(' · ')));
+  });
+  var other = shown.filter(function(j){ return !locById(j.sec); });
+  if(other.length) section('🗺️ Other locations', 'b-lx', other, 'Roles whose location group isn\'t in your profile');
+  var none = document.getElementById('none');
+  none.innerHTML = JOBS.length ? 'No roles match these filters.' : '<div class="empty-hint"><b>No jobs yet.</b><br>Ask Claude to <b>“refresh my job tracker”</b> — it searches using your profile and rebuilds this page.</div>';
+  none.classList.toggle('hidden', shown.length > 0);
+  updateStats();
+}
+function updateStats(){
+  function c(f){ return shown.filter(f).length; }
+  var _ss = document.getElementById('sShow'); if(_ss) _ss.textContent = shown.length;
+  document.getElementById('sHi').textContent = c(function(j){ return j.fit === 'High'; });
+  document.getElementById('sAp').textContent = JOBS.filter(function(j){ var s = getStatus(j); return ['Applied','Screening','Interviewing','Offer','Rejected'].indexOf(s) !== -1; }).length;
+  document.getElementById('sNew').textContent = JOBS.filter(isNew).length;
+  function st(s){ return JOBS.filter(function(j){ return getStatus(j) === s; }).length; }
+  document.getElementById('sTot').textContent = JOBS.length;
+  document.getElementById('sFilt').innerHTML = shown.length === JOBS.length ? 'Showing all of them' : 'Filters on: showing <b>' + shown.length + '</b> of them';
+  document.getElementById('sApp').textContent = st('Applied');
+  document.getElementById('sScr').textContent = st('Screening');
+  document.getElementById('sRej').textContent = st('Rejected');
+  document.getElementById('sInt').textContent = st('Interviewing');
+  document.getElementById('sOff').textContent = st('Offer');
+  document.getElementById('sMsg').textContent = Object.keys(STORE.msgd || {}).length;
+  var n = Math.max(1, shown.length);
+  // location + role-mix bars: one segment per group from your profile
+  var lc = P.locations.map(function(l){ return c(function(j){ return j.sec === l.id; }); });
+  var tc = P.role_tracks.map(function(t){ return c(function(j){ return j.cat === t.id; }); });
+  document.getElementById('sLocPct').textContent = Math.round((lc[0] || 0) / n * 100) + '%';
+  document.getElementById('sCatPct').textContent = Math.round((tc[0] || 0) / n * 100) + '%';
+  lc.forEach(function(v, k){ var e = document.getElementById('segLoc').children[k]; if(e) e.style.width = (v / n * 100) + '%'; var b = document.getElementById('lgL' + k); if(b) b.textContent = v; });
+  tc.forEach(function(v, k){ var e = document.getElementById('segCat').children[k]; if(e) e.style.width = (v / n * 100) + '%'; var b = document.getElementById('lgT' + k); if(b) b.textContent = v; });
+}
+
+function portals(){
+  var g = document.getElementById('portals');
+  DATA.portals.forEach(function(p){
+    var d = document.createElement('div'); d.className = 'portal';
+    d.innerHTML = '<div class="pt"><span class="pn">' + esc(p[0]) + '</span><span class="pb' + (HOME_BADGES[p[3]] ? '' : ' g') + '">' + esc(p[3]) + '</span></div>' +
+      '<div class="pd">' + esc(p[1]) + '</div><button class="pbtn">Open</button>';
+    d.querySelector('button').addEventListener('click', function(){ openUrl(p[2]); });
+    g.appendChild(d);
+  });
+}
+
+document.getElementById('totalCnt').textContent = JOBS.length;
+document.getElementById('dataVer').textContent = fmtDate(DATA_VERSION) + (DUPES ? ' · ' + DUPES + ' duplicate' + (DUPES > 1 ? 's' : '') + ' skipped' : '');
+portals();
+render();
+</script>
+</body>
+</html>

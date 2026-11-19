@@ -1,0 +1,62 @@
+{
+  "version": "2026-11-19",
+  "jobs": [
+    {
+      "location": "Berlin",
+      "track": "Backend",
+      "company": "Example Fintech GmbH",
+      "role": "Senior Backend Engineer (Go)",
+      "place": "Berlin (hybrid)",
+      "salary": "€75k–€90k",
+      "salary_num": 90,
+      "skills": ["Go", "PostgreSQL", "Kafka", "Payments"],
+      "url": "https://example.com/careers/senior-backend-engineer-go",
+      "source": "Company careers page",
+      "fit": "High",
+      "direct": true,
+      "note": "Payments ledger team; Go + Kafka matches your last role",
+      "visa": {"status": "sponsors", "evidence": "Posting: \"We sponsor EU Blue Card applications and help with relocation.\""},
+      "people": [
+        {"name": "Sam Example", "title": "Engineering Manager, Payments", "url": "https://www.linkedin.com/in/sam-example", "tag": "Hiring manager"}
+      ],
+      "posted": "2026-11-15"
+    },
+    {
+      "location": "Netherlands",
+      "track": "AI Engineer",
+      "company": "Example Analytics BV",
+      "role": "AI Engineer",
+      "place": "Amsterdam",
+      "salary": "Not listed",
+      "salary_num": 0,
+      "skills": ["Python", "RAG", "LLM evals"],
+      "url": "https://example.com/jobs/ai-engineer-amsterdam",
+      "source": "LinkedIn",
+      "fit": "Medium",
+      "direct": true,
+      "note": "RAG product team; asks for 3+ years",
+      "visa": {"status": "sponsors", "evidence": "On the IND public register of recognised sponsors"},
+      "people": [],
+      "posted": "2026-11-12"
+    },
+    {
+      "location": "Remote EU",
+      "track": "Platform",
+      "company": "Example Cloud",
+      "role": "Platform Engineer",
+      "place": "Remote (Europe)",
+      "salary": "€70k–€85k",
+      "salary_num": 85,
+      "skills": ["Kubernetes", "Terraform", "AWS"],
+      "url": "https://example.com/jobs/platform-engineer-remote",
+      "source": "Ashby (company ATS)",
+      "fit": "High",
+      "direct": true,
+      "note": "Remote-first; hires through an employer of record",
+      "visa": {"status": "not_needed", "evidence": "Fully remote via EOR"},
+      "people": [],
+      "posted": "2026-11-17"
+    }
+  ],
+  "portals": []
+}

@@ -1,0 +1,31 @@
+# Country pack: Remote — Europe. Facts that change (salary floors, fees) are deliberately NOT written here —
+# Claude looks them up live from the official links. If a link has moved, search for its name.
+code: EU
+name: Remote — Europe
+linkedin_location: European Union
+visa:
+  route: 'Usually none: remote roles hire you where you live (as employee via an Employer of Record, or contractor)'
+  route_url: ''
+  register:
+    name: Not applicable
+    url: ''
+    how: Check the posting says which countries it hires from — 'Remote (EU only)' or a named list. Drop roles restricted
+      to countries you can't work from.
+  signals:
+  - remote
+  - employer of record
+  - EOR
+  - work from anywhere in europe
+boards:
+- name: We Work Remotely
+  desc: Remote jobs board
+  url: https://weworkremotely.com/
+- name: Remote OK
+  desc: Remote jobs board
+  url: https://remoteok.com/
+- name: Relocate.me
+  desc: Tech jobs with relocation support
+  url: https://relocate.me/
+- name: Welcome to the Jungle
+  desc: Has a remote filter
+  url: https://app.welcometothejungle.com/

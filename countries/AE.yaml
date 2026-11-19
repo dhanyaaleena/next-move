@@ -1,0 +1,32 @@
+# Country pack: United Arab Emirates. Facts that change (salary floors, fees) are deliberately NOT written here —
+# Claude looks them up live from the official links. If a link has moved, search for its name.
+code: AE
+name: United Arab Emirates
+linkedin_location: United Arab Emirates
+visa:
+  route: Employer-sponsored employment visa (standard for all expat hires); Golden Visa for some
+  route_url: https://u.ae/en/information-and-services/visa-and-emirates-id
+  register:
+    name: Not needed
+    url: https://u.ae/en/information-and-services/visa-and-emirates-id
+    how: UAE employers sponsor the work visa for essentially every expat hire, so treat on-site UAE roles as 'sponsors'
+      unless the ad says 'local candidates only' or 'own visa'.
+  signals:
+  - visa sponsorship
+  - we sponsor
+  - sponsorship available
+  - relocation support
+  - relocation package
+  - help with your visa
+  - visa provided
+  - company visa
+boards:
+- name: Bayt
+  desc: Largest Gulf job board
+  url: https://www.bayt.com/
+- name: GulfTalent
+  desc: Professional roles in the Gulf
+  url: https://www.gulftalent.com/
+- name: Naukrigulf
+  desc: Gulf jobs
+  url: https://www.naukrigulf.com/

@@ -1,0 +1,38 @@
+# Country pack: United States. Facts that change (salary floors, fees) are deliberately NOT written here —
+# Claude looks them up live from the official links. If a link has moved, search for its name.
+code: US
+name: United States
+linkedin_location: United States
+visa:
+  route: H-1B (annual lottery), O-1, L-1 (intra-company), TN (Canada/Mexico)
+  route_url: https://www.uscis.gov/working-in-the-united-states/h-1b-specialty-occupations
+  register:
+    name: USCIS H-1B Employer Data Hub
+    url: https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub
+    how: Not a licence list, but shows which employers filed H-1B petitions and how many were approved — a strong
+      sign a company sponsors. Many US postings say outright 'unable to sponsor' — drop those.
+  salary_rule: H-1B has a prevailing-wage requirement and a lottery; check uscis.gov for current fees and rules,
+    which have changed recently.
+  signals:
+  - visa sponsorship
+  - we sponsor
+  - sponsorship available
+  - relocation support
+  - relocation package
+  - help with your visa
+  - h-1b
+  - h1b
+  - will sponsor
+boards:
+- name: Indeed
+  desc: Largest US job board
+  url: https://www.indeed.com/
+- name: Wellfound
+  desc: Startup roles with salary and equity
+  url: https://wellfound.com/
+- name: Dice
+  desc: US tech job board
+  url: https://www.dice.com/
+- name: Built In
+  desc: US tech companies by city
+  url: https://builtin.com/
