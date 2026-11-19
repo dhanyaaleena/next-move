@@ -25,18 +25,86 @@ visa needs, salary floor, languages and tone all come from your `profile.yaml`.
 You need: [Claude Code](https://claude.com/claude-code) or the Claude desktop app with a folder connected, and Python 3.9+.
 
 ```bash
-git clone https://github.com/<you>/next-move.git
+git clone https://github.com/dhanyaaleena/next-move.git
 cd next-move
 pip install -r requirements.txt
 ```
 
-Then open the folder in Claude and say:
+Then open the folder in Claude and use **one** of the two prompts below.
 
-> **Set up my job tracker.** Here's my CV. *(attach it)*
+### Option A: let Claude ask you
 
-Claude reads your CV, asks a few questions (roles, cities/countries, where you need visa sponsorship,
-salary, languages, dream companies, how your messages should sound), writes `me/profile.yaml` and
-`me/cv.json`, and builds your page. Then:
+Copy this, attach your CV, and answer Claude's questions as they come:
+
+```text
+Set up my job tracker. My CV is attached.
+Read CLAUDE.md, then run the job-tracker-setup skill. Ask me everything you need (roles, places,
+visa needs, salary, application details) a few questions at a time, and suggest sensible defaults
+from my CV so I can just confirm. Don't apply, message anyone or submit anything.
+```
+
+### Option B: fill in the form and hand it over
+
+Fill in what you can (leave anything blank and Claude will ask), attach your CV, and send it:
+
+```text
+Set up my job tracker. Read CLAUDE.md, then run the job-tracker-setup skill using the answers below.
+Ask me only about blanks or anything unclear. Don't apply, message anyone or submit anything.
+
+CV: (attached)
+
+## What I'm looking for
+Role types and job titles to search (2–4 groups):
+  - e.g. Backend: Backend Engineer, Python Engineer
+  - e.g. AI Engineer: AI Engineer, LLM Engineer, Applied AI Engineer
+Seniority (junior / mid / senior / staff / lead):
+Skip roles asking for more than __ years of experience:
+Industries or companies to avoid:
+Recruitment agencies to skip:
+Dream companies (career pages if you know them):
+
+## Where
+Places, grouped the way you want them in the tracker:
+  - e.g. "London": London, Greater London, Canary Wharf
+  - e.g. "Remote EU": remote roles open to Europe
+For each country — do you already have the right to work there? (yes / need visa sponsorship):
+Work modes you're open to (onsite / hybrid / remote):
+Languages you can work in:
+
+## Pay
+Minimum salary and currency (per country if different):
+Keep roles that don't list a salary? (yes / no):
+
+## Application details (used word for word in application forms)
+Location line (e.g. "London, UK" or "Berlin, relocating in March"):
+Right to work, per country:
+Need sponsorship now or in future, per country:
+Notice period:
+Salary expectation (or leave blank to fill per job):
+Earliest start date:
+LinkedIn / GitHub / portfolio links:
+
+## CV rules
+Job titles you're happy to appear as on tailored CVs:
+Skills to ask you about before claiming them:
+True things that aren't on the CV yet (projects, tools, certifications):
+
+## Your voice
+How messages and answers should sound (e.g. casual and brief, not AI-sounding):
+Sign-off (e.g. "Thanks, Sam"):
+2–3 lines about you for outreach (who you are, right to work / relocation, one link):
+A few true personal lines for application answers (what you enjoyed most, what you want next):
+
+## Practical
+Are you signed in to LinkedIn in a browser Claude can use? (yes / no):
+Where to save the tracker page (default: me/output/):
+Where to save tailored CV PDFs:
+Excel copy too? (yes / no):
+Pull new jobs automatically? (e.g. weekday mornings at 8, or no):
+```
+
+Claude reads your CV, fills in the rest, writes `me/profile.yaml` and `me/cv.json`, finds the job
+boards for your countries and roles, and builds your page. Then:
 
 > **Pull latest jobs.**
 

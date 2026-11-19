@@ -23,7 +23,9 @@ Render it once to check: `python scripts/cv_pdf.py me/cv.json /tmp/base.pdf` (sh
 
 ## 2. Interview for the profile
 
-Ask only what you can't infer from the CV. Use multiple-choice questions where the tool exists. Cover:
+If the user pasted the filled-in setup form from the README (Option B), take every answer from it,
+suggest values for blanks you can infer from the CV, and ask only about what's still missing or unclear.
+Otherwise ask only what you can't infer from the CV, a few questions at a time, offering defaults to confirm. Use multiple-choice questions where the tool exists. Cover:
 
 1. **Roles** — 2–4 role tracks (e.g. Backend / AI Engineer / Full Stack) and the job titles to search for each.
 2. **Where** — cities/countries, grouped the way they want sections in the tracker (e.g. "London" and "Other UK"; or "Berlin", "Netherlands", "Remote EU").
@@ -34,9 +36,10 @@ Ask only what you can't infer from the CV. Use multiple-choice questions where t
 7. **Dream companies** for the watchlist (find each one's careers board: `jobs.ashbyhq.com/<slug>`, `boards.greenhouse.io/<slug>`, `jobs.lever.co/<slug>`, `apply.workable.com/<slug>`).
 8. **LinkedIn** — are they signed in to LinkedIn in a browser you can use? (`search.linkedin_signed_in`)
 9. **CV rules** — titles they're happy to use; skills to ask about before claiming; anything true that isn't in the CV yet (`confirmed_extras`).
-10. **Voice** — how messages should sound and their sign-off; a 2–3 line outreach blurb (who they are, right-to-work/relocation line, portfolio link).
+10. **Voice** — how messages should sound and their sign-off; a 2–3 line outreach blurb (who they are, right-to-work/relocation line, portfolio link); a few true personal lines for answers (`writing.about_me`).
 11. **Application facts** — location line, right to work / sponsorship per country, notice period, salary expectation (or leave blank to fill per role), start date, work mode, links (`application_facts`).
-12. **Files** — where tailored CV PDFs should go (`tailored_cv_folder`), whether they want an Excel copy, and where to save the tracker page.
+12. **Files** — where tailored CV PDFs should go (`tailored_cv_folder`), whether they want an Excel copy, and where to save the tracker page (`output_file`).
+13. **Schedule** — whether to pull new jobs automatically, and when (used in step 5).
 
 Write `me/profile.yaml` from `examples/profile.example.yaml`, keeping its comments. Rules:
 - `storage_prefix`: lowercase first name (a–z, 0–9, _). Never change it later.
