@@ -1,6 +1,6 @@
-# Job Tracker — instructions for Claude
+# Next Move — instructions for Claude
 
-This repo is a personal job-search tracker. Each user keeps their own data in `me/`
+Next Move is a personal job-search tracker. Each user keeps their own data in `me/`
 (git-ignored); everything else is shared code. Read this file at the start of every
 session, then read the user's `me/profile.yaml` and `me/notes.md` before doing anything.
 

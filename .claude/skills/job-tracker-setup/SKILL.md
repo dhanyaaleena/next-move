@@ -78,5 +78,5 @@ Send them the tracker page. If they have an older tracker in the array format, i
 Offer to (a) run the first pull now (job-tracker-refresh), and (b) set up a scheduled task that pulls
 on a schedule they choose, e.g. weekday mornings, using this prompt:
 
-> In the job-tracker repo at <path>: read CLAUDE.md, then run the job-tracker-refresh skill for me.
+> In the next-move repo at <path>: read CLAUDE.md, then run the job-tracker-refresh skill for me.
 > Use my profile in me/. Don't apply or message anyone. Finish with the short report.

@@ -26,7 +26,7 @@ import urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import DEFAULT_ME, load_country  # noqa: E402
 
-UA = {"User-Agent": "job-tracker/1.0 (+https://github.com)"}
+UA = {"User-Agent": "next-move/1.0"}
 UK_API = "https://www.gov.uk/api/content/government/publications/register-of-licensed-sponsors-workers"
 SUFFIX = re.compile(r"\b(ltd|limited|plc|llp|llc|inc|incorporated|gmbh|b\.?v\.?|uk|group|holdings|technologies|technology|the|co|company)\b\.?", re.I)
 

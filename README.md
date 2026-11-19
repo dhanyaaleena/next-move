@@ -1,7 +1,8 @@
-# Job Tracker — your own job search, run by Claude
+# Next Move
 
-A personal job tracker that **pulls roles matching your CV, in the countries you choose, with visa
-sponsorship where you need it** — and keeps everything in one page you open in your browser.
+**Your CV, your countries, your rules — a job search your own Claude runs for you.**
+
+Next Move is a personal job tracker that **pulls roles matching your CV, in the countries you choose — whether you already have the right to work there or need visa sponsorship** — and keeps everything in one page you open in your browser.
 
 Your own Claude session does the searching. This repo gives it the rules, scripts and page template,
 so the results are consistent and nothing about your search is hard-coded: roles, cities, countries,
@@ -23,8 +24,8 @@ visa needs, salary floor, languages and tone all come from your `profile.yaml`.
 You need: [Claude Code](https://claude.com/claude-code) or the Claude desktop app with a folder connected, and Python 3.9+.
 
 ```bash
-git clone https://github.com/<you>/job-tracker.git
-cd job-tracker
+git clone https://github.com/<you>/next-move.git
+cd next-move
 pip install -r requirements.txt
 ```
 
@@ -45,7 +46,7 @@ are never reset.
 
 Ask Claude to *"set up a scheduled task to pull my jobs every weekday morning"*. It uses this prompt:
 
-> In the job-tracker repo at `<path>`: read CLAUDE.md, then run the job-tracker-refresh skill for me.
+> In the next-move repo at `<path>`: read CLAUDE.md, then run the job-tracker-refresh skill for me.
 > Use my profile in me/. Don't apply or message anyone. Finish with the short report.
 
 ## Your data
