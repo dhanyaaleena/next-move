@@ -129,9 +129,8 @@ to the user.
 The stylesheet is one layer of tokens on `:root` followed by components; there are no stacked
 overrides. Change a token before adding a one-off colour.
 
-- **Type.** UI text is Inter; the page title, section headings, dashboard numbers and dialog titles
-  use Fraunces (a warm serif) at a low optical size so numbers stay solid. Both load from Google
-  Fonts and fall back to system sans / Georgia offline.
+- **Type.** Lato everywhere (Google Fonts, weights 400/700/900; system sans offline). The page title and
+  monogram use 900; section headings, dashboard numbers and dialog titles 700.
 - **Header.** Title with the accent monogram, tagline, one quiet "Updated … · N roles" line. Two
   plain buttons on the right: *Back up statuses*, *My CV*.
 - **Dashboard.** One panel split into four columns by hairlines (no nested cards, no gradients):
