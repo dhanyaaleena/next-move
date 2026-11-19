@@ -128,7 +128,6 @@ header p{color:var(--muted);font-size:13.5px;margin:6px 0 0 46px}
   .fsel{flex:1 1 30%;min-width:0;padding-left:4px}
   .fsel span{display:none}
   .fsel select{max-width:none;width:100%;min-width:0;padding-right:24px}
-  .tb-top .viewtog{order:-1}
   .tb-quick{flex-wrap:wrap;gap:6px 12px}
   .qchips{flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
   .qchips::-webkit-scrollbar{display:none}
@@ -294,9 +293,9 @@ select.st option{background:var(--surface);color:var(--ink);font-weight:500}
 /* ── table view ────────────────────────────────────────── */
 .tview{padding:0 var(--gut)}
 .twrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:auto}
-table.jt{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;table-layout:fixed;min-width:1180px}
+table.jt{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;table-layout:fixed;min-width:1300px}
 .jt col.w-co{width:280px}.jt col.w-loc{width:130px}.jt col.w-type{width:112px}.jt col.w-sal{width:110px}.jt col.w-fit{width:84px}
-.jt col.w-ppl{width:96px}.jt col.w-date{width:92px}.jt col.w-st{width:150px}.jt col.w-act{width:200px}
+.jt col.w-ppl{width:96px}.jt col.w-date{width:92px}.jt col.w-st{width:150px}.jt col.w-act{width:250px}
 .jt thead th{position:sticky;top:0;z-index:1;background:var(--surface-2);color:var(--muted);font-size:12px;font-weight:600;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
 .jt td{padding:12px;border-bottom:1px solid var(--line2);vertical-align:middle;color:var(--ink2);overflow:hidden}
 .jt tbody tr:last-child td{border-bottom:none}
@@ -661,11 +660,11 @@ html.dark .cvwrap{border-color:var(--line-strong)}
 
 <div class="toolbar">
 <div class="tb-top">
+  <div class="viewtog" role="group" aria-label="Layout"><button class="vt" data-view="table" title="Table view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>Table</button><button class="vt" data-view="cards" title="Card view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Cards</button></div>
   <div class="search"><input id="q" placeholder="Search company, role, skill, city, person…" oninput="PAGE = {}; render()"></div>
   <label class="fsel" id="catSel"><span>Role</span><select id="catF" data-g="cat"><option value="all">All roles</option></select></label>
   <label class="fsel"><span>Status</span><select id="stF" onchange="PAGE = {}; render()"></select></label>
   <label class="fsel"><span>Sort</span><select id="sortF" data-g="sort"><option value="new">Newest</option><option value="fit">Best fit</option><option value="sal">Salary</option><option value="az">A–Z</option></select></label>
-  <div class="viewtog" role="group" aria-label="Layout"><button class="vt" data-view="cards" title="Card view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Cards</button><button class="vt" data-view="table" title="Table view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>Table</button></div>
 </div>
 <div class="tb-quick">
   <div class="qchips" role="group" aria-label="Quick filters">
@@ -1873,7 +1872,7 @@ function pagerHtml(key, page, pages, total, from, to){
 }
 
 // ── Layout toggle: cards or table (remembered in this browser) ──
-var VIEW = (function(){ try { return localStorage.getItem(SP + '_view') || 'cards'; } catch(e){ return 'cards'; } })();
+var VIEW = (function(){ try { return localStorage.getItem(SP + '_view') || 'table'; } catch(e){ return 'table'; } })();
 function setView(v){
   VIEW = v; try { localStorage.setItem(SP + '_view', v); } catch(e){}
   PAGE = {}; syncViewButtons(); render();

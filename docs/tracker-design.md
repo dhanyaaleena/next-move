@@ -35,7 +35,7 @@ to the user.
 - **Cards:** in the footer button row, in the slot the old 📎 PDF-ready button used, before
   ✨ Optimize (if enabled) and Apply. Class `ansb a-opt`, label "📝 Answers".
 - **Table:** in the Actions column, before the Apply/Open link. Class `ansb ans-t`, label "📝 Answers",
-  30px high to match the row's other controls. The Actions column is 200px wide.
+  30px high to match the row's other controls. The Actions column is 250px wide.
 - **Styling:** soft accent button: `--accent-line` border, `--accent-soft` background, `--accent-ink` text.
 
 ## Answers dialog
@@ -138,13 +138,13 @@ overrides. Change a token before adding a one-off colour.
   Interviewing, Offer) with rejected and messaged counts underneath; location bar; role-mix bar.
   Two columns under 1180px, one under 640px.
 - **Toolbar.** Sticky, blurred, three tiers:
-  1. search, then *Role*, *Status* and *Sort* as compact dropdowns (small grey label + value; a dropdown
+  1. the Table/Cards toggle first (Table is the default view; a saved choice wins), then search, then *Role*, *Status* and *Sort* as compact dropdowns (small grey label + value; a dropdown
      that's filtering gets a dark outline), then the Cards/Table toggle;
   2. quick-filter chips (Everything, High fit, Visa OK when a location needs a visa, Not applied yet,
      New since last refresh, Direct listings, LinkedIn), a live count on the right ("319 roles in London")
      and *Clear filters* when anything is filtering;
   3. the location tabs.
-  On phones: the view toggle goes first, search is full width, the three dropdowns share a row (labels
+  On phones: search is full width, the three dropdowns share a row (labels
   hidden), and the chips scroll sideways.
 - **Location tabs.** The bottom edge of the sticky toolbar holds one tab per location group (colour dot,
   name, count under the current filters), plus *Other locations* when needed and *All locations* last. Only
