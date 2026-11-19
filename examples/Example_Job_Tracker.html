@@ -443,6 +443,12 @@ table.jt{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;tab
 .oc-bar i{display:block;height:100%;border-radius:999px;background:var(--ink)}
 .oc-bar.rej i{background:var(--bad)}.oc-bar.unk i{background:var(--line-strong)}
 .oc-n{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}.oc-n b{color:var(--ink);font-weight:650}
+.oc-step{grid-template-columns:150px 1fr 170px}
+.oc-sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line2);border-radius:var(--r);margin-bottom:10px}
+.oc-sum>div{padding:8px 12px;border-left:1px solid var(--line2);display:flex;flex-direction:column;min-width:0}
+.oc-sum>div:first-child{border-left:none}
+.oc-sum b{font:700 19px/1.15 var(--f-display);color:var(--ink);font-variant-numeric:tabular-nums}
+.oc-sum span{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .oc-fix{border:none;background:none;color:var(--ink);font:inherit;font-size:12.5px;font-weight:600;text-decoration:underline;text-underline-offset:2px;cursor:pointer;padding:0}
 .t-sub{font-size:11.5px;color:var(--muted);margin-top:4px;white-space:nowrap}
 .rv-r{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line2)}
@@ -451,7 +457,8 @@ table.jt{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;tab
 .rv-seg button{border:none;background:transparent;font:inherit;font-size:12px;font-weight:600;color:var(--muted);padding:5px 9px;border-radius:6px;cursor:pointer}
 .rv-seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
 .rv-r.unk .rv-t b::after{content:'stage not recorded';margin-left:8px;font-size:11px;font-weight:600;color:var(--warn);background:var(--warn-soft);border-radius:999px;padding:1px 7px}
-@media (max-width:900px){.dc-wide{grid-template-columns:1fr}.oc-r{grid-template-columns:120px 1fr 80px}}
+@media (max-width:900px){.dc-wide{grid-template-columns:1fr}.oc-r{grid-template-columns:120px 1fr 80px}.oc-step{grid-template-columns:110px 1fr 150px}}
+@media (max-width:640px){.oc-sum{grid-template-columns:repeat(2,minmax(0,1fr))}.oc-sum>div:nth-child(3){border-left:none}.oc-sum>div:nth-child(n+3){border-top:1px solid var(--line2)}}
 @media (max-width:640px){.rv-r{flex-wrap:wrap}}
 @media (max-width:1180px){
   .dash{grid-template-columns:1fr 1fr}
@@ -2025,9 +2032,11 @@ function render(){
 }
 function updateOutcomes(){
   var box = document.getElementById('dcOut'); if(!box) return;
-  var reach = [0, 0, 0, 0], rej = {Applied:0, Screening:0, Interviewing:0, Offer:0}, unk = 0, rejTot = 0, r2 = 0, rejR = {};
+  var reach = [0, 0, 0, 0], rej = {Applied:0, Screening:0, Interviewing:0, Offer:0}, unk = 0, rejTot = 0, r2 = 0, rejR = {}, waiting = 0, heard = 0;
   JOBS.forEach(function(j){
     var st = getStatus(j), n = furthestN(j), mr = maxRound(j);
+    if(st === 'Applied') waiting++;
+    if(n >= 2 || st === 'Rejected') heard++;
     if(st === 'Rejected'){ rejTot++; if(n) rej[STAGES[n - 1]]++; else unk++; if(!n) n = 1;
       if(n === 3){ var rk = Math.max(1, mr); rejR[rk] = (rejR[rk] || 0) + 1; } }
     for(var k = 0; k < n; k++) reach[k]++;
@@ -2037,9 +2046,21 @@ function updateOutcomes(){
   if(!reach[0]) return;
   function row(lab, v, of, cls){ var pc = of ? Math.round(v / of * 100) : 0;
     return '<div class="oc-r"><span>' + lab + '</span><span class="oc-bar' + (cls ? ' ' + cls : '') + '"><i style="width:' + pc + '%"></i></span><span class="oc-n"><b>' + v + '</b> · ' + pc + '%</span></div>'; }
+  // Each step is measured against the step before it, so the bars show where the drop-off is.
+  function step(lab, v, of, ofLab){ var pc = of ? Math.round(v / of * 100) : 0;
+    return '<div class="oc-r oc-step"><span>' + lab + '</span><span class="oc-bar"><i style="width:' + pc + '%"></i></span><span class="oc-n"><b>' + v + '</b> · ' + (of ? pc + '% of ' + ofLab : '—') + '</span></div>'; }
+  function pct(v, of){ return of ? Math.round(v / of * 100) + '%' : '—'; }
   document.getElementById('ocFunnel').innerHTML =
-    row('Applied', reach[0], reach[0]) + row('Got a screening', reach[1], reach[0]) +
-    row('Got an interview', reach[2], reach[0]) + (r2 ? row('Got to round 2+', r2, reach[0]) : '') + row('Got an offer', reach[3], reach[0]);
+    '<div class="oc-sum">' +
+      '<div><b>' + reach[0] + '</b><span>applied</span></div>' +
+      '<div><b>' + waiting + '</b><span>still waiting</span></div>' +
+      '<div><b>' + pct(heard, reach[0]) + '</b><span>heard back (' + heard + ')</span></div>' +
+      '<div><b>' + rejTot + '</b><span>rejected</span></div>' +
+    '</div>' +
+    step('Got a screening', reach[1], reach[0], 'applications') +
+    step('Got an interview', reach[2], reach[1], 'screenings') +
+    (r2 ? step('Got to round 2+', r2, reach[2], 'interviews') : '') +
+    step('Got an offer', reach[3], reach[2], 'interviews');
   document.getElementById('ocRej').innerHTML = rejTot ?
     row('After applying', rej.Applied, rejTot, 'rej') + row('After screening', rej.Screening, rejTot, 'rej') +
     (Object.keys(rejR).length > 1 ? Object.keys(rejR).sort().map(function(k){ return row('After interview R' + k, rejR[k], rejTot, 'rej'); }).join('') : row('After interviewing', rej.Interviewing, rejTot, 'rej')) + (rej.Offer ? row('After an offer', rej.Offer, rejTot, 'rej') : '') +

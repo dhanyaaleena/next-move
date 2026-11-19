@@ -82,7 +82,9 @@ to the user.
   (Applied / Screened / Interviewed) that sets `rejStage`, a manual correction that wins over history.
   Unrecorded ones are listed first.
 - **Dashboard outcomes row** (full width, shown once anything is applied): *How far your applications
-  got* (applied, got a screening, got an interview, got an offer, each with count and % of applied) and
+  got*: a summary strip (applied, still waiting, % heard back, rejected), then steps measured
+  against the step before (screenings of applications, interviews of screenings, round 2+ and offers
+  of interviews), so the bars show where the drop-off is and
   *Where rejections happened* (after applying / screening / interviewing, plus not recorded, as % of
   rejections), with *Fill in N missing* / *Review* opening the dialog.
 - **Interview rounds.** The status menu lists *Interviewing · R1* … *R5* (stored as status
