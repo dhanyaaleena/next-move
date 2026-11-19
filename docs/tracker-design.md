@@ -81,10 +81,9 @@ to the user.
 - **Review rejections** dialog (from the dashboard): every rejected job with a three-way switch
   (Applied / Screened / Interviewed) that sets `rejStage`, a manual correction that wins over history.
   Unrecorded ones are listed first.
-- **Dashboard outcomes row** (full width, shown once anything is applied): a summary strip across the
-  whole row (applied, still waiting, % heard back, rejected, offers), then two aligned panels that share
-  one row grid (label · bar · count): *How far your applications got* (screening, interview, round 2+,
-  offer, each as a % **of all applications**; very small non-zero bars get a minimum width so they stay
+- **Dashboard outcomes row** (full width, shown once anything is applied): two aligned panels that share one
+  row grid (label · bar · count): *How far your applications got* (applied, as a % of every job in the
+  tracker; then screening, interview, round 2+ and offer, each as a % **of all applications**; very small non-zero bars get a minimum width so they stay
   visible) and *Where rejections happened* (after applying / screening / interviewing, plus not recorded,
   as % of rejections), with *Fill in N missing* / *Review* opening the dialog.
 - **Interview rounds.** The status menu lists *Interviewing · R1* … *R5* (stored as status
