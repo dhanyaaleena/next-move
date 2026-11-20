@@ -339,7 +339,9 @@ table.jt{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;tab
 .modal-overlay.open{display:flex}
 .modal{background:var(--surface);border-radius:18px;padding:22px 24px;width:100%;max-width:560px;box-shadow:var(--sh-pop);max-height:90vh;overflow-y:auto}
 .modal.wide{max-width:700px}.modal.xwide{max-width:900px}
-#urlModal .modal{max-width:620px}#urlModal .modal.with-ans{max-width:760px}
+#urlModal .modal{max-width:620px}
+.url-row{display:flex;gap:8px;align-items:center}.url-row .url-inp{flex:1;min-width:0}.url-row .btn-open{height:38px;flex-shrink:0;white-space:nowrap}
+@media (max-width:640px){.url-row{flex-wrap:wrap}.url-row .btn-open{flex:1;justify-content:center}}#urlModal .modal.with-ans{max-width:760px}
 .qk-ans{border-top:1px solid var(--line);padding-top:10px;margin-top:2px}.qk-ans .ans-q{padding:12px 0 10px}.qk-ans .ans-q:first-of-type{border-top:none}.qk-ans .ans-a{font-size:13.5px}
 .modal h3{font:600 19px/1.25 var(--f-display);letter-spacing:-.01em;margin-bottom:6px;color:var(--ink)}
 .modal .sub{font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.55}
@@ -522,11 +524,13 @@ html.dark .cvwrap{border-color:var(--line-strong)}
 <div class="modal-overlay" id="urlModal"><div class="modal">
   <h3 id="modalTitle">🔗 Job link</h3>
   <p class="sub" id="modalSub">Open it directly, or copy it with Cmd+C / Ctrl+C.</p>
-  <input class="url-inp" id="modalUrl" readonly onclick="this.select()">
+  <div class="url-row">
+    <input class="url-inp" id="modalUrl" readonly onclick="this.select()">
+    <a class="btn-open" id="modalOpen" href="#" target="_blank" rel="noopener noreferrer">Open in browser ↗</a>
+  </div>
   <div id="modalQuick"></div>
   <div class="modal-actions">
     <button class="btn-ghost" onclick="closeM('urlModal')">Close</button>
-    <a class="btn-open" id="modalOpen" href="#" target="_blank" rel="noopener noreferrer">Open in browser ↗</a>
   </div>
 </div></div>
 
