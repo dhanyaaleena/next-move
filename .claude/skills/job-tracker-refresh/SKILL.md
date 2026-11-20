@@ -5,7 +5,8 @@ description: Pull new jobs into the user's tracker according to their profile - 
 
 # Pull latest jobs
 
-Read `CLAUDE.md`, `me/profile.yaml` and `me/notes.md` first. Everything below is driven by the profile —
+Read `CLAUDE.md`, `me/profile.yaml` and `me/notes.md` first. Use only this repo's scripts: the page is rebuilt
+by `scripts/build.py` alone, never from older script or template copies (see CLAUDE.md rule 6). Everything below is driven by the profile —
 never assume a country, role or visa situation. Set up a task list: search → review → add → contacts →
 CVs → answers → rebuild → report.
 
