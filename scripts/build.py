@@ -115,6 +115,8 @@ def build(me, out=None, example=False):
     if html.count(MARK) != 1:
         sys.exit("template/tracker.html is missing the config marker")
     html = html.replace(MARK, cfg)
+    title = str(profile.get("tracker_title") or (str(profile.get("name", "My")).split()[0] + "'s Job Tracker"))
+    html = html.replace("<title>Job Tracker</title>", "<title>" + title.replace("&", "&amp;").replace("<", "&lt;") + "</title>", 1)
 
     if not out and not example and profile.get("output_file"):
         out = os.path.expanduser(str(profile["output_file"]))
