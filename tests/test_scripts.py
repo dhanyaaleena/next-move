@@ -95,6 +95,10 @@ def test_backup_merge_and_roundtrip():
     assert cur["jobs"]["a|x"]["status"] == "Rejected" and cur["jobs"]["a|x"]["hist"]   # newer wins
     assert cur["jobs"]["b|y"]["status"] == "To apply"                                   # newer local reset kept
     assert cur["jobs"]["c|z"]["round"] == 2 and cur["msgd"] and cur["extra"]["a|x"]
+    # a brand-new browser: no statuses yet, every job stamped with today's date
+    fresh = {"jobs": {"d|w": {"firstSeen": "2026-11-21"}}}
+    B.merge(fresh, {"jobs": {"d|w": {"status": "Applied", "firstSeen": "2026-10-13"}}})   # old status, no change time
+    assert fresh["jobs"]["d|w"]["status"] == "Applied" and fresh["jobs"]["d|w"]["firstSeen"] == "2026-10-13"
     tmp = tempfile.mkdtemp()
     try:
         me = os.path.join(tmp, "me"); os.makedirs(me)

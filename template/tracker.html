@@ -875,7 +875,7 @@ function fromRow(r){
   }
   return {sec:r.location, cat:r.track, co:r.company, role:r.role, loc:r.place || '', sal:r.salary || 'Not listed', salN:r.salary_num || 0,
           skills:r.skills || [], url:r.url, src:r.source || '', fit:r.fit || 'Medium', direct:r.direct !== false, note:r.note || '',
-          id:r.id || makeId(r.company, r.role), people:(r.people || []).map(personRow), cvPdf:r.cv_pdf || '', visa:r.visa || null,
+          id:r.id || makeId(r.company, r.role), people:(r.people || []).map(personRow), cvPdf:r.cv_pdf || '', visa:r.visa || null, added:r.added || '',
           answers:(r.answers || []).map(function(a){ return Array.isArray(a) ? a : [a.q || a.question || '', a.a || a.answer || '']; })};
 }
 function rowId(r){ return Array.isArray(r) ? (r[13] || makeId(r[2], r[3])) : (r.id || makeId(r.company, r.role)); }
@@ -896,6 +896,7 @@ function buildJobs(){
     var j = fromRow(r);
     if(ids[j.id] || (j.direct && urls[urlKey(j.url)])){ DUPES++; return; }
     var rec = STORE.jobs[j.id] || (STORE.jobs[j.id] = {});
+    if(j.added && (!rec.firstSeen || j.added < rec.firstSeen)) rec.firstSeen = j.added;
     if(!rec.firstSeen) rec.firstSeen = DATA_VERSION;
     rec.lastSeen = DATA_VERSION;
     rec.snap = r;
@@ -950,7 +951,7 @@ function browserState(all){
   var jobs = {};
   Object.keys(STORE.jobs).forEach(function(id){
     var r = STORE.jobs[id];
-    if(all ? r.updated : (r.status && r.status !== 'To apply')) jobs[id] = {status:r.status, updated:r.updated, firstSeen:r.firstSeen, snap:r.snap, hist:r.hist, rejStage:r.rejStage, round:r.round};
+    if(all ? (r.updated || r.firstSeen || (r.status && r.status !== 'To apply')) : (r.status && r.status !== 'To apply')) jobs[id] = {status:r.status, updated:r.updated, firstSeen:r.firstSeen, snap:r.snap, hist:r.hist, rejStage:r.rejStage, round:r.round};
   });
   return {baseline: STORE.baseline, jobs: jobs, msgd: STORE.msgd || {}, extra: STORE.extra || {}};
 }
@@ -983,10 +984,11 @@ function mergeInto(inc){
   if(inc.msgd){ STORE.msgd = STORE.msgd || {}; Object.keys(inc.msgd).forEach(function(k){ if(!STORE.msgd[k]) STORE.msgd[k] = inc.msgd[k]; }); }
   Object.keys(inc.jobs).forEach(function(id){
     var a = inc.jobs[id], b = STORE.jobs[id] || (STORE.jobs[id] = {});
-    var takeIt = a.status && (!b.status || (a.updated && (!b.updated || a.updated > b.updated)));
+    var takeIt = a.status && a.status !== 'To apply' ? (!b.status || (b.status === 'To apply' && !b.updated) || (a.updated && (!b.updated || a.updated > b.updated))) :
+      (a.status && a.updated && b.updated && a.updated > b.updated);
     if(takeIt){ b.status = a.status; b.updated = a.updated; if(a.hist) b.hist = a.hist; else delete b.hist;
       if(a.rejStage) b.rejStage = a.rejStage; else delete b.rejStage; if(a.round) b.round = a.round; else delete b.round; n++; }
-    if(!b.firstSeen && a.firstSeen) b.firstSeen = a.firstSeen;
+    if(a.firstSeen && (!b.firstSeen || a.firstSeen < b.firstSeen)) b.firstSeen = a.firstSeen;
     if(!b.snap && a.snap) b.snap = a.snap;
   });
   saveStore();

@@ -67,16 +67,20 @@ def merge(cur, inc):
                 have.append(p)
     for jid, a in (inc.get("jobs") or {}).items():
         b = cur["jobs"].setdefault(jid, {})
-        if a.get("status") and (not b.get("status") or (a.get("updated") and (not b.get("updated") or a["updated"] > b["updated"]))):
+        real = a.get("status") and a["status"] != "To apply"
+        newer = a.get("updated") and b.get("updated") and a["updated"] > b["updated"]
+        if (real and (not b.get("status") or (b.get("status") == "To apply" and not b.get("updated")) or newer
+                      or (a.get("updated") and not b.get("updated")))) or (not real and a.get("status") and newer):
             for k in ("status", "updated", "hist", "rejStage", "round"):
                 if a.get(k) is not None:
                     b[k] = a[k]
                 else:
                     b.pop(k, None)
             n += 1
-        for k in ("firstSeen", "snap"):
-            if not b.get(k) and a.get(k):
-                b[k] = a[k]
+        if a.get("firstSeen") and (not b.get("firstSeen") or a["firstSeen"] < b["firstSeen"]):
+            b["firstSeen"] = a["firstSeen"]       # keep the earliest date a job was seen
+        if not b.get("snap") and a.get("snap"):
+            b["snap"] = a["snap"]
     if inc.get("baseline") and not cur.get("baseline"):
         cur["baseline"] = inc["baseline"]
     return n
