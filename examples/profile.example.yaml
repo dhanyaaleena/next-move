@@ -130,6 +130,12 @@ cv:
   base_cv_date: "2026-11-01"
   # A tailored CV may only use one of these titles (plus your own title).
   allowed_titles: ["Backend Engineer", "Software Engineer", "Platform Engineer", "Senior Software Engineer", "AI Engineer"]
+  # A few fixed CVs, one per kind of role. Each job uses the first variant whose `match` (regex on the
+  # job title) fits, or the `default`. CV JSONs: me/cv_variants/<key>.json → `python scripts/cv_variants.py build`.
+  variants:
+    - {key: platform, label: "Platform", title: "Platform Engineer", match: "platform|infrastructure|devops|\\bsre\\b"}
+    - {key: ai-engineer, label: "AI Engineer", title: "AI Engineer", match: "\\bai\\b|\\bml\\b|llm|machine learning|agent"}
+    - {key: backend, label: "Backend", title: "Backend Engineer", default: true, match: "back[- ]?end|\\bgo\\b|golang|api"}
   # Words in your CV that should become links in the PDF.
   links: []
   #   - {text: "Open VSX", url: "https://open-vsx.org/extension/you/your-ext"}

@@ -10,6 +10,7 @@ session, then read the user's `me/profile.yaml` and `me/notes.md` before doing a
 |---|---|
 | `me/profile.yaml` | The user's targets: role tracks, location groups (+ visa need per country), salary, fit rules, search sources, contacts, CV rules, writing style, hard rules. **Source of truth for every decision.** |
 | `me/cv.json` | Their base CV, structured (shape: `examples/cv.example.json`). Tailored CVs may only use facts from here or `profile.cv.confirmed_extras`. |
+| `me/cv_variants/*.json` | The user's fixed CVs (one per kind of role, `profile.cv.variants`). Each job points to one; PDFs in `<tailored_cv_folder>/CV variants/`. |
 | `me/jobs.json` | Every role the tracker shows. Only change it through `scripts/jobs.py`. |
 | `me/statuses.json` | Statuses copied out of the browser (`backup.py`). Embedded in the page on every build so a new or cleared browser gets them back. |
 | `me/notes.md` | Running notes: interviews in progress, recruiter replies, open questions, last pull summary. Keep it short and current. |
@@ -22,9 +23,9 @@ If `me/` doesn't exist, the user hasn't been set up — use the **job-tracker-se
 ## Skills (in `.claude/skills/`)
 
 - **job-tracker-setup** — first run: CV → `cv.json`, a short interview → `profile.yaml`, first build.
-- **job-tracker-refresh** — "pull latest jobs" / "refresh my tracker": search, verify, add, contacts, tailored CVs, rebuild, report.
+- **job-tracker-refresh** — "pull latest jobs" / "refresh my tracker": search, verify, add, contacts, answers, rebuild, report. Jobs point to a fixed CV variant; no per-job CVs.
 - **job-tracker-add** — the user shares one job link to log.
-- **job-tracker-tailor-cv** — make or redo a one-page tailored CV for a job.
+- **job-tracker-tailor-cv** — the fixed CV variants (`cv_variants.py`), and a tailored CV for one job only when the user asks.
 - **job-tracker-portals** — find job boards for the user's countries, role tracks and visa needs → `profile.portals` (shown under Job portals).
 - **job-tracker-answers** — draft and check answers to a job's application-form questions (shown under 📝 Answers).
 
@@ -39,7 +40,8 @@ python scripts/jobs.py known|stats|list|add|update|pulled|bump
 python scripts/search_jobs.py                         # candidates -> me/candidates.json
 python scripts/fetch_posting.py <url>                 # full posting text (LinkedIn/Ashby/Greenhouse/Lever/Workable)
 python scripts/check_sponsor.py <CODE> "Company"      # official sponsor register (UK automated)
-python scripts/tailor_cv.py --id <job id> --cv f.json # check + fit one page + save PDF
+python scripts/cv_variants.py build|list|pick "<role>"  # the fixed CVs each job points to
+python scripts/tailor_cv.py --id <job id> --cv f.json # one job's tailored CV (only when asked)
 python scripts/answers.py set|check|audit|missing    # application answers (quality + truth checks)
 python scripts/sync_xlsx.py                           # Excel copy (Jobs + People + Portals)
 python scripts/backup.py statuses|save|restore        # browser statuses → me/statuses.json; zip / unpack everything

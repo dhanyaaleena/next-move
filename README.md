@@ -16,7 +16,7 @@ visa needs, salary floor, languages and tone all come from your `profile.yaml`.
 - **Pulls that match you**: LinkedIn (signed-in browser or public search), the career boards of companies you like *and* of every company already in your tracker, and the main job boards of each country you target.
 - **Visa-aware filtering**: for each country you mark as needing sponsorship, a role is added only with evidence — the posting's own words, or the employer on the country's official sponsor register (the UK register is checked automatically).
 - **Answers to each job's application questions**, ready under 📝 Answers: routine facts (location, right to work, notice, salary) taken word for word from your profile, and short, specific "why us / why this role" answers backed by real numbers from your CV. A checker blocks invented numbers or skills and flags generic, AI-sounding wording.
-- **A one-page tailored CV per job**, as a PDF, built only from facts in your CV. Invented numbers or skills are rejected by a checker, and skills you list as "ask first" are never claimed without you.
+- **A small set of CVs, one per kind of role** (e.g. Forward Deployed, Full Stack, AI Engineer, Backend), built once from your CV. Each job's Apply dialog tells you which one to send. Invented numbers or skills are rejected by a checker, and skills you list as "ask first" are never claimed without you. A fully tailored CV for one job is still there when you ask for it.
 - **People to reach out to** for each role (names and public profile links; Claude never messages anyone), plus a ready outreach message and a ≤280-character connection note in your voice.
 - **An Excel copy** (Jobs, People, Portals, Summary) if you want one. Claude only ever adds rows.
 

@@ -340,6 +340,9 @@ table.jt{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;tab
 .modal{background:var(--surface);border-radius:18px;padding:22px 24px;width:100%;max-width:560px;box-shadow:var(--sh-pop);max-height:90vh;overflow-y:auto}
 .modal.wide{max-width:700px}.modal.xwide{max-width:900px}
 #urlModal .modal{max-width:620px}
+.qk-cv{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.qk-cv-ic{font-size:20px}.qk-cv-t{flex:1;min-width:0}.qk-cv-k{font-size:11.5px;font-weight:600;color:var(--faint)}.qk-cv-t b{font-size:14px;color:var(--ink)}
+.qk-cv-f{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .url-row{display:flex;gap:8px;align-items:center}.url-row .url-inp{flex:1;min-width:0}.url-row .btn-open{height:38px;flex-shrink:0;white-space:nowrap}
 @media (max-width:640px){.url-row{flex-wrap:wrap}.url-row .btn-open{flex:1;justify-content:center}}#urlModal .modal.with-ans{max-width:760px}
 .qk-ans{border-top:1px solid var(--line);padding-top:10px;margin-top:2px}.qk-ans .ans-q{padding:12px 0 10px}.qk-ans .ans-q:first-of-type{border-top:none}.qk-ans .ans-a{font-size:13.5px}
@@ -875,7 +878,7 @@ function fromRow(r){
   }
   return {sec:r.location, cat:r.track, co:r.company, role:r.role, loc:r.place || '', sal:r.salary || 'Not listed', salN:r.salary_num || 0,
           skills:r.skills || [], url:r.url, src:r.source || '', fit:r.fit || 'Medium', direct:r.direct !== false, note:r.note || '',
-          id:r.id || makeId(r.company, r.role), people:(r.people || []).map(personRow), cvPdf:r.cv_pdf || '', visa:r.visa || null, added:r.added || '',
+          id:r.id || makeId(r.company, r.role), people:(r.people || []).map(personRow), cvPdf:r.cv_pdf || '', visa:r.visa || null, added:r.added || '', cvVariant:r.cv_variant || '',
           answers:(r.answers || []).map(function(a){ return Array.isArray(a) ? a : [a.q || a.question || '', a.a || a.answer || '']; })};
 }
 function rowId(r){ return Array.isArray(r) ? (r[13] || makeId(r[2], r[3])) : (r.id || makeId(r.company, r.role)); }
@@ -1035,9 +1038,18 @@ function closeM(id){ document.getElementById(id).classList.remove('open'); if(id
 });
 
 var URL_CTX = null;
+// Which CV to send: the job's own tailored CV if one was made, otherwise its fixed variant
+function cvToUse(j){
+  var V = (typeof CV_VARIANTS !== 'undefined' && CV_VARIANTS) || [], name = '', file = '';
+  if(j.cvPdf){ name = 'Tailored for this job'; file = j.cvPdf; }
+  else { var v = V.filter(function(x){ return x.key === j.cvVariant; })[0]; if(!v) return ''; name = v.label; file = v.file; }
+  var full = TCV_DIR + '/' + file;
+  return '<div class="qk-cv"><span class="qk-cv-ic">📄</span><div class="qk-cv-t"><div class="qk-cv-k">CV to send</div><b>' + esc(name) + '</b><div class="qk-cv-f" title="' + esc(full) + '">' + esc(file.split('/').pop()) + '</div></div>' +
+    '<button class="qk-b sm" data-qcv="' + esc(full) + '">📋 Copy path</button></div>';
+}
 function quickHtml(){
   var c = URL_CTX; if(!c || !c.j) return '';
-  var j = c.j, st = getStatus(j), h = '<div class="qk"><div class="qk-row"><span class="qk-l">' + esc(j.co) + ' · ' + esc(j.role) + '</span></div><div class="qk-row">';
+  var j = c.j, st = getStatus(j), h = '<div class="qk"><div class="qk-row"><span class="qk-l">' + esc(j.co) + ' · ' + esc(j.role) + '</span></div>' + (c.person ? '' : cvToUse(j)) + '<div class="qk-row">';
   h += '<span class="qk-lab">Mark job as</span>' + ['Applied','Not interested','Skipped','Closed','Duplicate','Wrong location'].map(function(s){
     return '<button class="qk-b' + (st === s ? ' on' : '') + '" data-qs="' + s + '">' + ({Applied:'✅ Applied', 'Not interested':'👎 Not interested', Skipped:'⏭️ Skipped', Closed:'🚫 Closed', Duplicate:'👯 Duplicate', 'Wrong location':'🌍 Wrong location'})[s] + '</button>'; }).join('');
   if(st !== 'To apply') h += '<button class="qk-b ghost" data-qs="To apply">↺ Reset</button>';
@@ -1064,9 +1076,10 @@ function quickHtml(){
 }
 function drawQuick(){ document.getElementById('modalQuick').innerHTML = quickHtml(); }
 document.addEventListener('click', function(ev){
-  var b = ev.target.closest && ev.target.closest('#modalQuick [data-qs], #modalQuick [data-qm], #modalQuick [data-qc], #modalQuick [data-qpc], #modalQuick [data-qac]'); if(!b || !URL_CTX) return;
+  var b = ev.target.closest && ev.target.closest('#modalQuick [data-qs], #modalQuick [data-qm], #modalQuick [data-qc], #modalQuick [data-qpc], #modalQuick [data-qac], #modalQuick [data-qcv]'); if(!b || !URL_CTX) return;
   var j = URL_CTX.j;
   if(b.hasAttribute('data-qac')){ copyText(j.answers[+b.getAttribute('data-qac')][1], 'Answer'); return; }
+  if(b.hasAttribute('data-qcv')){ copyText(b.getAttribute('data-qcv'), 'CV path'); return; }
   if(b.hasAttribute('data-qs')){ var s = b.getAttribute('data-qs'), dummy = document.createElement('select'); setStatus(j.i, s, dummy); toast(s === 'To apply' ? 'Status reset' : 'Marked as ' + s); }
   else if(b.hasAttribute('data-qm')){ var on = !isMsgd(j, URL_CTX.person); setMsgd(j, URL_CTX.person, on); toast(on ? '✓ Marked ' + URL_CTX.person.split(' ')[0] + ' as messaged' : 'Unmarked'); setTimeout(render, 0); }
   else if(b.hasAttribute('data-qc')){ copyText(outreach(j, URL_CTX.person), 'Message to ' + URL_CTX.person.split(' ')[0]); }

@@ -96,10 +96,17 @@ sources. Mark `email_confidence` **likely** if the pattern is clear (~85%+ of ex
 python scripts/jobs.py update --id "<id>" --json '{"people": [{"name": "...", "title": "...", "url": "...", "tag": "Talent", "email": "...", "email_confidence": "likely"}]}'
 ```
 
-## 5. Tailored CVs
+## 5. Which CV to send (no per-job CVs)
 
-For every new job run the **job-tracker-tailor-cv** skill (one PDF per job). If there are many, do the
-High-fit ones first and tell the user how many are left.
+Don't make a tailored CV for each new job. The user keeps a few fixed CVs (`profile.cv.variants`, PDFs in
+`<tailored_cv_folder>/CV variants/`), and the page tells them which one to send for each job, picked by
+the variant rules from the job title. Check the pick for the new jobs:
+```bash
+python scripts/cv_variants.py list | tail -n <number added>
+```
+If a rule picks badly for a job (e.g. a "Software Engineer" role that is really an AI role), set it:
+`python scripts/jobs.py update --id "<id>" --json '{"cv_variant": "ai-engineer"}'`.
+Only run **job-tracker-tailor-cv** when the user asks for a tailored CV for a specific job.
 
 ## 6. Application answers
 

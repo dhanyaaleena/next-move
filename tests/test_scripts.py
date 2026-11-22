@@ -116,6 +116,19 @@ def test_backup_merge_and_roundtrip():
         shutil.rmtree(tmp)
 
 
+def test_cv_variant_pick():
+    from common import pick_variant, variant_file
+    prof = {"name": "Alex Morgan", "cv": {"variants": [
+        {"key": "fde", "label": "Forward Deployed", "match": "forward[- ]?deployed"},
+        {"key": "ai", "label": "AI Engineer", "match": "\\bai\\b|llm"},
+        {"key": "backend", "label": "Backend", "default": True}]}}
+    assert pick_variant(prof, {"role": "Senior Forward Deployed Engineer (AI)"})["key"] == "fde"
+    assert pick_variant(prof, {"role": "Senior AI Engineer"})["key"] == "ai"
+    assert pick_variant(prof, {"role": "Payments Engineer"})["key"] == "backend"          # default
+    assert pick_variant(prof, {"role": "Senior AI Engineer", "cv_variant": "backend"})["key"] == "backend"  # override wins
+    assert variant_file(prof, prof["cv"]["variants"][0]) == "CV variants/Alex_Morgan_CV - Forward Deployed.pdf"
+
+
 if __name__ == "__main__":
     for k, f in list(globals().items()):
         if k.startswith("test_"):

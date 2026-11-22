@@ -82,3 +82,29 @@ def url_key(u):
 
 def today():
     return dt.date.today().isoformat()
+
+
+# ── CV variants: a few fixed CVs (profile.cv.variants); each job points to one instead of
+#    getting its own tailored CV. A job's own "cv_variant" (set by Claude) wins over the rules.
+def cv_variants(profile):
+    return [v for v in ((profile.get("cv") or {}).get("variants") or []) if v.get("key")]
+
+
+def variant_file(profile, v):
+    name = re.sub(r"[^A-Za-z0-9]+", "_", str(profile.get("name", "My")).title()).strip("_")
+    label = re.sub(r'[/\\:*?<>|]+', ' ', str(v.get('label') or v['key']))
+    return "CV variants/" + name + "_CV - " + label + ".pdf"
+
+
+def pick_variant(profile, job):
+    vs = cv_variants(profile)
+    if not vs:
+        return None
+    keys = {v["key"]: v for v in vs}
+    if job.get("cv_variant") in keys:
+        return keys[job["cv_variant"]]
+    text = f"{job.get('role', '')}"
+    for v in vs:
+        if v.get("match") and re.search(v["match"], text, re.I):
+            return v
+    return next((v for v in vs if v.get("default")), vs[-1])

@@ -20,7 +20,7 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.worksheet.datavalidation import DataValidation
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import load_json, load_profile, make_id, me_path, url_key  # noqa: E402
+from common import load_json, load_profile, make_id, me_path, url_key, pick_variant, variant_file  # noqa: E402
 import build  # noqa: E402
 
 F = "Arial"
@@ -181,7 +181,8 @@ def sync(path, profile, jobs):
             ws.cell(r, c, v)
         ws.cell(r, 9, "Open posting").hyperlink = j["url"]
         ws.cell(r, 9).font = LINK
-        ws.cell(r, 10, j.get("cv_pdf") or None)
+        v = pick_variant(profile, j)
+        ws.cell(r, 10, j.get("cv_pdf") or (variant_file(profile, v) if v else None))
         ws.cell(r, 11, "To apply")
         ws.cell(r, 13, f'=IF(L{r}="","",L{r}+7)')
         ws.cell(r, 14, " | ".join(parts))

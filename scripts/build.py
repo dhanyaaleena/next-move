@@ -15,7 +15,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import ROOT, load_country, load_json, load_yaml, make_id, me_path, today  # noqa: E402
+from common import ROOT, cv_variants, load_country, load_json, load_yaml, make_id, me_path, pick_variant, today, variant_file  # noqa: E402
 
 TEMPLATE = os.path.join(ROOT, "template", "tracker.html")
 MARK = "/*__CONFIG__*/"
@@ -99,7 +99,13 @@ def build(me, out=None, example=False):
     if errs:
         sys.exit("Can't build:\n  " + "\n  ".join(errs))
 
-    data = {"jobs": jobs.get("jobs", []), "portals": portals_for(profile, jobs)}
+    # each job points at one fixed CV variant (unless it has its own tailored CV)
+    out_jobs = []
+    for j in jobs.get("jobs", []):
+        v = pick_variant(profile, j)
+        out_jobs.append(dict(j, cv_variant=v["key"]) if v else j)
+    data = {"jobs": out_jobs, "portals": portals_for(profile, jobs)}
+    variants = [{"key": v["key"], "label": v.get("label") or v["key"], "file": variant_file(profile, v)} for v in cv_variants(profile)]
     # statuses saved on disk by scripts/backup.py; the page merges them into a new or cleared browser
     saved_path = None if example else me_path(me, "statuses.json")
     saved = load_json(saved_path) if saved_path and os.path.exists(saved_path) else None
@@ -109,6 +115,7 @@ def build(me, out=None, example=False):
         "var DATA = " + js(data) + ";\n"
         "var DATA_VERSION = " + js(str(jobs.get("version") or today())) + ";\n"
         "var SAVED_STORE = " + js(saved) + ";\n"
+        "var CV_VARIANTS = " + js(variants) + ";\n"
     )
     with open(TEMPLATE, encoding="utf-8") as f:
         html = f.read()

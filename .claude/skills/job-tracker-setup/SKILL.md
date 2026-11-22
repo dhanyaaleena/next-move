@@ -54,7 +54,14 @@ route (official link), whether an official sponsor register exists (official lin
 phrases in postings that signal sponsorship, language notes, the `linkedin_location` string, and 4–6
 well-known job boards (verify each URL loads). Don't write salary thresholds — link to the official page.
 
-## 3. Job portals
+## 3. CV variants
+
+Ask which kinds of roles they apply for, then write 4–6 fixed CVs from `me/cv.json` (see the CV variants
+section of **job-tracker-tailor-cv**): add `cv.variants` to the profile (as in the example profile), write
+`me/cv_variants/<key>.json` for each, and run `python scripts/cv_variants.py build`. Every job then points
+to one of these instead of getting its own CV.
+
+## 3b. Job portals
 
 Run the **job-tracker-portals** skill: it finds the main boards for each country they chose, boards for
 their role tracks and, where they need a visa, sponsorship/relocation boards, checks each link, and adds

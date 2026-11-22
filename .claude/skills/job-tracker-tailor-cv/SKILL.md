@@ -1,6 +1,6 @@
 ---
 name: job-tracker-tailor-cv
-description: Make a one-page CV tailored to one job in the user's tracker, using only facts from their base CV, and save it as a PDF in their tailored-CV folder. Use during a refresh for every new job, when the user asks to tailor/optimise their CV for a role, or to regenerate old tailored CVs after their base CV changed.
+description: Make a one-page CV tailored to one job in the user's tracker, using only facts from their base CV, and save it as a PDF in their tailored-CV folder. Use only when the user asks to tailor/optimise their CV for a specific role (refreshes use the fixed CV variants instead), when they want to change or add a CV variant, or to regenerate CVs after their base CV changed.
 ---
 
 # Tailor a CV for one job
@@ -38,3 +38,18 @@ Look at the PDF once (render a page image) the first time in a session to check 
 
 `python scripts/tailor_cv.py --list-missing` lists jobs without a CV. To redo existing ones, ask the user
 first (they may have sent the old version), and only for jobs they haven't applied to yet.
+
+## CV variants (the default instead of per-job CVs)
+
+The user keeps a handful of fixed CVs in `profile.cv.variants` (key, label, title, `match` regex on the
+job title, one `default`). Each is a CV JSON at `me/cv_variants/<key>.json`, written with the same rules as
+above but for a kind of role (Forward Deployed, Full Stack, AI Engineer, Backend…), with a general profile
+line rather than a company-specific one. Build or rebuild them (after editing one, or after cv.json
+changes):
+```bash
+python scripts/cv_variants.py build            # all, or --key backend
+python scripts/cv_variants.py list             # which variant each job uses
+```
+The tracker's job dialog shows "CV to send" for every job: its tailored CV if one exists, otherwise its
+variant.
+
