@@ -126,7 +126,7 @@ def test_cv_variant_pick():
     assert pick_variant(prof, {"role": "Senior AI Engineer"})["key"] == "ai"
     assert pick_variant(prof, {"role": "Payments Engineer"})["key"] == "backend"          # default
     assert pick_variant(prof, {"role": "Senior AI Engineer", "cv_variant": "backend"})["key"] == "backend"  # override wins
-    assert variant_file(prof, prof["cv"]["variants"][0]) == "CV variants/Alex_Morgan_CV - Forward Deployed.pdf"
+    assert variant_file(prof, prof["cv"]["variants"][0]) == "CV variants/Forward Deployed/Alex_Morgan_CV.pdf"
 
 
 if __name__ == "__main__":

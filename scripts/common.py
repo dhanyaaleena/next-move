@@ -92,8 +92,8 @@ def cv_variants(profile):
 
 def variant_file(profile, v):
     name = re.sub(r"[^A-Za-z0-9]+", "_", str(profile.get("name", "My")).title()).strip("_")
-    label = re.sub(r'[/\\:*?<>|]+', ' ', str(v.get('label') or v['key']))
-    return "CV variants/" + name + "_CV - " + label + ".pdf"
+    label = re.sub(r'[/\\:*?<>|]+', ' ', str(v.get('label') or v['key'])).strip()
+    return "CV variants/" + label + "/" + name + "_CV.pdf"        # one folder per variant, same file name as every CV
 
 
 def pick_variant(profile, job):
